@@ -10,7 +10,7 @@ class Kredis::Types::UniqueList < Kredis::Types::List
       remove elements
       super
       ltrim 0, (@limit - 1) if @limit
-    end
+    end if Array(elements).any?
   end
 
   def append(elements)
@@ -18,6 +18,6 @@ class Kredis::Types::UniqueList < Kredis::Types::List
       remove elements
       super
       ltrim (@limit - 1), -1 if @limit
-    end
+    end if Array(elements).any?
   end
 end

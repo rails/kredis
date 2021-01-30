@@ -8,10 +8,10 @@ class Kredis::Types::List < Kredis::Proxy
   end
 
   def prepend(elements)
-    lpush elements
+    lpush elements if Array(elements).any?
   end
 
   def append(elements)
-    rpush elements
+    rpush elements if Array(elements).any?
   end
 end
