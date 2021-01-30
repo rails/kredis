@@ -12,6 +12,10 @@ module Kredis
       end
     end
 
+    initializer "kredis.logger" do
+      Kredis.logger = Rails.logger
+    end
+
     initializer "kredis.configurator" do
       Kredis.configurator = Rails.application
     end
