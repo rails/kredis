@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+VERSION=$1
+
+printf "module Kredis\n  VERSION = \"$VERSION\"\nend\n" > ./lib/kredis/version.rb
+bundle
+git add Gemfile.lock lib/kredis/version.rb
+git commit -m "Bump version for $VERSION"
+git push
+git tag v$VERSION
+git push --tags
+gem build kredis.gemspec
+gem push "kredis-$VERSION.gem"
