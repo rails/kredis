@@ -15,6 +15,10 @@ module Kredis::Types
     Counter.new configured_for(config), namespaced_key(key), expires_in: expires_in
   end
 
+  def flag(key, config: :shared)
+    Flag.new configured_for(config), namespaced_key(key)
+  end
+
   def mutex(key, expires_in: nil, config: :shared)
     Mutex.new configured_for(config), namespaced_key(key), expires_in: expires_in
   end
@@ -24,4 +28,5 @@ require "kredis/proxy"
 require "kredis/types/list"
 require "kredis/types/unique_list"
 require "kredis/types/counter"
+require "kredis/types/flag"
 require "kredis/types/mutex"

@@ -5,6 +5,7 @@ class Person
 
   kredis_list :names
   kredis_unique_list :skills, limit: 2
+  kredis_flag :special
 
   def self.name
     "Person"
@@ -28,5 +29,15 @@ class AttributesTest < ActiveSupport::TestCase
     @person.skills.prepend("racing")
     @person.skills.prepend("racing")
     assert_equal %w[ racing photography ], @person.skills.elements
+  end
+
+  test "flag" do
+    assert_not @person.special?
+
+    @person.special.mark
+    assert @person.special?
+
+    @person.special.remove
+    assert_not @person.special?
   end
 end
