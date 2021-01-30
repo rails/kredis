@@ -3,6 +3,7 @@ require "test_helper"
 class Person
   include Kredis::Attributes
 
+  kredis_proxy :anything
   kredis_list :names
   kredis_unique_list :skills, limit: 2
   kredis_flag :special
@@ -20,6 +21,11 @@ end
 
 class AttributesTest < ActiveSupport::TestCase
   setup { @person = Person.new }
+
+  test "proxy" do
+    @person.anything.set "something"
+    assert_equal "something", @person.anything.get
+  end
 
   test "list" do
     @person.names.append(%w[ david kasper ])

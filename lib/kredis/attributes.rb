@@ -2,6 +2,18 @@ module Kredis::Attributes
   extend ActiveSupport::Concern
 
   class_methods do
+    def kredis_proxy(name, config: :shared)
+      ivar_symbol = :"@#{name}_kredis_proxy"
+
+      define_method(name) do
+        if instance_variable_defined?(ivar_symbol)
+          instance_variable_get(ivar_symbol)
+        else
+          instance_variable_set(ivar_symbol, Kredis.proxy(kredis_key_for_attribute(name), config: config))
+        end
+      end
+    end
+
     def kredis_list(name, config: :shared)
       ivar_symbol = :"@#{name}_kredis_list"
 
