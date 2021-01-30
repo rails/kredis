@@ -7,13 +7,13 @@ require "kredis/namespace"
 require "kredis/logger"
 
 module Kredis
-  include Connections
-  include Namespace
-  include Types
+  extend self
 
   mattr_accessor :logger
 
-  extend self
+  include Connections
+  include Namespace
+  include Types
 
   def redis(config: :shared)
     configured_for(config)
