@@ -1,10 +1,9 @@
 require "kredis/railtie"
 
 require "kredis/connections"
+require "kredis/namespace"
 require "kredis/types"
 require "kredis/attributes"
-require "kredis/namespace"
-require "kredis/logger"
 
 module Kredis
   extend self
