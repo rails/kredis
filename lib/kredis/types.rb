@@ -1,6 +1,6 @@
 module Kredis::Types
   def keyed(key, config: :shared)
-    Proxy.new configured_for(config), namespaced_key(key)
+    Kredis::Proxy.new configured_for(config), namespaced_key(key)
   end
 
   def list(key, config: :shared)
