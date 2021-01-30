@@ -9,6 +9,7 @@ module Kredis::Connections
   end
 
   def clear_all
+    logger&.info "[Kredis] Cleared all connections"
     connections.each_value(&:flushdb)
   end
 end
