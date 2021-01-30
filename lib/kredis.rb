@@ -11,4 +11,8 @@ module Kredis
   include Types
 
   extend self
+
+  def redis(config: :shared)
+    configured_for(config)
+  end
 end
