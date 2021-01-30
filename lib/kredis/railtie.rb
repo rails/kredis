@@ -15,5 +15,15 @@ module Kredis
     initializer "kredis.configurator" do
       Kredis.configurator = Rails.application
     end
+
+    initializer "kredis.attributes" do
+      ActiveSupport.on_load(:active_model) do
+        ActiveModel::Base.send :include, Kredis::Attributes
+      end
+
+      ActiveSupport.on_load(:active_record) do
+        ActiveRecord::Base.send :include, Kredis::Attributes
+      end
+    end
   end
 end
