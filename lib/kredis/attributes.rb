@@ -41,6 +41,25 @@ module Kredis::Attributes
         instance_variable_defined?(ivar_symbol) && instance_variable_get(ivar_symbol).marked?
       end
     end
+
+    def kredis_string(name, config: :shared)
+      define_kredis_method(name, "value", config) do
+        Kredis.string(kredis_key_for_attribute(name))
+      end
+    end
+
+    private
+      def define_kredis_method(name, type, config)
+        ivar_symbol = :"@#{name}_kredis_#{type}"
+
+        define_method(name) do
+          if instance_variable_defined?(ivar_symbol)
+            instance_variable_get(ivar_symbol)
+          else
+            instance_variable_set(ivar_symbol, yield, config: config)
+          end
+        end
+      end
   end
 
   private
