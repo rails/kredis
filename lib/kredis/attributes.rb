@@ -9,7 +9,7 @@ module Kredis::Attributes
         if instance_variable_defined?(ivar_symbol)
           instance_variable_get(ivar_symbol)
         else
-          instance_variable_set(ivar_symbol, Kredis.list(redis_key_for_attribute(name), config: config))
+          instance_variable_set(ivar_symbol, Kredis.list(kredis_key_for_attribute(name), config: config))
         end
       end
     end
@@ -21,14 +21,14 @@ module Kredis::Attributes
         if instance_variable_defined?(ivar_symbol)
           instance_variable_get(ivar_symbol)
         else
-          instance_variable_set(ivar_symbol, Kredis.unique_list(redis_key_for_attribute(name), limit: limit, config: config))
+          instance_variable_set(ivar_symbol, Kredis.unique_list(kredis_key_for_attribute(name), limit: limit, config: config))
         end
       end
     end
   end
 
   private
-    def redis_key_for_attribute(name)
+    def kredis_key_for_attribute(name)
       "#{self.class.name.tableize.gsub("/", ":")}:#{id}:#{name}"
     end
 end
