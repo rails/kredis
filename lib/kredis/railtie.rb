@@ -11,5 +11,9 @@ module Kredis
         parallelize_teardown { Kredis.clear_all }
       end
     end
+
+    initializer "kredis.configurator" do
+      Kredis.configurator = Rails.application
+    end
   end
 end
