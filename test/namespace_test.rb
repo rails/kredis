@@ -1,6 +1,8 @@
 require "test_helper"
 
 class NamespaceTest < ActiveSupport::TestCase
+  teardown { Kredis.namespace = nil }
+
   test "list with namespace" do
     Kredis.namespace = "test-1"
     list = Kredis.list "mylist"
