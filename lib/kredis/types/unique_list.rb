@@ -9,7 +9,7 @@ class Kredis::Types::UniqueList < Kredis::Types::List
     multi do
       remove elements
       super
-      ltrim 0, @limit if @limit
+      ltrim 0, (@limit - 1) if @limit
     end
   end
 
@@ -17,7 +17,7 @@ class Kredis::Types::UniqueList < Kredis::Types::List
     multi do
       remove elements
       super
-      ltrim @limit, -1 if @limit
+      ltrim (@limit - 1), -1 if @limit
     end
   end
 end
