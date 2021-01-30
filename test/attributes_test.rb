@@ -4,6 +4,7 @@ class Person
   include Kredis::Attributes
 
   kredis_proxy :anything
+  kredis_proxy :nothing, key: "something:else"
   kredis_list :names
   kredis_unique_list :skills, limit: 2
   kredis_flag :special
@@ -25,6 +26,11 @@ class AttributesTest < ActiveSupport::TestCase
   test "proxy" do
     @person.anything.set "something"
     assert_equal "something", @person.anything.get
+  end
+
+  test "proxy with custom key" do
+    @person.nothing.set "everything"
+    assert_equal "everything", Kredis.redis.get("something:else")
   end
 
   test "list" do
