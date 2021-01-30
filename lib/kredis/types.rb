@@ -1,6 +1,6 @@
 module Kredis::Types
-  def keyed(key, config: :shared)
-    Kredis::Proxy.new configured_for(config), namespaced_key(key)
+  def proxy(key, config: :shared)
+    Kredis::Types::Proxy.new configured_for(config), namespaced_key(key)
   end
 
   def list(key, config: :shared)
@@ -32,7 +32,7 @@ module Kredis::Types
   end
 end
 
-require "kredis/proxy"
+require "kredis/types/proxy"
 require "kredis/types/list"
 require "kredis/types/unique_list"
 require "kredis/types/counter"

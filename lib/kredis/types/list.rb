@@ -1,4 +1,4 @@
-class Kredis::Types::List < Kredis::Proxy
+class Kredis::Types::List < Kredis::Types::Proxy
   def elements
     lrange(0, -1) || []
   end

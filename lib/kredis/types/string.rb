@@ -1,4 +1,4 @@
-class Kredis::Types::String < Kredis::Proxy
+class Kredis::Types::String < Kredis::Types::Proxy
   def assign=(value)
     set value
   end

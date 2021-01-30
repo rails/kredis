@@ -1,4 +1,4 @@
-class Kredis::Proxy
+class Kredis::Types::Proxy
   def initialize(redis, key)
     @redis, @key = redis, key
   end

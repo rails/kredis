@@ -1,7 +1,7 @@
 require "test_helper"
 
 class ProxyTest < ActiveSupport::TestCase
-  setup { @proxy = Kredis.keyed "something" }
+  setup { @proxy = Kredis.proxy "something" }
 
   test "proxy set and get and del" do
     @proxy.set "one"

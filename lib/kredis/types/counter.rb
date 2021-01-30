@@ -1,4 +1,4 @@
-class Kredis::Types::Counter < Kredis::Proxy
+class Kredis::Types::Counter < Kredis::Types::Proxy
   def initialize(redis, key, expires_in: nil)
     @expires_in = expires_in
     super redis, key
