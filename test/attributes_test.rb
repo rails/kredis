@@ -5,7 +5,9 @@ class Person
 
   kredis_proxy :anything
   kredis_proxy :nothing, key: "something:else"
+  kredis_proxy :something, key: ->(p) { "person:#{p.id}:something" }
   kredis_list :names
+  kredis_list :names_with_custom_key, key: ->(p) { "person:#{p.id}:names_customized" }
   kredis_unique_list :skills, limit: 2
   kredis_flag :special
   kredis_string :address
@@ -28,14 +30,24 @@ class AttributesTest < ActiveSupport::TestCase
     assert_equal "something", @person.anything.get
   end
 
-  test "proxy with custom key" do
+  test "proxy with custom string key" do
     @person.nothing.set "everything"
     assert_equal "everything", Kredis.redis.get("something:else")
+  end
+
+  test "proxy with custom proc key" do
+    @person.something.set "everything"
+    assert_equal "everything", Kredis.redis.get("person:8:something")
   end
 
   test "list" do
     @person.names.append(%w[ david kasper ])
     assert_equal %w[ david kasper ], @person.names.elements
+  end
+
+  test "list with custom proc key" do
+    @person.names_with_custom_key.append(%w[ david kasper ])
+    assert_equal %w[ david kasper ], Kredis.redis.lrange("person:8:names_customized", 0, -1)
   end
 
   test "unique list" do
