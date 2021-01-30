@@ -2,8 +2,8 @@ module Kredis::Attributes
   extend ActiveSupport::Concern
 
   class_methods do
-    def redis_list(name, config: :shared)
-      ivar_symbol = :"@#{name}_redis_list"
+    def kredis_list(name, config: :shared)
+      ivar_symbol = :"@#{name}_kredis_list"
 
       define_method(name) do
         if instance_variable_defined?(ivar_symbol)
@@ -14,8 +14,8 @@ module Kredis::Attributes
       end
     end
 
-    def redis_unique_list(name, limit: nil, config: :shared)
-      ivar_symbol = :"@#{name}_redis_unique_list"
+    def kredis_unique_list(name, limit: nil, config: :shared)
+      ivar_symbol = :"@#{name}_kredis_unique_list"
 
       define_method(name) do
         if instance_variable_defined?(ivar_symbol)
