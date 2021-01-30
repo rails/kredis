@@ -13,7 +13,7 @@ module Kredis
     end
 
     initializer "kredis.logger" do
-      Kredis.logger = Rails.logger
+      Kredis.logger = config.kredis.logger || Rails.logger
     end
 
     initializer "kredis.configurator" do
