@@ -6,6 +6,8 @@ class Person
   kredis_list :names
   kredis_unique_list :skills, limit: 2
   kredis_flag :special
+  kredis_string :address
+  kredis_integer :age
 
   def self.name
     "Person"
@@ -39,5 +41,22 @@ class AttributesTest < ActiveSupport::TestCase
 
     @person.special.remove
     assert_not @person.special?
+  end
+
+  test "string" do
+    assert_not @person.address.assigned?
+
+    @person.address.assign = "Copenhagen"
+    assert @person.address.assigned?
+    assert_equal "Copenhagen", @person.address.to_s
+
+    @person.address.clear
+    assert_not @person.address.assigned?
+  end
+
+  test "integer" do
+    @person.age.assign = 41
+    assert_equal 41, @person.age.value
+    assert_equal "41", @person.age.to_s
   end
 end

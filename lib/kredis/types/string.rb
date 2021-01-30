@@ -11,6 +11,10 @@ class Kredis::Types::String < Kredis::Proxy
     get
   end
 
+  def to_s
+    value
+  end
+
   def clear
     del
   end

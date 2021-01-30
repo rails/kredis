@@ -23,6 +23,10 @@ module Kredis::Types
     Kredis::Types::String.new configured_for(config), namespaced_key(key)
   end
 
+  def integer(key, config: :shared)
+    Kredis::Types::Integer.new configured_for(config), namespaced_key(key)
+  end
+
   def mutex(key, expires_in: nil, config: :shared)
     Mutex.new configured_for(config), namespaced_key(key), expires_in: expires_in
   end
@@ -34,4 +38,5 @@ require "kredis/types/unique_list"
 require "kredis/types/counter"
 require "kredis/types/flag"
 require "kredis/types/string"
+require "kredis/types/integer"
 require "kredis/types/mutex"
