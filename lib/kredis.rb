@@ -10,7 +10,8 @@ module Kredis
   include Connections
   include Namespace
   include Types
-  include Logger
+
+  mattr_accessor :logger
 
   extend self
 
