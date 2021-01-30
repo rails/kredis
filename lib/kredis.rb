@@ -1,4 +1,5 @@
 require "kredis/railtie"
+require "kredis/version"
 
 require "kredis/connections"
 require "kredis/namespace"
