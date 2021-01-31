@@ -15,15 +15,7 @@ module Kredis::Attributes
     end
 
     def kredis_flag(name, key: nil, config: :shared)
-      ivar_symbol = :"@#{name}_kredis_flag"
-
-      define_method(name) do
-        if instance_variable_defined?(ivar_symbol)
-          instance_variable_get(ivar_symbol)
-        else
-          instance_variable_set(ivar_symbol, Kredis.flag(kredis_key_evaluated(key) || kredis_key_for_attribute(name), config: config))
-        end
-      end
+      ivar_symbol = kredis_connection_with __method__, name, key, config: config
 
       define_method("#{name}?") do
         instance_variable_defined?(ivar_symbol) && instance_variable_get(ivar_symbol).marked?
@@ -50,6 +42,8 @@ module Kredis::Attributes
             instance_variable_set(ivar_symbol, Kredis.send(type, kredis_key_evaluated(key) || kredis_key_for_attribute(name), **options))
           end
         end
+
+        ivar_symbol
       end
   end
 
