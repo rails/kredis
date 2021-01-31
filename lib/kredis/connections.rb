@@ -1,8 +1,12 @@
 require "redis"
 
 module Kredis::Connections
-  mattr_accessor :connections, default: Hash.new
-  mattr_accessor :configurator
+  extend ActiveSupport::Concern
+
+  included do
+    mattr_accessor :connections, default: Hash.new
+    mattr_accessor :configurator
+  end
 
   def configured_for(name)
     connections[name] ||= Redis.new configurator.config_for("redis/#{name}")
