@@ -16,6 +16,10 @@ class Kredis::Migration
   end
 
   def migrate(from:, to:)
-    @redis.evalsha @copy_sha, keys: [ from, Kredis.namespaced_key(to) ]
+    to = Kredis.namespaced_key(to)
+
+    if from != to
+      @redis.evalsha @copy_sha, keys: [ from, to ]
+    end
   end
 end
