@@ -1,4 +1,5 @@
 require "test_helper"
+require "active_support/core_ext/object/inclusion"
 
 class SetTest < ActiveSupport::TestCase
   setup { @set = Kredis.set "myset" }
@@ -29,10 +30,12 @@ class SetTest < ActiveSupport::TestCase
     assert_equal %w[ 1 2 3 4 ], @set.elements
   end
 
-  test "includes" do
+  test "include" do
     @set.add(%w[ 1 2 3 4 ])
-    assert @set.includes?("1")
-    assert_not @set.includes?("5")
+    assert @set.include?("1")
+    assert_not @set.include?("5")
+
+    assert "1".in?(@set)
   end
 
   test "size" do

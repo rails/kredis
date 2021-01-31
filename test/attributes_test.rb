@@ -158,7 +158,7 @@ class AttributesTest < ActiveSupport::TestCase
     @person.vacations << "berlin"
     assert_equal %w[ paris berlin ].sort, @person.vacations.elements.sort
 
-    assert @person.vacations.includes?("berlin")
+    assert @person.vacations.include?("berlin")
     assert_equal 2, @person.vacations.size
 
     @person.vacations.remove("berlin")
