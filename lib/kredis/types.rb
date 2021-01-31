@@ -19,6 +19,10 @@ module Kredis::Types
     Flag.new configured_for(config), namespaced_key(key)
   end
 
+  def enum(key, values:, default:, config: :shared)
+    Enum.new configured_for(config), namespaced_key(key), values: values, default: default
+  end
+
   def list(key, config: :shared)
     List.new configured_for(config), namespaced_key(key)
   end
@@ -42,6 +46,7 @@ require "kredis/types/string"
 require "kredis/types/integer"
 require "kredis/types/counter"
 require "kredis/types/flag"
+require "kredis/types/enum"
 require "kredis/types/list"
 require "kredis/types/unique_list"
 require "kredis/types/slots"

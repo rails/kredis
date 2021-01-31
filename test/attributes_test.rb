@@ -12,6 +12,7 @@ class Person
   kredis_flag :special
   kredis_string :address
   kredis_integer :age
+  kredis_enum :morning, values: %w[ bright blue black ], default: "bright"
 
   kredis_slot :attention
   kredis_slots :meetings, available: 3
@@ -132,5 +133,20 @@ class AttributesTest < ActiveSupport::TestCase
 
     3.times { @person.meetings.reserve }
     assert_equal "did not run", (@person.meetings.reserve { "ran!" } || "did not run")
+  end
+
+  test "enum" do
+    assert @person.morning.bright?
+
+    assert @person.morning.value = "blue"
+    assert @person.morning.blue?
+
+    assert_not @person.morning.black?
+
+    assert @person.morning.value = "nonsense"
+    assert @person.morning.blue?
+
+    @person.morning.reset
+    assert @person.morning.bright?
   end
 end
