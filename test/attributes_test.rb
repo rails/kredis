@@ -153,10 +153,10 @@ class AttributesTest < ActiveSupport::TestCase
   test "set" do
     @person.vacations.add "paris"
     @person.vacations.add "paris"
-    assert_equal [ "paris" ], @person.vacations.elements
+    assert_equal [ "paris" ], @person.vacations.to_a
 
     @person.vacations << "berlin"
-    assert_equal %w[ paris berlin ].sort, @person.vacations.elements.sort
+    assert_equal %w[ paris berlin ].sort, @person.vacations.members.sort
 
     assert @person.vacations.include?("berlin")
     assert_equal 2, @person.vacations.size

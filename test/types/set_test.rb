@@ -8,7 +8,7 @@ class SetTest < ActiveSupport::TestCase
     @set.add(%w[ 1 2 3 ])
     @set << 4
     @set << 4
-    assert_equal %w[ 1 2 3 4 ], @set.elements
+    assert_equal %w[ 1 2 3 4 ], @set.members
   end
 
   test "add nothing" do
@@ -21,19 +21,19 @@ class SetTest < ActiveSupport::TestCase
     @set.add(%w[ 1 2 3 4 ])
     @set.remove(%w[ 2 3 ])
     @set.remove("1")
-    assert_equal %w[ 4 ], @set.elements
+    assert_equal %w[ 4 ], @set.members
   end
 
   test "remove nothing" do
     @set.add(%w[ 1 2 3 4 ])
     @set.remove([])
-    assert_equal %w[ 1 2 3 4 ], @set.elements
+    assert_equal %w[ 1 2 3 4 ], @set.members
   end
 
   test "replace" do
     @set.add(%w[ 1 2 3 4 ])
     @set.replace(%w[ 5 6 ])
-    assert_equal %w[ 5 6 ], @set.elements
+    assert_equal %w[ 5 6 ], @set.members
   end
 
   test "include" do
@@ -60,6 +60,6 @@ class SetTest < ActiveSupport::TestCase
   test "clear" do
     @set.add("1")
     @set.clear
-    assert_equal [], @set.elements
+    assert_equal [], @set.members
   end
 end

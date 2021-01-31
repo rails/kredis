@@ -1,27 +1,27 @@
 class Kredis::Types::Set < Kredis::Types::Proxy
-  def elements
+  def members
     smembers
   end
-  alias to_a elements
+  alias to_a members
 
-  def add(elements)
-    sadd elements if Array(elements).any?
+  def add(members)
+    sadd members if Array(members).any?
   end
   alias << add
 
-  def remove(elements)
-    srem elements if Array(elements).any?
+  def remove(members)
+    srem members if Array(members).any?
   end
 
-  def replace(elements)
+  def replace(members)
     multi do
       del
-      add elements
+      add members
     end
   end
 
-  def include?(element)
-    sismember(element)
+  def include?(member)
+    sismember(member)
   end
 
   def size
