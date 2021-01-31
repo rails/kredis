@@ -12,7 +12,7 @@ class ListTest < ActiveSupport::TestCase
   test "append nothing" do
     @list.append(%w[ 1 2 3 ])
     @list.append([])
-    assert_equal %w[ 1 2 3 ], @list.elements
+    assert_equal %w[ 1 2 3 ], @list.to_a
   end
 
   test "prepend" do

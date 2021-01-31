@@ -2,6 +2,7 @@ class Kredis::Types::List < Kredis::Types::Proxy
   def elements
     lrange(0, -1) || []
   end
+  alias to_a elements
 
   def remove(elements)
     Array(elements).each { |element| lrem 0, element }

@@ -2,6 +2,7 @@ class Kredis::Types::Set < Kredis::Types::Proxy
   def elements
     smembers
   end
+  alias to_a elements
 
   def add(elements)
     sadd elements if Array(elements).any?

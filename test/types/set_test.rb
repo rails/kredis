@@ -13,7 +13,7 @@ class SetTest < ActiveSupport::TestCase
   test "add nothing" do
     @set.add(%w[ 1 2 3 ])
     @set.add([])
-    assert_equal %w[ 1 2 3 ], @set.elements
+    assert_equal %w[ 1 2 3 ], @set.to_a
   end
 
   test "remove" do
