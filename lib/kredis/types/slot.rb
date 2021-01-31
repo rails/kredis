@@ -2,11 +2,11 @@
 class Kredis::Types::Slot < Kredis::Types::Proxy
   class NoAvailableSlotsError < StandardError; end
 
-  attr_accessor :max, :max_acquire_attempts
+  attr_accessor :available_slot_count, :max_acquire_attempts
 
   def initialize(*)
     super
-    @max_acquire_attempts ||= max / 5
+    @max_acquire_attempts ||= available_slot_count / 5
     @original_key = key
   end
 
@@ -33,7 +33,7 @@ class Kredis::Types::Slot < Kredis::Types::Proxy
 
   private
     def slot_keys
-      max.times { |index| "#{@original_key}/slot/#{index}" }
+      available_slot_count.times { |index| "#{@original_key}/slot/#{index}" }
     end
 
     def slot_id
