@@ -12,6 +12,11 @@ jobs:
         with:
           ruby-version: 2.7.x
 
+      - name: Set up Redis 4
+        uses: supercharge/redis-github-action@1.2.0
+        with:
+          redis-version: 4
+
       - name: Cache gem dependencies
         uses: actions/cache@v1
         with:
