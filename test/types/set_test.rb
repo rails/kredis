@@ -47,4 +47,10 @@ class SetTest < ActiveSupport::TestCase
     @set.add(%w[ 1 2 3 4 ])
     assert @set.take.in? %w[ 1 2 3 4 ]
   end
+
+  test "clear" do
+    @set.add("1")
+    @set.clear
+    assert_equal [], @set.elements
+  end
 end

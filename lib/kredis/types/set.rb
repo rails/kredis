@@ -23,4 +23,8 @@ class Kredis::Types::Set < Kredis::Types::Proxy
   def take
     spop
   end
+
+  def clear
+    del
+  end
 end
