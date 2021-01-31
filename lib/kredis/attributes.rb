@@ -26,6 +26,10 @@ module Kredis::Attributes
       kredis_connection_with __method__, name, key, values: values, default: default, config: config
     end
 
+    def kredis_json(name, key: nil, config: :shared)
+      kredis_connection_with __method__, name, key, config: config
+    end
+
     def kredis_list(name, key: nil, config: :shared)
       kredis_connection_with __method__, name, key, config: config
     end

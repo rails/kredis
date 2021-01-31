@@ -23,6 +23,10 @@ module Kredis::Types
     Enum.new configured_for(config), namespaced_key(key), values: values, default: default
   end
 
+  def json(key, config: :shared)
+    Json.new configured_for(config), namespaced_key(key)
+  end
+
   def list(key, config: :shared)
     List.new configured_for(config), namespaced_key(key)
   end
@@ -51,6 +55,7 @@ require "kredis/types/integer"
 require "kredis/types/counter"
 require "kredis/types/flag"
 require "kredis/types/enum"
+require "kredis/types/json"
 require "kredis/types/list"
 require "kredis/types/unique_list"
 require "kredis/types/set"

@@ -16,6 +16,7 @@ class Person
   kredis_slot :attention
   kredis_slots :meetings, available: 3
   kredis_set :vacations
+  kredis_json :settings
 
   def self.name
     "Person"
@@ -163,5 +164,10 @@ class AttributesTest < ActiveSupport::TestCase
 
     @person.vacations.remove("berlin")
     assert_equal "paris", @person.vacations.take
+  end
+
+  test "json" do
+    @person.settings.value = { "color" => "red", "count" => 2 }
+    assert_equal({ "color" => "red", "count" => 2 }, @person.settings.value)
   end
 end
