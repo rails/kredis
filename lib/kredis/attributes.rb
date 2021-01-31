@@ -3,39 +3,15 @@ module Kredis::Attributes
 
   class_methods do
     def kredis_proxy(name, key: nil, config: :shared)
-      ivar_symbol = :"@#{name}_kredis_proxy"
-
-      define_method(name) do
-        if instance_variable_defined?(ivar_symbol)
-          instance_variable_get(ivar_symbol)
-        else
-          instance_variable_set(ivar_symbol, Kredis.proxy(kredis_key_evaluated(key) || kredis_key_for_attribute(name), config: config))
-        end
-      end
+      kredis_connection_with __method__, name, key, config: config
     end
 
     def kredis_list(name, key: nil, config: :shared)
-      ivar_symbol = :"@#{name}_kredis_list"
-
-      define_method(name) do
-        if instance_variable_defined?(ivar_symbol)
-          instance_variable_get(ivar_symbol)
-        else
-          instance_variable_set(ivar_symbol, Kredis.list(kredis_key_evaluated(key) || kredis_key_for_attribute(name), config: config))
-        end
-      end
+      kredis_connection_with __method__, name, key, config: config
     end
 
     def kredis_unique_list(name, limit: nil, key: nil, config: :shared)
-      ivar_symbol = :"@#{name}_kredis_unique_list"
-
-      define_method(name) do
-        if instance_variable_defined?(ivar_symbol)
-          instance_variable_get(ivar_symbol)
-        else
-          instance_variable_set(ivar_symbol, Kredis.unique_list(kredis_key_evaluated(key) || kredis_key_for_attribute(name), limit: limit, config: config))
-        end
-      end
+      kredis_connection_with __method__, name, key, limit: limit, config: config
     end
 
     def kredis_flag(name, key: nil, config: :shared)
@@ -55,28 +31,26 @@ module Kredis::Attributes
     end
 
     def kredis_string(name, key: nil, config: :shared)
-      ivar_symbol = :"@#{name}_kredis_string"
-
-      define_method(name) do
-        if instance_variable_defined?(ivar_symbol)
-          instance_variable_get(ivar_symbol)
-        else
-          instance_variable_set(ivar_symbol, Kredis.string(kredis_key_evaluated(key) || kredis_key_for_attribute(name), config: config))
-        end
-      end
+      kredis_connection_with __method__, name, key, config: config
     end
 
     def kredis_integer(name, key: nil, config: :shared)
-      ivar_symbol = :"@#{name}_kredis_integer"
+      kredis_connection_with __method__, name, key, config: config
+    end
 
-      define_method(name) do
-        if instance_variable_defined?(ivar_symbol)
-          instance_variable_get(ivar_symbol)
-        else
-          instance_variable_set(ivar_symbol, Kredis.integer(kredis_key_evaluated(key) || kredis_key_for_attribute(name), config: config))
+    private
+      def kredis_connection_with(method, name, key, **options)
+        ivar_symbol = :"@#{name}_#{method}"
+        type = method.to_s.sub("kredis_", "")
+
+        define_method(name) do
+          if instance_variable_defined?(ivar_symbol)
+            instance_variable_get(ivar_symbol)
+          else
+            instance_variable_set(ivar_symbol, Kredis.send(type, kredis_key_evaluated(key) || kredis_key_for_attribute(name), **options))
+          end
         end
       end
-    end
   end
 
   private
