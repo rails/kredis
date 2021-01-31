@@ -5,17 +5,23 @@ class MutexTest < ActiveSupport::TestCase
 
   test "locking" do
     @mutex.lock
-    assert @mutex.locked?
+    assert_threaded { assert @mutex.locked? }
 
     @mutex.unlock
-    assert_not @mutex.locked?
+    assert_threaded { assert_not @mutex.locked? }
   end
 
   test "synchronize" do
     @mutex.synchronize do
-      assert @mutex.locked?
+      assert_threaded { assert @mutex.locked? }
     end
 
-    assert_not @mutex.locked?
+    assert_threaded { assert_not @mutex.locked? }
   end
+
+  private
+    def assert_threaded(&block)
+      yield # Run on current thread.
+      Thread.new(&block).join
+    end
 end
