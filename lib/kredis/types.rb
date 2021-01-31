@@ -38,7 +38,6 @@ end
 
 require "kredis/types/proxy"
 
-require "kredis/types/value"
 require "kredis/types/string"
 require "kredis/types/integer"
 require "kredis/types/counter"

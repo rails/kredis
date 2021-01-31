@@ -1,5 +1,9 @@
-class Kredis::Types::Integer < Kredis::Types::Value
+class Kredis::Types::Integer < Kredis::Types::String
   def value
-    super&.to_i
+    get&.to_i
+  end
+
+  def to_s
+    value.to_s
   end
 end
