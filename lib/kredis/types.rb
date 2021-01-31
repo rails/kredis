@@ -3,12 +3,12 @@ module Kredis::Types
     Proxy.new configured_for(config), namespaced_key(key)
   end
 
-  def list(key, config: :shared)
-    List.new configured_for(config), namespaced_key(key)
+  def string(key, config: :shared)
+    String.new configured_for(config), namespaced_key(key)
   end
 
-  def unique_list(key, limit: nil, config: :shared)
-    UniqueList.new configured_for(config), namespaced_key(key), limit: limit
+  def integer(key, config: :shared)
+    Integer.new configured_for(config), namespaced_key(key)
   end
 
   def counter(key, expires_in: nil, config: :shared)
@@ -19,12 +19,12 @@ module Kredis::Types
     Flag.new configured_for(config), namespaced_key(key)
   end
 
-  def string(key, config: :shared)
-    String.new configured_for(config), namespaced_key(key)
+  def list(key, config: :shared)
+    List.new configured_for(config), namespaced_key(key)
   end
 
-  def integer(key, config: :shared)
-    Integer.new configured_for(config), namespaced_key(key)
+  def unique_list(key, limit: nil, config: :shared)
+    UniqueList.new configured_for(config), namespaced_key(key), limit: limit
   end
 
   def mutex(key, expires_in: nil, config: :shared)
@@ -37,9 +37,8 @@ require "kredis/types/proxy"
 require "kredis/types/value"
 require "kredis/types/string"
 require "kredis/types/integer"
-
-require "kredis/types/list"
-require "kredis/types/unique_list"
 require "kredis/types/counter"
 require "kredis/types/flag"
+require "kredis/types/list"
+require "kredis/types/unique_list"
 require "kredis/types/mutex"
