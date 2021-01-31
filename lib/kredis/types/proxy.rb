@@ -1,4 +1,6 @@
 class Kredis::Types::Proxy
+  attr_accessor :redis, :key
+
   def initialize(redis, key, **options)
     @redis, @key = redis, key
 
@@ -8,12 +10,12 @@ class Kredis::Types::Proxy
   end
 
   def multi(...)
-    @redis.multi(...)
+    redis.multi(...)
   end
 
   def method_missing(method, *args, **kwargs)
     Kredis.logger&.debug log_message(method, *args, **kwargs)
-    @redis.public_send method, @key, *args, **kwargs
+    redis.public_send method, key, *args, **kwargs
   end
 
   private
@@ -22,6 +24,6 @@ class Kredis::Types::Proxy
       kwargs    = kwargs.compact_blank.presence
       type_name = self.class.name.split("::").last
 
-      "[Kredis #{type_name}] #{method.upcase} #{@key} #{args&.inspect} #{kwargs&.inspect}".chomp
+      "[Kredis #{type_name}] #{method.upcase} #{key} #{args&.inspect} #{kwargs&.inspect}".chomp
     end
 end
