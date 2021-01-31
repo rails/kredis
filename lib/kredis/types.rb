@@ -30,6 +30,14 @@ module Kredis::Types
   def mutex(key, expires_in: nil, config: :shared)
     Mutex.new configured_for(config), namespaced_key(key), expires_in: expires_in
   end
+
+  def slot(key, config: :shared)
+    Slots.new configured_for(config), namespaced_key(key), available: 1
+  end
+
+  def slots(key, available:, config: :shared)
+    Slots.new configured_for(config), namespaced_key(key), available: available
+  end
 end
 
 require "kredis/types/proxy"
@@ -42,3 +50,4 @@ require "kredis/types/flag"
 require "kredis/types/list"
 require "kredis/types/unique_list"
 require "kredis/types/mutex"
+require "kredis/types/slots"

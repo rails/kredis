@@ -13,6 +13,9 @@ class Person
   kredis_string :address
   kredis_integer :age
 
+  kredis_slot :attention
+  kredis_slots :meetings, available: 3
+
   def self.name
     "Person"
   end
@@ -82,5 +85,52 @@ class AttributesTest < ActiveSupport::TestCase
     @person.age.assign = 41
     assert_equal 41, @person.age.value
     assert_equal "41", @person.age.to_s
+  end
+
+  test "slot" do
+    assert @person.attention.reserve
+    assert_not @person.attention.available?
+    assert_not @person.attention.reserve
+
+    @person.attention.release
+    assert @person.attention.available?
+
+    used_attention = false
+
+    @person.attention.reserve do
+      used_attention = true
+    end
+
+    assert used_attention
+
+    @person.attention.reserve
+
+    assert_equal "did not run", (@person.attention.reserve { "ran!" } || "did not run")
+  end
+
+  test "slots" do
+    assert @person.meetings.reserve
+    assert @person.meetings.available?
+
+    assert @person.meetings.reserve
+    assert @person.meetings.reserve
+    assert_not @person.meetings.available?
+    assert_not @person.meetings.reserve
+
+    @person.meetings.release
+    assert @person.meetings.available?
+
+    used_meeting = false
+
+    @person.meetings.reserve do
+      used_meeting = true
+    end
+
+    assert used_meeting
+
+    @person.meetings.reset
+
+    3.times { @person.meetings.reserve }
+    assert_equal "did not run", (@person.meetings.reserve { "ran!" } || "did not run")
   end
 end

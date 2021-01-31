@@ -30,6 +30,14 @@ module Kredis::Attributes
       kredis_connection_with __method__, name, key, limit: limit, config: config
     end
 
+    def kredis_slot(name, key: nil, config: :shared)
+      kredis_connection_with __method__, name, key, config: config
+    end
+
+    def kredis_slots(name, available:, key: nil, config: :shared)
+      kredis_connection_with __method__, name, key, available: available, config: config
+    end
+
     private
       def kredis_connection_with(method, name, key, **options)
         ivar_symbol = :"@#{name}_#{method}"
