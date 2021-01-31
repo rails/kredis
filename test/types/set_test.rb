@@ -30,6 +30,12 @@ class SetTest < ActiveSupport::TestCase
     assert_equal %w[ 1 2 3 4 ], @set.elements
   end
 
+  test "replace" do
+    @set.add(%w[ 1 2 3 4 ])
+    @set.replace(%w[ 5 6 ])
+    assert_equal %w[ 5 6 ], @set.elements
+  end
+
   test "include" do
     @set.add(%w[ 1 2 3 4 ])
     assert @set.include?("1")

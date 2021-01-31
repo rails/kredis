@@ -13,6 +13,13 @@ class Kredis::Types::Set < Kredis::Types::Proxy
     srem elements if Array(elements).any?
   end
 
+  def replace(elements)
+    multi do
+      del
+      add elements
+    end
+  end
+
   def include?(element)
     sismember(element)
   end
