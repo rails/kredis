@@ -27,10 +27,6 @@ module Kredis::Types
     UniqueList.new configured_for(config), namespaced_key(key), limit: limit
   end
 
-  def mutex(key, expires_in: nil, config: :shared)
-    Mutex.new configured_for(config), namespaced_key(key), expires_in: expires_in
-  end
-
   def slot(key, config: :shared)
     Slots.new configured_for(config), namespaced_key(key), available: 1
   end
@@ -49,5 +45,4 @@ require "kredis/types/counter"
 require "kredis/types/flag"
 require "kredis/types/list"
 require "kredis/types/unique_list"
-require "kredis/types/mutex"
 require "kredis/types/slots"
