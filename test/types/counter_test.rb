@@ -27,7 +27,12 @@ class CounterTest < ActiveSupport::TestCase
     @counter.increment
     assert_equal 1, @counter.value
 
-    sleep 1.1.seconds
+    sleep 0.5.seconds
+
+    @counter.increment
+    assert_equal 2, @counter.value
+
+    sleep 0.6.seconds
 
     assert_equal 0, @counter.value
   end
