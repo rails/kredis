@@ -12,7 +12,16 @@ class Kredis::Types::Proxy
   end
 
   def method_missing(method, *args, **kwargs)
-    Kredis.logger&.debug "[Kredis] #{method} #{@key} #{args.inspect if args.compact_blank.any?} #{kwargs.inspect if kwargs.compact_blank.any?}".chomp
+    Kredis.logger&.debug log_message(method, *args, **kwargs)
     @redis.public_send method, @key, *args, **kwargs
   end
+
+  private
+    def log_message(method, *args, **kwargs)
+      args      = args.flatten.compact_blank.presence
+      kwargs    = kwargs.compact_blank.presence
+      type_name = self.class.name.split("::").last
+
+      "[Kredis #{type_name}] #{method.upcase} #{@key} #{args&.inspect} #{kwargs&.inspect}".chomp
+    end
 end
