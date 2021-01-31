@@ -11,23 +11,12 @@ jobs:
         uses: actions/setup-ruby@v1
         with:
           ruby-version: 2.7.x
+          bundler-cache: true
 
       - name: Set up Redis 4
         uses: supercharge/redis-github-action@1.2.0
         with:
           redis-version: 4
-
-      - uses: actions/cache@v2
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-
-
-      - name: Bundle install
-        run: |
-          bundle config path vendor/bundle
-          gem install bundler --no-document && bundle install --jobs 4 --retry 3
 
       - name: Run tests
         run: bin/test
