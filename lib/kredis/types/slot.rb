@@ -1,16 +1,24 @@
 # For distributed locks where you want a `max` of available units of work to happen concurrently.
 class Kredis::Types::Slot < Kredis::Types::Proxy
-  attr_accessor :max
+  class NoAvailableSlotsError < StandardError; end
+
+  attr_accessor :max, :max_acquire_attempts
 
   def initialize(*)
     super
+    @max_acquire_attempts ||= max / 5
     @original_key = key
   end
 
   def acquire
+    attempts = 0
+
     @redis.exists(*slot_keys).find do |key|
       if @redis.set key, slot_id, nx: true
         @key = key
+      else
+        attempts += 1
+        raise NoAvailableSlotsError unless attempts < max_acquire_attempts
       end
     end
   end
