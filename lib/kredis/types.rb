@@ -1,6 +1,6 @@
 module Kredis::Types
   def proxy(key, config: :shared)
-    Kredis::Types::Proxy.new configured_for(config), namespaced_key(key)
+    Proxy.new configured_for(config), namespaced_key(key)
   end
 
   def list(key, config: :shared)
@@ -20,11 +20,11 @@ module Kredis::Types
   end
 
   def string(key, config: :shared)
-    Kredis::Types::String.new configured_for(config), namespaced_key(key)
+    String.new configured_for(config), namespaced_key(key)
   end
 
   def integer(key, config: :shared)
-    Kredis::Types::Integer.new configured_for(config), namespaced_key(key)
+    Integer.new configured_for(config), namespaced_key(key)
   end
 
   def mutex(key, expires_in: nil, config: :shared)
