@@ -1,10 +1,6 @@
 class Kredis::Types::String < Kredis::Types::Proxy
-  def assign=(value)
+  def value=(value)
     set value
-  end
-
-  def assigned?
-    exists?
   end
 
   def value
@@ -13,6 +9,10 @@ class Kredis::Types::String < Kredis::Types::Proxy
 
   def to_s
     value.to_s
+  end
+
+  def assigned?
+    exists?
   end
 
   def clear

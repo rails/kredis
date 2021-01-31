@@ -74,7 +74,7 @@ class AttributesTest < ActiveSupport::TestCase
   test "string" do
     assert_not @person.address.assigned?
 
-    @person.address.assign = "Copenhagen"
+    @person.address.value = "Copenhagen"
     assert @person.address.assigned?
     assert_equal "Copenhagen", @person.address.to_s
 
@@ -83,7 +83,7 @@ class AttributesTest < ActiveSupport::TestCase
   end
 
   test "integer" do
-    @person.age.assign = 41
+    @person.age.value = 41
     assert_equal 41, @person.age.value
     assert_equal "41", @person.age.to_s
   end

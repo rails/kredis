@@ -6,19 +6,19 @@ class StringTest < ActiveSupport::TestCase
   test "assign" do
     assert_nil @string.value
 
-    @string.assign = "Something!"
+    @string.value = "Something!"
     assert_equal "Something!", @string.value
   end
 
   test "assigned?" do
     assert_not @string.assigned?
 
-    @string.assign = "Something!"
+    @string.value = "Something!"
     assert @string.assigned?
   end
 
   test "clear" do
-    @string.assign = "Something!"
+    @string.value = "Something!"
     assert @string.assigned?
 
     @string.clear
