@@ -4,7 +4,7 @@ require "kredis/migration"
 class MigrationTest < ActiveSupport::TestCase
   setup do
     @proxy = Kredis.string "new_proxy"
-    @migration = Kredis::Migration.configured_for(:shared)
+    @migration = Kredis::Migration.new
   end
 
   test "migrate_all" do

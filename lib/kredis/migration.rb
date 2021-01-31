@@ -1,11 +1,7 @@
 class Kredis::Migration
-  def self.configured_for(config)
-    new Kredis.configured_for config
-  end
-
-  def initialize(redis)
-    @redis = redis
-    @copy_sha = redis.script "load", "redis.call('SETNX', KEYS[2], redis.call('GET', KEYS[1])); return 1;"
+  def initialize(config = :shared)
+    @redis = Kredis.configured_for config
+    @copy_sha = @redis.script "load", "redis.call('SETNX', KEYS[2], redis.call('GET', KEYS[1])); return 1;"
   end
 
   def migrate_all(key_matcher)
