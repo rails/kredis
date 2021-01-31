@@ -1,6 +1,10 @@
 class Kredis::Types::Proxy
-  def initialize(redis, key)
+  def initialize(redis, key, **options)
     @redis, @key = redis, key
+
+    options.each do |key, value|
+      send("#{key}=", value)
+    end
   end
 
   def multi(...)

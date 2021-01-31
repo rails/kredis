@@ -1,11 +1,8 @@
 class Kredis::Types::Mutex < Kredis::Types::Proxy
-  def initialize(redis, key, expires_in: nil)
-    @expires_in = expires_in
-    super redis, key
-  end
+  attr_accessor :expires_in
 
   def lock
-    set 1, ex: @expires_in
+    set 1, ex: expires_in
   end
 
   def unlock
