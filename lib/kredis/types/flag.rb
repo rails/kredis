@@ -1,6 +1,6 @@
 class Kredis::Types::Flag < Kredis::Types::Proxy
-  def mark
-    set 1
+  def mark(expires_in: nil)
+    set 1, ex: expires_in
   end
 
   def marked?

@@ -12,4 +12,15 @@ class FlagTest < ActiveSupport::TestCase
     @flag.remove
     assert_not @flag.marked?
   end
+
+  test "expiring mark" do
+    @flag.mark(expires_in: 1.second)
+    assert @flag.marked?
+
+    sleep 0.5.seconds
+    assert @flag.marked?
+
+    sleep 0.6.seconds
+    assert_not @flag.marked?
+  end
 end
