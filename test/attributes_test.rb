@@ -13,9 +13,9 @@ class Person
   kredis_string :address
   kredis_integer :age
   kredis_enum :morning, values: %w[ bright blue black ], default: "bright"
-
   kredis_slot :attention
   kredis_slots :meetings, available: 3
+  kredis_set :vacations
 
   def self.name
     "Person"
@@ -148,5 +148,20 @@ class AttributesTest < ActiveSupport::TestCase
 
     @person.morning.reset
     assert @person.morning.bright?
+  end
+
+  test "set" do
+    @person.vacations.add "paris"
+    @person.vacations.add "paris"
+    assert_equal [ "paris" ], @person.vacations.elements
+
+    @person.vacations << "berlin"
+    assert_equal %w[ paris berlin ].sort, @person.vacations.elements.sort
+
+    assert @person.vacations.includes?("berlin")
+    assert_equal 2, @person.vacations.size
+
+    @person.vacations.remove("berlin")
+    assert_equal "paris", @person.vacations.take
   end
 end

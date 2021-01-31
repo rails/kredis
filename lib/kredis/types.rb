@@ -31,6 +31,10 @@ module Kredis::Types
     UniqueList.new configured_for(config), namespaced_key(key), limit: limit
   end
 
+  def set(key, config: :shared)
+    Set.new configured_for(config), namespaced_key(key)
+  end
+
   def slot(key, config: :shared)
     Slots.new configured_for(config), namespaced_key(key), available: 1
   end
@@ -49,4 +53,5 @@ require "kredis/types/flag"
 require "kredis/types/enum"
 require "kredis/types/list"
 require "kredis/types/unique_list"
+require "kredis/types/set"
 require "kredis/types/slots"
