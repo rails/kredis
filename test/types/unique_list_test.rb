@@ -7,6 +7,9 @@ class UniqueListTest < ActiveSupport::TestCase
     @list.append(%w[ 1 2 3 ])
     @list.append(%w[ 1 2 3 4 ])
     assert_equal %w[ 1 2 3 4 ], @list.elements
+
+    @list << "5"
+    assert_equal %w[ 1 2 3 4 5 ], @list.elements
   end
 
   test "prepend" do

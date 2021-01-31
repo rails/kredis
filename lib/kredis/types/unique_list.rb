@@ -9,6 +9,7 @@ class Kredis::Types::UniqueList < Kredis::Types::List
   def append(elements)
     with_trimming_of(elements, from: limit_index) { super }
   end
+  alias << append
 
   private
     def with_trimming_of(elements, from: 0, to: -1)
