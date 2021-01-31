@@ -15,6 +15,8 @@ class CounterTest < ActiveSupport::TestCase
   end
 
   test "increment by 2" do
+    assert_equal 0, @counter.value
+
     @counter.increment by: 2
     assert_equal 2, @counter.value
   end
