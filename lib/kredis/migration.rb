@@ -10,6 +10,8 @@ class Kredis::Migration
 
   def migrate_all(key_matcher)
     keys = @redis.keys(key_matcher)
+    log_migration "Found #{keys.size} keys using #{key_matcher}"
+
     @redis.multi do
       keys.each { |key| migrate from: key, to: yield(key) }
     end
@@ -19,7 +21,15 @@ class Kredis::Migration
     to = Kredis.namespaced_key(to)
 
     if from != to
+      log_migration "Migrating key #{from} to #{to}"
       @redis.evalsha @copy_sha, keys: [ from, to ]
+    else
+      log_migration "Skipping unaltered migration key #{from}"
     end
   end
+
+  private
+    def log_migration(message)
+      Kredis.logger&.debug "[Kredis Migration] #{message}"
+    end
 end
