@@ -2,11 +2,11 @@ class Kredis::Types::Mutex < Kredis::Types::Proxy
   attr_accessor :expires_in
 
   def lock
-    set 1, ex: expires_in
+    set lock_id, ex: expires_in, nx: true
   end
 
   def unlock
-    del
+    del if lock_acquired?
   end
 
   def locked?
@@ -14,9 +14,17 @@ class Kredis::Types::Mutex < Kredis::Types::Proxy
   end
 
   def synchronize
-    lock
-    yield
+    yield if lock && lock_acquired?
   ensure
     unlock
   end
+
+  private
+    def lock_acquired?
+      get&.to_i == lock_id
+    end
+
+    def lock_id
+      @lock_id ||= rand(1_000_000)
+    end
 end

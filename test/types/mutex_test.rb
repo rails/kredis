@@ -19,6 +19,21 @@ class MutexTest < ActiveSupport::TestCase
     assert_threaded { assert_not @mutex.locked? }
   end
 
+  test "locked by another concurrent lock" do
+    @mutex.lock
+    assert @mutex.locked?
+
+    other_mutex = Kredis.mutex "mymutex"
+    assert_not other_mutex.lock, "someone without the lock can't lock"
+    assert other_mutex.locked?
+
+    assert_nil other_mutex.unlock, "someone without the lock can't unlock"
+    @mutex.unlock
+
+    assert_not @mutex.locked?
+    assert_not other_mutex.locked?
+  end
+
   private
     def assert_threaded(&block)
       yield # Run on current thread.
