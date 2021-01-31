@@ -29,6 +29,6 @@ class Kredis::Types::Slot < Kredis::Types::Proxy
     end
 
     def slot_id
-      (rand(1_000) % max).to_s
+      @slot_id ||= rand(1_000).to_s
     end
 end
