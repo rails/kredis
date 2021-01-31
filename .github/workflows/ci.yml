@@ -21,6 +21,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          gem install bundler && bundle install --jobs 4 --retry 3 --path vendor/bundle
+          bundle config set --local path "vendor/bundle"
+          gem install bundler --no-document && bundle install --jobs 4 --retry 3
       - name: Run tests
         run: bin/test
