@@ -14,4 +14,5 @@ class Kredis::Types::List < Kredis::Types::Proxy
   def append(elements)
     rpush elements if Array(elements).any?
   end
+  alias << append
 end

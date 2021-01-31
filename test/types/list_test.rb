@@ -5,10 +5,10 @@ class ListTest < ActiveSupport::TestCase
 
   test "append" do
     @list.append(%w[ 1 2 3 ])
-    @list.append(4)
+    @list << 4
     assert_equal %w[ 1 2 3 4 ], @list.elements
   end
-  
+
   test "append nothing" do
     @list.append(%w[ 1 2 3 ])
     @list.append([])
