@@ -6,12 +6,12 @@ module Kredis::Attributes
       kredis_connection_with __method__, name, key, config: config
     end
 
-    def kredis_list(name, key: nil, config: :shared)
+    def kredis_string(name, key: nil, config: :shared)
       kredis_connection_with __method__, name, key, config: config
     end
 
-    def kredis_unique_list(name, limit: nil, key: nil, config: :shared)
-      kredis_connection_with __method__, name, key, limit: limit, config: config
+    def kredis_integer(name, key: nil, config: :shared)
+      kredis_connection_with __method__, name, key, config: config
     end
 
     def kredis_flag(name, key: nil, config: :shared)
@@ -22,12 +22,12 @@ module Kredis::Attributes
       end
     end
 
-    def kredis_string(name, key: nil, config: :shared)
+    def kredis_list(name, key: nil, config: :shared)
       kredis_connection_with __method__, name, key, config: config
     end
 
-    def kredis_integer(name, key: nil, config: :shared)
-      kredis_connection_with __method__, name, key, config: config
+    def kredis_unique_list(name, limit: nil, key: nil, config: :shared)
+      kredis_connection_with __method__, name, key, limit: limit, config: config
     end
 
     private
