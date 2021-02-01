@@ -4,7 +4,7 @@ class Kredis::Types::Set < Kredis::Types::Proxying
   attr_accessor :typed
 
   def members
-    strings_to_types(smembers || [], typed)
+    strings_to_types(smembers || [], typed).sort
   end
   alias to_a members
 
