@@ -17,7 +17,10 @@ class Kredis::Migration
     log_migration "Found #{keys.size} keys using #{key_matcher}"
 
     @redis.multi do
-      keys.each { |key| migrate from: key, to: yield(key) }
+      keys.each do |key|
+        ids = key.scan(/\d+/).map(&:to_i)
+        migrate from: key, to: yield(key, *ids)
+      end
     end
   end
 

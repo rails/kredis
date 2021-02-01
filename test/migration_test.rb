@@ -37,4 +37,13 @@ class MigrationTest < ActiveSupport::TestCase
   ensure
     Kredis.namespace = nil
   end
+
+  test "migrate with automatic id extraction" do
+    Kredis.proxy("mykey:1").set "hey"
+
+    Kredis::Migration.migrate_all "mykey:*" do |key, id|
+      assert_equal 1, id
+      key
+    end
+  end
 end
