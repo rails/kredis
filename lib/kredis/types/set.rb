@@ -1,4 +1,6 @@
-class Kredis::Types::Set < Kredis::Types::Proxy
+class Kredis::Types::Set < Kredis::Types::Proxying
+  proxying :smembers, :sadd, :srem, :multi, :del, :sismember, :scard, :spop
+
   attr_accessor :typed
 
   def members

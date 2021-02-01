@@ -1,5 +1,7 @@
-class Kredis::Types::Slots < Kredis::Types::Proxy
+class Kredis::Types::Slots < Kredis::Types::Proxying
   class NotAvailable < StandardError; end
+
+  proxying :incr, :decr, :get, :del
 
   attr_accessor :available
 

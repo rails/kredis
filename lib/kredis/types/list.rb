@@ -1,4 +1,6 @@
-class Kredis::Types::List < Kredis::Types::Proxy
+class Kredis::Types::List < Kredis::Types::Proxying
+  proxying :lrange, :lrem, :lpush, :rpush
+
   attr_accessor :typed
 
   def elements

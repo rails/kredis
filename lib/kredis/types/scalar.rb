@@ -1,4 +1,6 @@
-class Kredis::Types::Scalar < Kredis::Types::Proxy
+class Kredis::Types::Scalar < Kredis::Types::Proxying
+  proxying :set, :get, :exists?, :del
+
   attr_accessor :typed
 
   def value=(value)

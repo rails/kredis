@@ -71,6 +71,7 @@ module Kredis::Types
 end
 
 require "kredis/types/proxy"
+require "kredis/types/proxying"
 
 require "kredis/types/scalar"
 require "kredis/types/counter"

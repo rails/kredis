@@ -1,5 +1,7 @@
 # You'd normally call this a set, but Redis already has another data type for that
 class Kredis::Types::UniqueList < Kredis::Types::List
+  proxying :multi, :ltrim
+
   attr_accessor :typed, :limit
 
   def prepend(elements)

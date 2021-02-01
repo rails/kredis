@@ -1,4 +1,6 @@
-class Kredis::Types::Enum < Kredis::Types::Proxy
+class Kredis::Types::Enum < Kredis::Types::Proxying
+  proxying :set, :get, :del
+
   attr_accessor :values, :default
 
   def initialize(...)

@@ -1,4 +1,6 @@
-class Kredis::Types::Flag < Kredis::Types::Proxy
+class Kredis::Types::Flag < Kredis::Types::Proxying
+  proxying :set, :exists?, :del
+
   def mark(expires_in: nil)
     set 1, ex: expires_in
   end
