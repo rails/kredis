@@ -4,20 +4,20 @@ class Kredis::Types::List < Kredis::Types::Proxying
   attr_accessor :typed
 
   def elements
-    Kredis.strings_to_types(lrange(0, -1) || [], typed)
+    strings_to_types(lrange(0, -1) || [], typed)
   end
   alias to_a elements
 
   def remove(*elements)
-    Kredis.types_to_strings(elements).each { |element| lrem 0, element }
+    types_to_strings(elements).each { |element| lrem 0, element }
   end
 
   def prepend(*elements)
-    lpush Kredis.types_to_strings(elements) if Array(elements).flatten.any?
+    lpush types_to_strings(elements) if Array(elements).flatten.any?
   end
 
   def append(*elements)
-    rpush Kredis.types_to_strings(elements) if Array(elements).flatten.any?
+    rpush types_to_strings(elements) if Array(elements).flatten.any?
   end
   alias << append
 end

@@ -4,11 +4,11 @@ class Kredis::Types::Scalar < Kredis::Types::Proxying
   attr_accessor :typed
 
   def value=(value)
-    set Kredis.type_to_string(value)
+    set type_to_string(value)
   end
 
   def value
-    Kredis.string_to_type(get, typed)
+    string_to_type(get, typed)
   end
 
   def to_s
