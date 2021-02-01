@@ -23,7 +23,7 @@ class ListTest < ActiveSupport::TestCase
   end
 
   test "prepend nothing" do
-    @list.prepend(%w[ 1 2 3 ])
+    @list.prepend("1", "2", "3")
     @list.prepend([])
     assert_equal %w[ 3 2 1 ], @list.elements
   end

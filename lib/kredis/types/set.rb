@@ -8,16 +8,16 @@ class Kredis::Types::Set < Kredis::Types::Proxying
   end
   alias to_a members
 
-  def add(members)
-    sadd types_to_strings(members) if Array(members).flatten.any?
+  def add(*members)
+    sadd types_to_strings(members) if members.flatten.any?
   end
   alias << add
 
-  def remove(members)
-    srem types_to_strings(members) if Array(members).flatten.any?
+  def remove(*members)
+    srem types_to_strings(members) if members.flatten.any?
   end
 
-  def replace(members)
+  def replace(*members)
     multi do
       del
       add members

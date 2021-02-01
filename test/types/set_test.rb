@@ -37,7 +37,7 @@ class SetTest < ActiveSupport::TestCase
   end
 
   test "include" do
-    @set.add(%w[ 1 2 3 4 ])
+    @set.add("1", "2", "3", "4")
     assert @set.include?("1")
     assert_not @set.include?("5")
 
@@ -66,7 +66,7 @@ class SetTest < ActiveSupport::TestCase
   test "typed as floats" do
     @set = Kredis.set "mylist", typed: :float
 
-    @set.add [ 1.5, 2.7 ]
+    @set.add 1.5, 2.7
     @set << 2.7
     assert_equal [ 2.7, 1.5 ], @set.members
 

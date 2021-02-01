@@ -13,11 +13,11 @@ class Kredis::Types::List < Kredis::Types::Proxying
   end
 
   def prepend(*elements)
-    lpush types_to_strings(elements) if Array(elements).flatten.any?
+    lpush types_to_strings(elements) if elements.flatten.any?
   end
 
   def append(*elements)
-    rpush types_to_strings(elements) if Array(elements).flatten.any?
+    rpush types_to_strings(elements) if elements.flatten.any?
   end
   alias << append
 end
