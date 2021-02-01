@@ -1,4 +1,5 @@
 require "test_helper"
+require "active_support/core_ext/integer"
 
 class ListTest < ActiveSupport::TestCase
   setup { @list = Kredis.list "mylist" }
@@ -32,5 +33,15 @@ class ListTest < ActiveSupport::TestCase
     @list.remove(%w[ 1 2 ])
     @list.remove(3)
     assert_equal %w[ 4 ], @list.elements
+  end
+
+  test "typed as datetime" do
+    @list = Kredis.list "mylist", typed: "datetime"
+
+    @list.append [ 1.day.from_now.midnight, 2.days.from_now.midnight ]
+    assert_equal [ 1.day.from_now.midnight, 2.days.from_now.midnight ], @list.elements
+
+    @list.remove(2.days.from_now.midnight)
+    assert_equal [ 1.day.from_now.midnight ], @list.elements
   end
 end

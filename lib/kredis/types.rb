@@ -31,8 +31,8 @@ module Kredis::Types
     Json.new configured_for(config), namespaced_key(key)
   end
 
-  def list(key, config: :shared)
-    List.new configured_for(config), namespaced_key(key)
+  def list(key, typed: nil, config: :shared)
+    List.new configured_for(config), namespaced_key(key), typed: typed
   end
 
   def unique_list(key, limit: nil, config: :shared)

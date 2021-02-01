@@ -5,11 +5,10 @@ require "kredis/connections"
 require "kredis/namespace"
 require "kredis/types"
 require "kredis/attributes"
+require "kredis/type_casting"
 
 module Kredis
-  include Connections
-  include Namespace
-  include Types
+  include Connections, Namespace, Types, TypeCasting
 
   extend self
 

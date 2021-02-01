@@ -1,19 +1,23 @@
+require "active_support/core_ext/module/delegation"
+
 class Kredis::Types::List < Kredis::Types::Proxy
+  attr_accessor :typed
+
   def elements
-    lrange(0, -1) || []
+    Kredis.strings_to_types(lrange(0, -1) || [], typed)
   end
   alias to_a elements
 
-  def remove(elements)
-    Array(elements).each { |element| lrem 0, element }
+  def remove(*elements)
+    Kredis.types_to_strings(elements).each { |element| lrem 0, element }
   end
 
-  def prepend(elements)
-    lpush elements if Array(elements).any?
+  def prepend(*elements)
+    lpush Kredis.types_to_strings(elements) if Array(elements).flatten.any?
   end
 
-  def append(elements)
-    rpush elements if Array(elements).any?
+  def append(*elements)
+    rpush Kredis.types_to_strings(elements) if Array(elements).flatten.any?
   end
   alias << append
 end
