@@ -49,16 +49,16 @@ module Kredis::Types
     Json.new configured_for(config), namespaced_key(key)
   end
 
-  def list(key, typed: nil, config: :shared)
+  def list(key, typed: :string, config: :shared)
     List.new configured_for(config), namespaced_key(key), typed: typed
   end
 
-  def unique_list(key, limit: nil, config: :shared)
-    UniqueList.new configured_for(config), namespaced_key(key), limit: limit
+  def unique_list(key, typed: :string, limit: nil, config: :shared)
+    UniqueList.new configured_for(config), namespaced_key(key), typed: typed, limit: limit
   end
 
-  def set(key, config: :shared)
-    Set.new configured_for(config), namespaced_key(key)
+  def set(key, typed: :string, config: :shared)
+    Set.new configured_for(config), namespaced_key(key), typed: typed
   end
 
   def slot(key, config: :shared)

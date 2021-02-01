@@ -29,4 +29,15 @@ class UniqueListTest < ActiveSupport::TestCase
     @list.prepend([])
     assert_equal %w[ 3 2 1 ], @list.elements
   end
+
+  test "typed as integers" do
+    @list = Kredis.unique_list "mylist", typed: :integer
+
+    @list.append [ 1, 2 ]
+    @list << 2
+    assert_equal [ 1, 2 ], @list.elements
+
+    @list.remove(2)
+    assert_equal [ 1 ], @list.elements
+  end
 end

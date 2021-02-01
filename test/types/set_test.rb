@@ -62,4 +62,15 @@ class SetTest < ActiveSupport::TestCase
     @set.clear
     assert_equal [], @set.members
   end
+
+  test "typed as floats" do
+    @set = Kredis.set "mylist", typed: :float
+
+    @set.add [ 1.5, 2.7 ]
+    @set << 2.7
+    assert_equal [ 2.7, 1.5 ], @set.members
+
+    @set.remove(2.7)
+    assert_equal [ 1.5 ], @set.members
+  end
 end
