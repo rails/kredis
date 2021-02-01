@@ -36,7 +36,7 @@ class ListTest < ActiveSupport::TestCase
   end
 
   test "typed as datetime" do
-    @list = Kredis.list "mylist", typed: "datetime"
+    @list = Kredis.list "mylist", typed: :datetime
 
     @list.append [ 1.day.from_now.midnight, 2.days.from_now.midnight ]
     assert_equal [ 1.day.from_now.midnight, 2.days.from_now.midnight ], @list.elements

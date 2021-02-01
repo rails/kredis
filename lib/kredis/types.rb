@@ -3,17 +3,35 @@ module Kredis::Types
     Proxy.new configured_for(config), namespaced_key(key)
   end
 
+
+  def scalar(key, typed: :string, config: :shared)
+    Scalar.new configured_for(config), namespaced_key(key), typed: typed
+  end
+
   def string(key, config: :shared)
-    String.new configured_for(config), namespaced_key(key)
+    Scalar.new configured_for(config), namespaced_key(key), typed: :string
   end
 
   def integer(key, config: :shared)
-    Integer.new configured_for(config), namespaced_key(key)
+    Scalar.new configured_for(config), namespaced_key(key), typed: :integer
+  end
+
+  def decimal(key, config: :shared)
+    Scalar.new configured_for(config), namespaced_key(key), typed: :decimal
+  end
+
+  def float(key, config: :shared)
+    Scalar.new configured_for(config), namespaced_key(key), typed: :float
+  end
+
+  def boolean(key, config: :shared)
+    Scalar.new configured_for(config), namespaced_key(key), typed: :boolean
   end
 
   def datetime(key, config: :shared)
-    Datetime.new configured_for(config), namespaced_key(key)
+    Scalar.new configured_for(config), namespaced_key(key), typed: :datetime
   end
+
 
   def counter(key, expires_in: nil, config: :shared)
     Counter.new configured_for(config), namespaced_key(key), expires_in: expires_in
@@ -54,9 +72,7 @@ end
 
 require "kredis/types/proxy"
 
-require "kredis/types/string"
-require "kredis/types/integer"
-require "kredis/types/datetime"
+require "kredis/types/scalar"
 require "kredis/types/counter"
 require "kredis/types/flag"
 require "kredis/types/enum"
