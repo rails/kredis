@@ -2,6 +2,7 @@ require "bundler/setup"
 require "rails"
 require "rails/test_help"
 require "active_support/testing/autorun"
+require "byebug"
 
 require "kredis"
 
