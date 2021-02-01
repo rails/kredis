@@ -1,6 +1,8 @@
 class Kredis::Types::Datetime < Kredis::Types::String
   def value
-    Time.at get&.to_i
+    if value = get&.to_i
+      Time.at value
+    end
   end
 
   def value=(value)

@@ -4,6 +4,10 @@ require "active_support/core_ext/integer"
 class DatetimeTest < ActiveSupport::TestCase
   setup { @datetime = Kredis.datetime "mydatetime" }
 
+  test "value with nothing stored" do
+    assert_nil @datetime.value
+  end
+
   test "value" do
     freeze_time
     @datetime.value = 5.minutes.ago
