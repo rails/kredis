@@ -77,7 +77,7 @@ module Kredis::Attributes
       end
     end
 
-    def kredis_key_for_attribute(name, key: nil)
+    def kredis_key_for_attribute(name)
       "#{self.class.name.tableize.gsub("/", ":")}:#{id}:#{name}"
     end
 end
