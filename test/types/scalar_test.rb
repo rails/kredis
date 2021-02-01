@@ -38,6 +38,12 @@ class ScalarTest < ActiveSupport::TestCase
     assert_equal 5.days.from_now.midnight, datetime.value
   end
 
+  test "json" do
+    json = Kredis.json "myscalar"
+    json.value = { "one" => 1, "string" => "hello" }
+    assert_equal({ "one" => 1, "string" => "hello" }, json.value)
+  end
+
   test "invalid type" do
     nothere = Kredis.scalar "myscalar", typed: :nothere
     nothere.value = true

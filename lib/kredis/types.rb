@@ -32,6 +32,10 @@ module Kredis::Types
     Scalar.new configured_for(config), namespaced_key(key), typed: :datetime
   end
 
+  def json(key, config: :shared)
+    Scalar.new configured_for(config), namespaced_key(key), typed: :json
+  end
+
 
   def counter(key, expires_in: nil, config: :shared)
     Counter.new configured_for(config), namespaced_key(key), expires_in: expires_in
@@ -43,10 +47,6 @@ module Kredis::Types
 
   def enum(key, values:, default:, config: :shared)
     Enum.new configured_for(config), namespaced_key(key), values: values, default: default
-  end
-
-  def json(key, config: :shared)
-    Json.new configured_for(config), namespaced_key(key)
   end
 
   def list(key, typed: :string, config: :shared)
@@ -77,7 +77,6 @@ require "kredis/types/scalar"
 require "kredis/types/counter"
 require "kredis/types/flag"
 require "kredis/types/enum"
-require "kredis/types/json"
 require "kredis/types/list"
 require "kredis/types/unique_list"
 require "kredis/types/set"

@@ -1,7 +1,7 @@
 module Kredis::TypeCasting
   class InvalidType < StandardError; end
 
-  VALID_TYPES = %i[ string integer decimal float boolean datetime ]
+  VALID_TYPES = %i[ string integer decimal float boolean datetime json ]
 
   def type_to_string(value)
     case value
@@ -17,6 +17,8 @@ module Kredis::TypeCasting
       value ? "t" : "f"
     when Time, DateTime, ActiveSupport::TimeWithZone
       value.to_f
+    when Hash
+      JSON.dump(value)
     else
       value
     end
@@ -32,6 +34,7 @@ module Kredis::TypeCasting
     when :float       then value.to_f
     when :boolean     then value == "t" ? true : false
     when :datetime    then Time.at(value.to_i)
+    when :json        then JSON.load(value)
     end if value.present?
   end
 
