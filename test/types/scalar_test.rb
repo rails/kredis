@@ -65,4 +65,20 @@ class ScalarTest < ActiveSupport::TestCase
     string.clear
     assert_not string.assigned?
   end
+
+  test "default" do
+    integer = Kredis.scalar "myscalar", typed: :integer, default: 8
+    assert_equal 8, integer.value
+
+    integer.value = 5
+    assert_equal 5, integer.value
+
+    integer.clear
+    assert_equal 8, integer.value
+
+    assert_equal "8", integer.value.to_s
+
+    json = Kredis.json "myscalar", default: { "one" => 1, "string" => "hello" }
+    assert_equal({ "one" => 1, "string" => "hello" }, json.value)
+  end
 end

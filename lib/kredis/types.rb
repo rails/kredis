@@ -4,36 +4,36 @@ module Kredis::Types
   end
 
 
-  def scalar(key, typed: :string, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: typed
+  def scalar(key, typed: :string, default: nil, config: :shared)
+    Scalar.new configured_for(config), namespaced_key(key), typed: typed, default: default
   end
 
-  def string(key, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: :string
+  def string(key, default: nil, config: :shared)
+    Scalar.new configured_for(config), namespaced_key(key), typed: :string, default: default
   end
 
-  def integer(key, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: :integer
+  def integer(key, default: nil, config: :shared)
+    Scalar.new configured_for(config), namespaced_key(key), typed: :integer, default: default
   end
 
-  def decimal(key, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: :decimal
+  def decimal(key, default: nil, config: :shared)
+    Scalar.new configured_for(config), namespaced_key(key), typed: :decimal, default: default
   end
 
-  def float(key, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: :float
+  def float(key, default: nil, config: :shared)
+    Scalar.new configured_for(config), namespaced_key(key), typed: :float, default: default
   end
 
-  def boolean(key, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: :boolean
+  def boolean(key, default: nil, config: :shared)
+    Scalar.new configured_for(config), namespaced_key(key), typed: :boolean, default: default
   end
 
-  def datetime(key, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: :datetime
+  def datetime(key, default: nil, config: :shared)
+    Scalar.new configured_for(config), namespaced_key(key), typed: :datetime, default: default
   end
 
-  def json(key, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: :json
+  def json(key, default: nil, config: :shared)
+    Scalar.new configured_for(config), namespaced_key(key), typed: :json, default: default
   end
 
 
