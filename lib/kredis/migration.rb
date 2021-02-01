@@ -1,4 +1,12 @@
 class Kredis::Migration
+  def self.migrate_all(...)
+    new.migrate_all(...)
+  end
+
+  def self.migrate(...)
+    new.migrate(...)
+  end
+
   def initialize(config = :shared)
     @redis = Kredis.configured_for config
     @copy_sha = @redis.script "load", "redis.call('SETNX', KEYS[2], redis.call('GET', KEYS[1])); return 1;"
