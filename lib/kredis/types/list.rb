@@ -1,5 +1,3 @@
-require "active_support/core_ext/module/delegation"
-
 class Kredis::Types::List < Kredis::Types::Proxy
   attr_accessor :typed
 
