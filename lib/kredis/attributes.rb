@@ -14,6 +14,10 @@ module Kredis::Attributes
       kredis_connection_with __method__, name, key, config: config
     end
 
+    def kredis_datetime(name, key: nil, config: :shared)
+      kredis_connection_with __method__, name, key, config: config
+    end
+
     def kredis_flag(name, key: nil, config: :shared)
       kredis_connection_with __method__, name, key, config: config
 

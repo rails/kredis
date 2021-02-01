@@ -12,6 +12,7 @@ class Person
   kredis_flag :special
   kredis_string :address
   kredis_integer :age
+  kredis_datetime :last_seen_at
   kredis_enum :morning, values: %w[ bright blue black ], default: "bright"
   kredis_slot :attention
   kredis_slots :meetings, available: 3
@@ -87,6 +88,12 @@ class AttributesTest < ActiveSupport::TestCase
     @person.age.value = 41
     assert_equal 41, @person.age.value
     assert_equal "41", @person.age.to_s
+  end
+
+  test "datetime" do
+    freeze_time
+    @person.last_seen_at.value = Time.now
+    assert_equal Time.now, @person.last_seen_at.value
   end
 
   test "slot" do

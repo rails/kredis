@@ -11,6 +11,10 @@ module Kredis::Types
     Integer.new configured_for(config), namespaced_key(key)
   end
 
+  def datetime(key, config: :shared)
+    Datetime.new configured_for(config), namespaced_key(key)
+  end
+
   def counter(key, expires_in: nil, config: :shared)
     Counter.new configured_for(config), namespaced_key(key), expires_in: expires_in
   end
@@ -52,6 +56,7 @@ require "kredis/types/proxy"
 
 require "kredis/types/string"
 require "kredis/types/integer"
+require "kredis/types/datetime"
 require "kredis/types/counter"
 require "kredis/types/flag"
 require "kredis/types/enum"
