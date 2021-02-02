@@ -16,13 +16,13 @@ string = Kredis.string "mystring"
 string.value = "hello world!"  # => SET mystring "hello world"
 "hello world!" == string.value # => GET mystring
 
-integer = Kredis.string "myinteger"
+integer = Kredis.integer "myinteger"
 integer.value = 5  # => SET myinteger "5"
-5 == string.value # => GET myinteger
+5 == integer.value # => GET myinteger
 
 json = Kredis.json "myjson"
-integer.value = { "one" => 1, "two" => "2" }  # => SET myjson "{\"one\":1,\"two\":\"2\"}"
-{ "one" => 1, "two" => "2" } == string.value  # => GET myjson
+json.value = { "one" => 1, "two" => "2" }  # => SET myjson "{\"one\":1,\"two\":\"2\"}"
+{ "one" => 1, "two" => "2" } == json.value  # => GET myjson
 ```
 
 There are data structures for counters, enums, flags, lists, uniqe lists, sets, and slots:
