@@ -46,6 +46,16 @@ travel 16.minutes
 0 == counter.value              # => GET "mycounter"
 ```
 
+And using structures on a different than the default `shared` redis instance, relying on `config/redis/secondary.yml`:
+
+```ruby
+one_string = Kredis.string "mystring"
+two_string = Kredis.string "mystring", config: :secondary
+
+one_string.value = "just on shared"
+two_string.value != one_string.value
+```
+
 You can use all these structures in models:
 
 ```ruby
