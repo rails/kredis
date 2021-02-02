@@ -1,11 +1,7 @@
-class Kredis::Migration
-  def self.migrate_all(...)
-    new.migrate_all(...)
-  end
+require "active_support/core_ext/module/delegation"
 
-  def self.migrate(...)
-    new.migrate(...)
-  end
+class Kredis::Migration
+  singleton_class.delegate :migrate_all, :migrate, to: :new
 
   def initialize(config = :shared)
     @redis = Kredis.configured_for config
