@@ -21,7 +21,7 @@ integer.value = 5  # => SET myinteger "5"
 5 == string.value # => GET myinteger
 
 json = Kredis.json "myjson"
-integer.value = { "one" => 1, "two" => "2" }  # => SET myjson "{\"one\":1,\"two\":\"2\"}"
+json.value = { "one" => 1, "two" => "2" }  # => SET myjson "{\"one\":1,\"two\":\"2\"}"
 { "one" => 1, "two" => "2" } == string.value  # => GET myjson
 ```
 
