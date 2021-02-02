@@ -1,3 +1,5 @@
+require "active_support/core_ext/enumerable"
+
 class Kredis::Types::Proxy
   attr_accessor :redis, :key
 
