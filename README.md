@@ -16,7 +16,7 @@ string = Kredis.string "mystring"
 string.value = "hello world!"  # => SET mystring "hello world"
 "hello world!" == string.value # => GET mystring
 
-integer = Kredis.string "myinteger"
+integer = Kredis.integer "myinteger"
 integer.value = 5  # => SET myinteger "5"
 5 == string.value # => GET myinteger
 
