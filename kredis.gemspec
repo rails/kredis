@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.homepage = "https://github.com/rails/kredis"
   s.license  = "MIT"
 
-  s.required_ruby_version = ">= 2.6.0"
+  s.required_ruby_version = ">= 2.7.0"
   s.add_dependency "rails", ">= 6.0.0"
   s.add_dependency "redis", "~> 4.0"
 
