@@ -8,14 +8,13 @@ class Kredis::Migration
     @copy_sha = @redis.script "load", "redis.call('SETNX', KEYS[2], redis.call('GET', KEYS[1])); return 1;"
   end
 
-  def migrate_all(key_matcher)
-    keys = @redis.keys(key_matcher)
-    log_migration "Found #{keys.size} keys using #{key_matcher}"
-
-    @redis.multi do
-      keys.each do |key|
-        ids = key.scan(/\d+/).map(&:to_i)
-        migrate from: key, to: yield(key, *ids)
+  def migrate_all(key_pattern)
+    find_keys_in_batches_matching(key_pattern) do |keys|
+      @redis.multi do
+        keys.each do |key|
+          ids = key.scan(/\d+/).map(&:to_i)
+          migrate from: key, to: yield(key, *ids)
+        end
       end
     end
   end
@@ -32,6 +31,16 @@ class Kredis::Migration
   end
 
   private
+    SCAN_BATCH_SIZE = 1_000
+
+    def find_keys_in_batches_matching(key_pattern, &block)
+      cursor = "0"
+      begin
+        cursor, keys = @redis.scan(cursor, match: key_pattern, count: SCAN_BATCH_SIZE)
+        yield keys
+      end until cursor == "0"
+    end
+
     def log_migration(message)
       Kredis.logger&.debug "[Kredis Migration] #{message}"
     end
