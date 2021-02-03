@@ -28,14 +28,14 @@ json.value = { "one" => 1, "two" => "2" }  # => SET myjson "{\"one\":1,\"two\":\
 There are data structures for counters, enums, flags, lists, unique lists, sets, and slots:
 
 ```ruby
-list = Kredis.list "mylist", typed: :integer
-list.append([ 1, 2, 3 ])        # => LPUSH mylist "1" "2" "3"
-list << 4                       # => LPUSH mylist "4"
-[ 1, 2, 3, 4 ] == list.elements # LRANGE 0 -1
+list = Kredis.list "mylist"
+list << "hello world!"
+[ "hello world!" ] == list.elements
 
-string_list = Kredis.list "stringlist" # defaults to string type
-string_list << "ham"
-[ "ham" ] == string_list.elements
+integer_list = Kredis.list "myintegerlist", typed: :integer
+integer_list.append([ 1, 2, 3 ])        # => LPUSH myintegerlist "1" "2" "3"
+integer_list << 4                       # => LPUSH myintegerlist "4"
+[ 1, 2, 3, 4 ] == integer_list.elements # LRANGE 0 -1
 
 unique_list = Kredis.unique_list "myuniquelist"
 unique_list.append(%w[ 2 3 4 ])
