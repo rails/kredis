@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     kredis (0.2.0)
-      rails (>= 6.0.0)
+      rails (>= 6.1.0)
       redis (~> 4.0)
 
 GEM
