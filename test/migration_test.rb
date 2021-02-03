@@ -46,4 +46,12 @@ class MigrationTest < ActiveSupport::TestCase
       key
     end
   end
+
+  test "delete_all" do
+    3.times { |index| Kredis.proxy("mykey:#{index}").set "hello there #{index}" }
+
+    Kredis::Migration.delete_all "mykey:*"
+
+    3.times { |index| assert_nil Kredis.proxy("mykey:#{index}").get }
+  end
 end
