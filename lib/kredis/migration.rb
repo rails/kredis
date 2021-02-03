@@ -18,13 +18,13 @@ class Kredis::Migration
   end
 
   def migrate(from:, to:)
-    to = Kredis.namespaced_key(to)
+    namespaced_to = Kredis.namespaced_key(to)
 
-    if from != to
-      log_migration "Migrating key #{from} to #{to}"
-      @redis.evalsha @copy_sha, keys: [ from, to ]
+    if to.present? && from != namespaced_to
+      log_migration "Migrating key #{from} to #{namespaced_to}"
+      @redis.evalsha @copy_sha, keys: [ from, namespaced_to ]
     else
-      log_migration "Skipping unaltered migration key #{from}"
+      log_migration "Skipping blank/unaltered migration key #{from} → #{to}"
     end
   end
 

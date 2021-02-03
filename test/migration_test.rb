@@ -26,6 +26,13 @@ class MigrationTest < ActiveSupport::TestCase
     assert old_proxy.assigned?, "just copying the data"
   end
 
+  test "migrate with blank keys" do
+    assert_nothing_raised do
+      Kredis::Migration.migrate from: "old_key", to: nil
+      Kredis::Migration.migrate from: "old_key", to: ""
+    end
+  end
+
   test "migrate with namespace" do
     Kredis.proxy("key").set "x"
 
