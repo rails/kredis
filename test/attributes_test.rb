@@ -28,6 +28,13 @@ class Person
   end
 end
 
+class MissingIdPerson
+  include Kredis::Attributes
+
+  kredis_proxy :anything
+  kredis_proxy :nothing, key: "something:else"
+end
+
 class AttributesTest < ActiveSupport::TestCase
   setup { @person = Person.new }
 
@@ -176,5 +183,18 @@ class AttributesTest < ActiveSupport::TestCase
   test "json" do
     @person.settings.value = { "color" => "red", "count" => 2 }
     assert_equal({ "color" => "red", "count" => 2 }, @person.settings.value)
+  end
+
+  test "missing id to constrain key" do
+    assert_raise NotImplementedError do
+      MissingIdPerson.new.anything
+    end
+
+    assert_nil MissingIdPerson.new.nothing.get
+
+    suddenly_implemented_person = MissingIdPerson.new
+    def suddenly_implemented_person.id; 8; end
+
+    assert_nil suddenly_implemented_person.anything.get
   end
 end

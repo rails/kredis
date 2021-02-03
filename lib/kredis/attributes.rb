@@ -78,6 +78,10 @@ module Kredis::Attributes
     end
 
     def kredis_key_for_attribute(name)
-      "#{self.class.name.tableize.gsub("/", ":")}:#{id}:#{name}"
+      "#{self.class.name.tableize.gsub("/", ":")}:#{extract_kredis_id}:#{name}"
+    end
+
+    def extract_kredis_id
+      try(:id) or raise NotImplementedError, "kredis needs a unique id, either implement an id method or pass a custom key."
     end
 end

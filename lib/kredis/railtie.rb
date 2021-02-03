@@ -20,9 +20,9 @@ module Kredis
     end
 
     initializer "kredis.attributes" do
-      # TODO: Add run_load_hooks to ActiveModel::Model so this runs.
-      ActiveSupport.on_load(:active_model) do
-        include Kredis::Attributes
+      # No load hook for Active Model, just defer until after initialization.
+      config.after_initialize do
+        ActiveModel::Model.include Kredis::Attributes if defined?(ActiveModel::Model)
       end
 
       ActiveSupport.on_load(:active_record) do
