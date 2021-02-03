@@ -58,10 +58,10 @@ head_count.increment
 head_count.decrement
 1 == head_count.value              # => GET "headcount"
 
-counter = Kredis.counter "mycounter", expires_in: 15.minutes
+counter = Kredis.counter "mycounter", expires_in: 5.seconds
 counter.increment by: 2         # => SETEX "mycounter" 900 0 + INCR "mycounter" 2
 2 == counter.value              # => GET "mycounter"
-travel 16.minutes
+sleep 6.seconds
 0 == counter.value              # => GET "mycounter"
 
 enum = Kredis.enum "myenum", values: %w[ one two three ], default: "one"
