@@ -1,5 +1,5 @@
 class Kredis::Types::Counter < Kredis::Types::Proxying
-  proxying :multi, :set, :incrby, :get
+  proxying :multi, :set, :incrby, :decrby, :get
 
   attr_accessor :expires_in
 
@@ -7,6 +7,13 @@ class Kredis::Types::Counter < Kredis::Types::Proxying
     multi do
       set 0, ex: expires_in, nx: true
       incrby by
+    end
+  end
+
+  def decrement(by: 1)
+    multi do
+      set 0, ex: expires_in, nx: true
+      decrby by
     end
   end
 
