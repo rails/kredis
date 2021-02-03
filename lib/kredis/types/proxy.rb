@@ -1,5 +1,3 @@
-require "active_support/core_ext/enumerable"
-
 class Kredis::Types::Proxy
   attr_accessor :redis, :key
 
@@ -19,8 +17,8 @@ class Kredis::Types::Proxy
 
   private
     def log_message(method, *args, **kwargs)
-      args      = args.flatten.compact_blank.presence
-      kwargs    = kwargs.compact_blank.presence
+      args      = args.flatten.reject(&:blank?).presence
+      kwargs    = kwargs.reject { |_k, v| v.blank? }.presence
       type_name = self.class.name.split("::").last
 
       "[Kredis #{type_name}] #{method.upcase} #{key} #{args&.inspect} #{kwargs&.inspect}".chomp
