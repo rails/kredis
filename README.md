@@ -2,7 +2,7 @@
 
 Kredis (Keyed Redis) encapsulates higher-level types and data structures around a single key, so you can interact with them as coherent objects rather than isolated procedural commands. These higher-level structures can be configured as attributes within Active Models and Active Records using a declarative DSL.
 
-Kredis is configured using env-aware yaml files, using `Rails.application.config_for`, so you can locate the data structures on separate redis instances, if you've reached a scale where a single shared instance is no longer sufficient.
+Kredis is configured using env-aware YAML files, using `Rails.application.config_for`, so you can locate the data structures on separate Redis instances, if you've reached a scale where a single shared instance is no longer sufficient.
 
 Kredis provides namespacing support for keys such that you can safely run parallel testing against the data structures without different tests trampling each others data.
 
