@@ -21,6 +21,20 @@ class CounterTest < ActiveSupport::TestCase
     assert_equal 2, @counter.value
   end
 
+  test "decrement" do
+    assert_equal 0, @counter.value
+
+    @counter.decrement
+    assert_equal (-1), @counter.value
+  end
+
+  test "decrement by 2" do
+    assert_equal 0, @counter.value
+
+    @counter.decrement by: 2
+    assert_equal (-2), @counter.value
+  end
+
   test "expiring counter" do
     @counter = Kredis.counter "mycounter", expires_in: 1.second
 
