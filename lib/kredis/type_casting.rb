@@ -33,7 +33,7 @@ module Kredis::TypeCasting
     when :decimal     then value.to_d
     when :float       then value.to_f
     when :boolean     then value == "t" ? true : false
-    when :datetime    then Time.at(value.to_i)
+    when :datetime    then Time.at(value.to_f)
     when :json        then JSON.load(value)
     end if value.present?
   end

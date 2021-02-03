@@ -36,6 +36,9 @@ class ScalarTest < ActiveSupport::TestCase
     datetime = Kredis.datetime "myscalar"
     datetime.value = 5.days.from_now.midnight
     assert_equal 5.days.from_now.midnight, datetime.value
+
+    datetime.value += 0.5.seconds
+    assert_equal 5.days.from_now.midnight + 0.5.seconds, datetime.value
   end
 
   test "json" do
