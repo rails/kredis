@@ -41,7 +41,7 @@ class Kredis::Migration
       cursor = "0"
       begin
         cursor, keys = @redis.scan(cursor, match: key_pattern, count: SCAN_BATCH_SIZE)
-        @redis.multi { yield keys }
+        @redis.pipelined { yield keys }
       end until cursor == "0"
     end
 
