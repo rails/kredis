@@ -154,7 +154,7 @@ test:
   <<: *development
 ```
 
-Additional configurations can be added under `config/redis/*.yml` and referenced when a type is created.
+Additional configurations can be added under `config/redis/*.yml` and referenced when a type is created, e.g. `Kredis.string("mystring", config: :strings)` would lookup `config/redis/strings.yml`. Under the hood `Kredis.configured_for` is called which'll pass the configuration on to `Redis.new`.
 
 
 ## License
