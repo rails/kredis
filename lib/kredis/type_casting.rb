@@ -16,7 +16,7 @@ module Kredis::TypeCasting
     when TrueClass, FalseClass
       value ? "t" : "f"
     when Time, DateTime, ActiveSupport::TimeWithZone
-      value.to_f
+      value.iso8601(9)
     when Hash
       JSON.dump(value)
     else
@@ -33,7 +33,7 @@ module Kredis::TypeCasting
     when :decimal     then value.to_d
     when :float       then value.to_f
     when :boolean     then value == "t" ? true : false
-    when :datetime    then Time.at(value.to_f)
+    when :datetime    then Time.iso8601(value)
     when :json        then JSON.load(value)
     end if value.present?
   end

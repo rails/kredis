@@ -39,6 +39,9 @@ class ScalarTest < ActiveSupport::TestCase
 
     datetime.value += 0.5.seconds
     assert_equal 5.days.from_now.midnight + 0.5.seconds, datetime.value
+
+    datetime.value = nil
+    assert_nil datetime.value
   end
 
   test "json" do
