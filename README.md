@@ -144,6 +144,7 @@ production: &production
   host: <%= ENV.fetch("REDIS_SHARED_HOST", "127.0.0.1") %>
   port: <%= ENV.fetch("REDIS_SHARED_PORT", "6379") %>
   timeout: 1
+  driver: :hiredis
 
 development: &development
   host: <%= ENV.fetch("REDIS_SHARED_HOST", "127.0.0.1") %>
@@ -155,6 +156,8 @@ test:
 ```
 
 Additional configurations can be added under `config/redis/*.yml` and referenced when a type is created.
+
+The example above shows the use of the [hiredis](https://github.com/redis/hiredis-rb) driver in the `production` environment. `hiredis` is optional, but can speed up your Redis performance.
 
 
 ## License
