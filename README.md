@@ -64,6 +64,15 @@ counter.increment by: 2         # => SETEX "mycounter" 900 0 + INCR "mycounter" 
 sleep 6.seconds
 0 == counter.value              # => GET "mycounter"
 
+cycle = Kredis.cycle "mycycle", values: %i[ one two three ]
+:one == cycle.value
+cycle.next
+:two == cycle.value
+cycle.next
+:three == cycle.value
+cycle.next
+:one == cycle.value
+
 enum = Kredis.enum "myenum", values: %w[ one two three ], default: "one"
 "one" == enum.value
 true == enum.one?

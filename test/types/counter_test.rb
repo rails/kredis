@@ -51,6 +51,14 @@ class CounterTest < ActiveSupport::TestCase
     assert_equal 0, @counter.value
   end
 
+  test "reset" do
+    @counter.increment
+    assert_equal 1, @counter.value
+
+    @counter.reset
+    assert_equal 0, @counter.value
+  end
+
   test "failing open" do
     stub_redis_down(@counter) { @counter.increment }
     assert_equal 0, @counter.value

@@ -1,5 +1,5 @@
 class Kredis::Types::Counter < Kredis::Types::Proxying
-  proxying :multi, :set, :incrby, :decrby, :get
+  proxying :multi, :set, :incrby, :decrby, :get, :del
 
   attr_accessor :expires_in
 
@@ -19,5 +19,9 @@ class Kredis::Types::Counter < Kredis::Types::Proxying
 
   def value
     get.to_i
+  end
+
+  def reset
+    del
   end
 end

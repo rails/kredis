@@ -41,6 +41,10 @@ module Kredis::Types
     Counter.new configured_for(config), namespaced_key(key), expires_in: expires_in
   end
 
+  def cycle(key, values:, expires_in: nil, config: :shared)
+    Cycle.new configured_for(config), namespaced_key(key), values: values, expires_in: expires_in
+  end
+
   def flag(key, config: :shared)
     Flag.new configured_for(config), namespaced_key(key)
   end
@@ -75,6 +79,7 @@ require "kredis/types/proxying"
 
 require "kredis/types/scalar"
 require "kredis/types/counter"
+require "kredis/types/cycle"
 require "kredis/types/flag"
 require "kredis/types/enum"
 require "kredis/types/list"
