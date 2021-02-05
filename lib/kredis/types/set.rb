@@ -29,7 +29,7 @@ class Kredis::Types::Set < Kredis::Types::Proxying
   end
 
   def size
-    scard
+    scard.to_i
   end
 
   def take

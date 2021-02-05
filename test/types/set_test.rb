@@ -73,4 +73,12 @@ class SetTest < ActiveSupport::TestCase
     @set.remove(2.7)
     assert_equal [ 1.5 ], @set.members
   end
+
+  test "failing open" do
+    stub_redis_down(@set) do
+      @set.add "1"
+      assert_equal [], @set.members
+      assert_equal 0, @set.size
+    end
+  end
 end

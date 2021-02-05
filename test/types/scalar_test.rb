@@ -87,4 +87,11 @@ class ScalarTest < ActiveSupport::TestCase
     json = Kredis.json "myscalar", default: { "one" => 1, "string" => "hello" }
     assert_equal({ "one" => 1, "string" => "hello" }, json.value)
   end
+
+  test "returns default when failing open" do
+    integer = Kredis.scalar "myscalar", typed: :integer, default: 8
+    integer.value = 42
+
+    stub_redis_down(integer) { assert_equal 8, integer.value }
+  end
 end

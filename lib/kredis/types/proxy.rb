@@ -1,4 +1,7 @@
 class Kredis::Types::Proxy
+  require_relative "proxy/failsafe"
+  include Failsafe
+
   attr_accessor :redis, :key
 
   def initialize(redis, key, **options)
@@ -11,8 +14,10 @@ class Kredis::Types::Proxy
   end
 
   def method_missing(method, *args, **kwargs)
-    Kredis.logger&.debug log_message(method, *args, **kwargs)
-    redis.public_send method, key, *args, **kwargs
+    failsafe do
+      Kredis.logger&.debug log_message(method, *args, **kwargs)
+      redis.public_send method, key, *args, **kwargs
+    end
   end
 
   private

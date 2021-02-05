@@ -13,6 +13,10 @@ class Kredis::Types::Proxying
     options.each { |key, value| send("#{key}=", value) }
   end
 
+  def failsafe(returning: nil, &block)
+    proxy.suppress_failsafe_with(returning: returning, &block)
+  end
+
   private
     delegate :type_to_string, :string_to_type, :types_to_strings, :strings_to_types, to: :Kredis
 end

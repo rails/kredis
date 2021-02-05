@@ -69,4 +69,16 @@ class SlotsTest < ActiveSupport::TestCase
     assert slot.reserve
     assert_not slot.available?
   end
+
+  test "failing open" do
+    stub_redis_down(@slots) do
+      assert_not @slots.available?
+
+      assert_not @slots.reserve
+
+      ran = false
+      assert_not @slots.reserve { ran = true }
+      assert_not ran
+    end
+  end
 end
