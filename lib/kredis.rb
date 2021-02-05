@@ -3,12 +3,12 @@ require "kredis/version"
 
 require "kredis/connections"
 require "kredis/namespace"
+require "kredis/type_casting"
 require "kredis/types"
 require "kredis/attributes"
-require "kredis/type_casting"
 
 module Kredis
-  include Connections, Namespace, Types, TypeCasting
+  include Connections, Namespace, TypeCasting, Types
 
   extend self
 
