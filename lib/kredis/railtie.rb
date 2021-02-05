@@ -6,8 +6,8 @@ module Kredis
 
     initializer "kredis.testing" do
       ActiveSupport.on_load(:active_support_test_case) do
-        parallelize_setup    { |worker| Kredis.namespace = "test-#{worker}" }
-        parallelize_teardown { Kredis.clear_all }
+        parallelize_setup { |worker| Kredis.namespace = "test-#{worker}" }
+        teardown { Kredis.clear_all }
       end
     end
 
