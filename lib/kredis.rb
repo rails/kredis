@@ -1,3 +1,6 @@
+require "active_support"
+require "active_support/core_ext/module/attribute_accessors"
+
 require "kredis/railtie"
 require "kredis/version"
 
