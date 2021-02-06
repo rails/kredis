@@ -5,6 +5,7 @@ class Kredis::Migration
 
   def initialize(config = :shared)
     @redis = Kredis.configured_for config
+    # TODO: Replace script loading with `copy` command once Redis 6.2+ is the minimum supported version.
     @copy_sha = @redis.script "load", "redis.call('SETNX', KEYS[2], redis.call('GET', KEYS[1])); return 1;"
   end
 
