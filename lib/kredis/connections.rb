@@ -13,6 +13,13 @@ module Kredis::Connections
 
   def clear_all
     logger&.info "[Kredis] Connections all cleared"
-    connections.each_value(&:flushdb)
+    connections.each_value do |connection|
+      if Kredis.namespace
+        keys = connection.keys("#{Kredis.namespace}:*")
+        connection.del keys if keys.any?
+      else
+        connection.flushdb
+      end
+    end
   end
 end
