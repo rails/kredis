@@ -20,6 +20,7 @@ class ActiveSupport::TestCase
   end
 
   def stub_redis_down(redis_holder, &block)
-    (redis_holder.try(:proxy) || redis_holder).stub(:redis, RedisUnavailableProxy.new, &block)
+    redis_holder.try(:proxy) || redis_holder \
+      .stub(:redis, RedisUnavailableProxy.new, &block)
   end
 end
