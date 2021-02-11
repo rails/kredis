@@ -1,6 +1,5 @@
 require "bundler/setup"
-require "rails"
-require "rails/test_help"
+require "active_support/test_case"
 require "active_support/testing/autorun"
 require "minitest/mock"
 require "byebug"

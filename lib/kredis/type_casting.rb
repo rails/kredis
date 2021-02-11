@@ -1,3 +1,5 @@
+require "json"
+
 module Kredis::TypeCasting
   class InvalidType < StandardError; end
 
