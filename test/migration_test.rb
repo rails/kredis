@@ -1,9 +1,7 @@
 require "test_helper"
 
 class MigrationTest < ActiveSupport::TestCase
-  setup do
-    @proxy = Kredis.string "new_proxy"
-  end
+  setup { @proxy = Kredis.string "new_proxy" }
 
   test "migrate_all" do
     3.times { |index| Kredis.proxy("mykey:#{index}").set "hello there #{index}" }
