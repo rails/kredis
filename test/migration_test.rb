@@ -1,5 +1,4 @@
 require "test_helper"
-require "kredis/migration"
 
 class MigrationTest < ActiveSupport::TestCase
   setup do

@@ -13,8 +13,9 @@ require "kredis/railtie" if defined?(Rails::Railtie)
 
 module Kredis
   include Connections, Namespace, TypeCasting, Types
-
   extend self
+
+  autoload :Migration, "kredis/migration"
 
   mattr_accessor :logger
 
