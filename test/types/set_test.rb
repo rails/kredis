@@ -63,6 +63,24 @@ class SetTest < ActiveSupport::TestCase
     assert_equal [], @set.members
   end
 
+  test "-" do
+    @set.add %w[1 2 3 4 5]
+    subset = Kredis.set "otherset"
+    subset.add %w[2 3 4]
+    assert_equal (@set - subset), %w[1 5]
+  end
+
+  test "diff" do
+    @set.add %w[1 2 3 4 5]
+    subset = Kredis.set "otherset"
+    subset.add %w[2 3 4]
+    assert_equal (@set.diff(subset)), %w[1 5]
+
+    result = Kredis.set "resultset"
+    @set.diff(subset, store: result)
+    assert_equal result.members, %w[1 5]
+  end
+
   test "typed as floats" do
     @set = Kredis.set "mylist", typed: :float
 

@@ -1,5 +1,5 @@
 class Kredis::Types::Set < Kredis::Types::Proxying
-  proxying :smembers, :sadd, :srem, :multi, :del, :sismember, :scard, :spop
+  proxying :smembers, :sadd, :srem, :multi, :del, :sismember, :scard, :spop, :sdiff, :sdiffstore
 
   attr_accessor :typed
 
@@ -38,5 +38,17 @@ class Kredis::Types::Set < Kredis::Types::Proxying
 
   def clear
     del
+  end
+
+  def -(value)
+    diff value
+  end
+
+  def diff(value, store: nil)
+    if store
+      store.sdiffstore key, value.key
+    else
+      sdiff value.key
+    end
   end
 end
