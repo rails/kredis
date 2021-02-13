@@ -1,5 +1,8 @@
 class Kredis::Types::Set < Kredis::Types::Proxying
-  proxying :smembers, :sadd, :srem, :multi, :del, :sismember, :scard, :spop, :sdiff, :sdiffstore
+  proxying :smembers, :sadd, :srem, :multi, :del, :sismember, :scard, :spop,
+           :sdiff, :sdiffstore,
+           :sunion, :sunionstore,
+           :sinter, :sinterstore
 
   attr_accessor :typed
 
@@ -49,6 +52,30 @@ class Kredis::Types::Set < Kredis::Types::Proxying
       store.sdiffstore key, value.key
     else
       sdiff value.key
+    end
+  end
+
+  def &(value)
+    intersection value
+  end
+
+  def intersection(value, store: nil)
+    if store
+      store.sinterstore key, value.key
+    else
+      sinter value.key
+    end
+  end
+
+  def +(value)
+    union value
+  end
+
+  def union(value, store: nil)
+    if store
+      store.sunionstore key, value.key
+    else
+      sunion value.key
     end
   end
 end

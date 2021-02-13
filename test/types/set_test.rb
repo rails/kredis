@@ -81,6 +81,42 @@ class SetTest < ActiveSupport::TestCase
     assert_equal result.members, %w[1 5]
   end
 
+  test "+" do
+    @set.add %w[1 2 3 4 5]
+    otherset = Kredis.set "otherset"
+    otherset.add %w[5 6 7 8 9]
+    assert_equal (@set + otherset), %w[1 2 3 4 5 6 7 8 9]
+  end
+
+  test "union" do
+    @set.add %w[1 2 3 4 5]
+    otherset = Kredis.set "otherset"
+    otherset.add %w[5 6 7 8 9]
+    assert_equal (@set.union(otherset)), %w[1 2 3 4 5 6 7 8 9]
+
+    result = Kredis.set "resultset"
+    @set.union(otherset, store: result)
+    assert_equal result.members, %w[1 2 3 4 5 6 7 8 9]
+  end
+
+  test "&" do
+    @set.add %w[1 2 3 4 5]
+    otherset = Kredis.set "otherset"
+    otherset.add %w[4 5 6 7]
+    assert_equal (@set & otherset), %w[4 5]
+  end
+
+  test "intersection" do
+    @set.add %w[1 2 3 4 5]
+    otherset = Kredis.set "otherset"
+    otherset.add %w[4 5 6 7]
+    assert_equal (@set.intersection(otherset)), %w[4 5]
+
+    result = Kredis.set "resultset"
+    @set.intersection(otherset, store: result)
+    assert_equal result.members, %w[4 5]
+  end
+
   test "typed as floats" do
     @set = Kredis.set "mylist", typed: :float
 
