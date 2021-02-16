@@ -18,6 +18,7 @@ class Person
   kredis_slots :meetings, available: 3
   kredis_set :vacations
   kredis_json :settings
+  kredis_counter :amount
 
   def self.name
     "Person"
@@ -183,6 +184,13 @@ class AttributesTest < ActiveSupport::TestCase
   test "json" do
     @person.settings.value = { "color" => "red", "count" => 2 }
     assert_equal({ "color" => "red", "count" => 2 }, @person.settings.value)
+  end
+
+  test "counter" do
+    @person.amount.increment
+    assert_equal 1, @person.amount.value
+    @person.amount.decrement
+    assert_equal 0, @person.amount.value
   end
 
   test "missing id to constrain key" do
