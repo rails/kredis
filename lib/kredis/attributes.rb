@@ -54,6 +54,10 @@ module Kredis::Attributes
       kredis_connection_with __method__, name, key, available: available, config: config
     end
 
+    def kredis_counter(name, key: nil, config: :shared)
+      kredis_connection_with __method__, name, key, config: config
+    end
+
     private
       def kredis_connection_with(method, name, key, **options)
         ivar_symbol = :"@#{name}_#{method}"
