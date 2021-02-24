@@ -46,10 +46,10 @@ unique_list.remove(3)
 [ "1", "2", "4", "5" ] == unique_list.elements
 
 set = Kredis.set "myset", typed: :datetime
-set.add(DateTime.tomorrow, DateTime.yesterday)            # => SADD myset "2021-02-03 00:00:00 +0100" "2021-02-01 00:00:00 +0100"
-set << DateTime.tomorrow                                  # => SADD myset "2021-02-03 00:00:00 +0100"
-2 == set.size                                             # => SCARD myset
-[ DateTime.tomorrow, DateTime.yesterday ] == set.elements # => SMEMBERS myset
+set.add(DateTime.tomorrow, DateTime.yesterday)           # => SADD myset "2021-02-03 00:00:00 +0100" "2021-02-01 00:00:00 +0100"
+set << DateTime.tomorrow                                 # => SADD myset "2021-02-03 00:00:00 +0100"
+2 == set.size                                            # => SCARD myset
+[ DateTime.tomorrow, DateTime.yesterday ] == set.members # => SMEMBERS myset
 
 head_count = Kredis.counter "headcount"
 0 == head_count.value              # => GET "headcount"
