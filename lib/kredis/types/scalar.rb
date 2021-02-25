@@ -1,5 +1,5 @@
 class Kredis::Types::Scalar < Kredis::Types::Proxying
-  proxying :set, :get, :exists?, :del
+  proxying :set, :get, :exists?, :del, :expire, :expireat
 
   attr_accessor :typed, :default
 
@@ -21,5 +21,13 @@ class Kredis::Types::Scalar < Kredis::Types::Proxying
 
   def clear
     del
+  end
+
+  def expire_in(seconds)
+    expire seconds.to_i
+  end
+
+  def expire_at(datetime)
+    expireat datetime.to_i
   end
 end
