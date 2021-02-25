@@ -1,10 +1,10 @@
 class Kredis::Types::Scalar < Kredis::Types::Proxying
   proxying :set, :get, :exists?, :del, :expire, :expireat
 
-  attr_accessor :typed, :default
+  attr_accessor :typed, :default, :lifespan
 
   def value=(value)
-    set type_to_string(value)
+    set type_to_string(value), ex: lifespan
   end
 
   def value
