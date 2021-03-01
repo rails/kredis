@@ -105,9 +105,9 @@ class ScalarTest < ActiveSupport::TestCase
   end
 
   test "telling a scaler to expire at a specific point in time" do
-    string = Kredis.scalar "myscalar", default: "the default"
+    string = Kredis.scalar "myscalar", default: "unassigned"
     string.value = "assigned"
-    assert_changes "string.value", from: "assigned", to: "the default" do
+    assert_changes "string.value", from: "assigned", to: "unassigned" do
       string.expire_at 1.second.from_now
       sleep 1.1.seconds
     end
