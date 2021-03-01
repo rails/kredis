@@ -29,21 +29,21 @@ There are data structures for counters, enums, flags, lists, unique lists, sets,
 
 ```ruby
 list = Kredis.list "mylist"
-list << "hello world!"
-[ "hello world!" ] == list.elements
+list << "hello world!"               # => RPUSH mylist "hello world!"
+[ "hello world!" ] == list.elements  # => LRANGE mylist 0, -1
 
 integer_list = Kredis.list "myintegerlist", typed: :integer
-integer_list.append([ 1, 2, 3 ])        # => LPUSH myintegerlist "1" "2" "3"
-integer_list << 4                       # => LPUSH myintegerlist "4"
-[ 1, 2, 3, 4 ] == integer_list.elements # LRANGE 0 -1
+integer_list.append([ 1, 2, 3 ])        # => RPUSH myintegerlist "1" "2" "3"
+integer_list << 4                       # => RPUSH myintegerlist "4"
+[ 1, 2, 3, 4 ] == integer_list.elements # => LRANGE myintegerlist 0 -1
 
 unique_list = Kredis.unique_list "myuniquelist"
-unique_list.append(%w[ 2 3 4 ])
-unique_list.prepend(%w[ 1 2 3 4 ])
+unique_list.append(%w[ 2 3 4 ])                # => LREM myuniquelist 0, "2" + LREM myuniquelist 0, "3" + LREM myuniquelist 0, "4"  + RPUSH myuniquelist "2", "3", "4"
+unique_list.prepend(%w[ 1 2 3 4 ])             # => LREM myuniquelist 0, "1"  + LREM myuniquelist 0, "2" + LREM myuniquelist 0, "3" + LREM myuniquelist 0, "4"  + LPUSH myuniquelist "1", "2", "3", "4"
 unique_list.append([])
-unique_list << "5"
-unique_list.remove(3)
-[ "1", "2", "4", "5" ] == unique_list.elements
+unique_list << "5"                             # => LREM myuniquelist 0, "5" + RPUSH myuniquelist "5"
+unique_list.remove(3)                          # => LREM myuniquelist 0, "3"
+[ "4", "2", "1", "5" ] == unique_list.elements # => LRANGE myuniquelist 0, -1
 
 set = Kredis.set "myset", typed: :datetime
 set.add(DateTime.tomorrow, DateTime.yesterday)           # => SADD myset "2021-02-03 00:00:00 +0100" "2021-02-01 00:00:00 +0100"
@@ -53,63 +53,63 @@ set << DateTime.tomorrow                                 # => SADD myset "2021-0
 
 head_count = Kredis.counter "headcount"
 0 == head_count.value              # => GET "headcount"
-head_count.increment
-head_count.increment
-head_count.decrement
+head_count.increment               # => SET headcount 0 NX + INCRBY headcount 1
+head_count.increment               # => SET headcount 0 NX + INCRBY headcount 1
+head_count.decrement               # => SET headcount 0 NX + DECRBY headcount 1
 1 == head_count.value              # => GET "headcount"
 
 counter = Kredis.counter "mycounter", expires_in: 5.seconds
-counter.increment by: 2         # => SETEX "mycounter" 900 0 + INCR "mycounter" 2
+counter.increment by: 2         # => SET mycounter 0 EX 5 NX + INCRBY "mycounter" 2
 2 == counter.value              # => GET "mycounter"
 sleep 6.seconds
 0 == counter.value              # => GET "mycounter"
 
 cycle = Kredis.cycle "mycycle", values: %i[ one two three ]
-:one == cycle.value
-cycle.next
-:two == cycle.value
-cycle.next
-:three == cycle.value
-cycle.next
-:one == cycle.value
+:one == cycle.value             # => GET mycycle
+cycle.next                      # => GET mycycle + SET mycycle 1
+:two == cycle.value             # => GET mycycle
+cycle.next                      # => GET mycycle + SET mycycle 2
+:three == cycle.value           # => GET mycycle
+cycle.next                      # => GET mycycle + SET mycycle 0
+:one == cycle.value             # => GET mycycle
 
 enum = Kredis.enum "myenum", values: %w[ one two three ], default: "one"
-"one" == enum.value
-true == enum.one?
-enum.value = "two"
-"two" == enum.value
+"one" == enum.value             # => GET myenum  
+true == enum.one?               # => GET myenum
+enum.value = "two"              # => SET myenum "two"
+"two" == enum.value             # => GET myenum
 enum.value = "four"
-"two" == enum.value
-enum.reset
-"one" == enum.value
+"two" == enum.value             # => GET myenum
+enum.reset                      # => DEL myenum
+"one" == enum.value             # => GET myenum  
 
 slots = Kredis.slots "myslots", available: 3
-true == slots.available?
-slots.reserve
-true == slots.available?
-slots.reserve
-true == slots.available?
-slots.reserve
-true == slots.available?
-slots.reserve
-false == slots.available?
-slots.release
-true == slots.available?
-slots.reset
+true == slots.available?        # => GET myslots
+slots.reserve                   # => INCR myslots
+true == slots.available?        # => GET myslots
+slots.reserve                   # => INCR myslots     
+true == slots.available?        # => GET myslots
+slots.reserve                   # => INCR myslots
+false == slots.available?       # => GET myslots
+slots.reserve                   # => INCR myslots + DECR myslots  
+false == slots.available?       # => GET myslots
+slots.release                   # => DECR myslots
+true == slots.available?        # => GET myslots
+slots.reset                     # => DEL myslots
 
 flag = Kredis.flag "myflag"
-false == flag.marked?
-flag.mark
-true == flag.marked?
-flag.remove
-false == flag.marked?
+false == flag.marked?           # => EXISTS myflag
+flag.mark                       # => SET myflag 1
+true == flag.marked?            # => EXISTS myflag
+flag.remove                     # => DEL myflag  
+false == flag.marked?           # => EXISTS myflag
 
-flag.mark(expires_in: 1.second)
-true == flag.marked?
+flag.mark(expires_in: 1.second) #=> SET myflag 1 EX 1
+true == flag.marked?            #=> EXISTS myflag
 sleep 0.5.seconds
-true == flag.marked?
+true == flag.marked?            #=> EXISTS myflag
 sleep 0.6.seconds
-false == flag.marked?
+false == flag.marked?           #=> EXISTS myflag
 ```
 
 And using structures on a different than the default `shared` redis instance, relying on `config/redis/secondary.yml`:
@@ -133,10 +133,10 @@ class Person < ApplicationRecord
 end
 
 person = Person.find(5)
-person.names.append "David", "Heinemeier", "Hansson" # => SADD person:5:names "David" "Heinemeier" "Hansson"
-true == person.morning.bright?
-person.morning.value = "blue"
-true == person.morning.blue?
+person.names.append "David", "Heinemeier", "Hansson" # => RPUSH people:5:names "David" "Heinemeier" "Hansson"
+true == person.morning.bright?                       # => GET people:1:morning
+person.morning.value = "blue"                        # => SET people:1:morning
+true == person.morning.blue?                         # => GET people:1:morning
 ```
 
 
