@@ -1,6 +1,7 @@
 require "json"
 require "active_model/type"
 require "kredis/type/json"
+require "kredis/type/datetime"
 
 module Kredis::TypeCasting
   class InvalidType < StandardError; end
@@ -11,29 +12,14 @@ module Kredis::TypeCasting
     decimal: ActiveModel::Type::Decimal.new,
     float: ActiveModel::Type::Decimal.new,
     boolean: ActiveModel::Type::Boolean.new,
-    datetime: ActiveModel::Type::DateTime.new,
+    datetime: Kredis::Type::DateTime.new,
     json: Kredis::Type::Json.new
   }
 
-  def type_to_string(value)
-    case value
-    when nil
-      ""
-    when Integer
-      value.to_s
-    when BigDecimal
-      value.to_d
-    when Float
-      value.to_s
-    when TrueClass, FalseClass
-      value ? "t" : "f"
-    when Time, DateTime, ActiveSupport::TimeWithZone
-      value.iso8601(9)
-    when Hash
-      JSON.dump(value)
-    else
-      value
-    end
+  def type_to_string(value, type)
+    raise InvalidType if type && !TYPES.key?(type)
+
+    TYPES[type || :string].serialize(value)
   end
 
   def string_to_type(value, type)
@@ -42,8 +28,8 @@ module Kredis::TypeCasting
     TYPES[type || :string].cast(value)
   end
 
-  def types_to_strings(values)
-    Array(values).flatten.map { |value| type_to_string(value) }
+  def types_to_strings(values, type)
+    Array(values).flatten.map { |value| type_to_string(value, type) }
   end
 
   def strings_to_types(values, type)

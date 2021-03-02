@@ -58,7 +58,7 @@ class ScalarTest < ActiveSupport::TestCase
 
   test "invalid type" do
     nothere = Kredis.scalar "myscalar", typed: :nothere
-    nothere.value = true
+    assert_raises(Kredis::TypeCasting::InvalidType) { nothere.value = true }
 
     assert_raises(Kredis::TypeCasting::InvalidType) { nothere.value }
   end

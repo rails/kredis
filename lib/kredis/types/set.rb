@@ -9,12 +9,12 @@ class Kredis::Types::Set < Kredis::Types::Proxying
   alias to_a members
 
   def add(*members)
-    sadd types_to_strings(members) if members.flatten.any?
+    sadd types_to_strings(members, typed) if members.flatten.any?
   end
   alias << add
 
   def remove(*members)
-    srem types_to_strings(members) if members.flatten.any?
+    srem types_to_strings(members, typed) if members.flatten.any?
   end
 
   def replace(*members)
@@ -25,7 +25,7 @@ class Kredis::Types::Set < Kredis::Types::Proxying
   end
 
   def include?(member)
-    sismember type_to_string(member)
+    sismember type_to_string(member, typed)
   end
 
   def size
