@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     kredis (0.2.3)
-      rails (>= 6.0.0)
+      activesupport (>= 6.0.0)
       redis (~> 4.2)
 
 GEM
@@ -148,6 +148,7 @@ PLATFORMS
 DEPENDENCIES
   byebug
   kredis!
+  rails (>= 6.0.0)
   rake
 
 BUNDLED WITH
