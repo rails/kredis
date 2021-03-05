@@ -19,6 +19,7 @@ class Person
   kredis_set :vacations
   kredis_json :settings
   kredis_counter :amount
+  kredis_boolean :noodling, default: false
 
   def self.name
     "Person"
@@ -96,6 +97,12 @@ class AttributesTest < ActiveSupport::TestCase
     @person.age.value = 41
     assert_equal 41, @person.age.value
     assert_equal "41", @person.age.to_s
+  end
+
+  test "boolean" do
+    assert_equal false, @person.noodling.value
+    @person.noodling.value = true
+    assert_equal true, @person.noodling.value
   end
 
   test "datetime" do
