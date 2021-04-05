@@ -12,6 +12,7 @@ class Person
   kredis_flag :special
   kredis_string :address
   kredis_integer :age
+  kredis_decimal :salary
   kredis_datetime :last_seen_at
   kredis_enum :morning, values: %w[ bright blue black ], default: "bright"
   kredis_slot :attention
@@ -96,6 +97,12 @@ class AttributesTest < ActiveSupport::TestCase
     @person.age.value = 41
     assert_equal 41, @person.age.value
     assert_equal "41", @person.age.to_s
+  end
+
+  test "decimal" do
+    @person.salary.value = 10000.07
+    assert_equal 10000.07, @person.salary.value
+    assert_equal "10000.07", @person.salary.to_s
   end
 
   test "datetime" do
