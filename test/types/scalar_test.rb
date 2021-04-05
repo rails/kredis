@@ -126,4 +126,30 @@ class ScalarTest < ActiveSupport::TestCase
       end
     end
   end
+
+  test "all scalar types can be configured with expires_in" do
+    duration = 1.second
+    scalar = Kredis.scalar("ephemeral", expires_in: duration)
+
+    scalar = Kredis.string("ephemeral", expires_in: duration)
+    assert_equal duration, scalar.expires_in
+
+    scalar = Kredis.integer("ephemeral", expires_in: duration)
+    assert_equal duration, scalar.expires_in
+
+    scalar = Kredis.decimal("ephemeral", expires_in: duration)
+    assert_equal duration, scalar.expires_in
+
+    scalar = Kredis.float("ephemeral", expires_in: duration)
+    assert_equal duration, scalar.expires_in
+
+    scalar = Kredis.boolean("ephemeral", expires_in: duration)
+    assert_equal duration, scalar.expires_in
+
+    scalar = Kredis.datetime("ephemeral", expires_in: duration)
+    assert_equal duration, scalar.expires_in
+
+    scalar = Kredis.json("ephemeral", expires_in: duration)
+    assert_equal duration, scalar.expires_in
+  end
 end
