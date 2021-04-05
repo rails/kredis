@@ -114,8 +114,8 @@ class ScalarTest < ActiveSupport::TestCase
   end
 
   test "configuring a scaler to always expire after assignment" do
-    forever_string = Kredis.scalar "forever", default: "unassigned", lifespan: nil
-    ephemeral_string = Kredis.scalar "ephemeral", default: "unassigned", lifespan: 1.second
+    forever_string = Kredis.scalar "forever", default: "unassigned", expires_in: nil
+    ephemeral_string = Kredis.scalar "ephemeral", default: "unassigned", expires_in: 1.second
 
     forever_string.value = "assigned"
     ephemeral_string.value = "assigned"

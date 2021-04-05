@@ -4,8 +4,8 @@ module Kredis::Types
   end
 
 
-  def scalar(key, typed: :string, default: nil, lifespan: nil, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: typed, default: default, lifespan: lifespan
+  def scalar(key, typed: :string, default: nil, expires_in: nil, config: :shared)
+    Scalar.new configured_for(config), namespaced_key(key), typed: typed, default: default, expires_in: expires_in
   end
 
   def string(key, default: nil, config: :shared)
