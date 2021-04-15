@@ -3,7 +3,6 @@ module Kredis::Types
     Proxy.new configured_for(config), namespaced_key(key)
   end
 
-
   def scalar(key, typed: :string, default: nil, config: :shared)
     Scalar.new configured_for(config), namespaced_key(key), typed: typed, default: default
   end
@@ -35,7 +34,6 @@ module Kredis::Types
   def json(key, default: nil, config: :shared)
     Scalar.new configured_for(config), namespaced_key(key), typed: :json, default: default
   end
-
 
   def counter(key, expires_in: nil, config: :shared)
     Counter.new configured_for(config), namespaced_key(key), expires_in: expires_in
@@ -74,15 +72,14 @@ module Kredis::Types
   end
 end
 
-require "kredis/types/proxy"
-require "kredis/types/proxying"
-
-require "kredis/types/scalar"
 require "kredis/types/counter"
 require "kredis/types/cycle"
-require "kredis/types/flag"
 require "kredis/types/enum"
+require "kredis/types/flag"
 require "kredis/types/list"
-require "kredis/types/unique_list"
+require "kredis/types/proxy"
+require "kredis/types/proxying"
+require "kredis/types/scalar"
 require "kredis/types/set"
 require "kredis/types/slots"
+require "kredis/types/unique_list"

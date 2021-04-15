@@ -6,7 +6,6 @@ Kredis is configured using env-aware YAML files, using `Rails.application.config
 
 Kredis provides namespacing support for keys such that you can safely run parallel testing against the data structures without different tests trampling each others data.
 
-
 ## Examples
 
 Kredis provides typed scalars for strings, integers, decimals, floats, booleans, datetimes, and JSON hashes:
@@ -139,7 +138,6 @@ person.morning.value = "blue"                        # => SET people:1:morning
 true == person.morning.blue?                         # => GET people:1:morning
 ```
 
-
 ## Installation
 
 1. Add the `kredis` gem to your Gemfile: `gem 'kredis'`
@@ -164,7 +162,6 @@ test:
 ```
 
 Additional configurations can be added under `config/redis/*.yml` and referenced when a type is created, e.g. `Kredis.string("mystring", config: :strings)` would lookup `config/redis/strings.yml`. Under the hood `Kredis.configured_for` is called which'll pass the configuration on to `Redis.new`.
-
 
 ## License
 
