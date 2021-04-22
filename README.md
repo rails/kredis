@@ -165,6 +165,32 @@ test:
 
 Additional configurations can be added under `config/redis/*.yml` and referenced when a type is created, e.g. `Kredis.string("mystring", config: :strings)` would lookup `config/redis/strings.yml`. Under the hood `Kredis.configured_for` is called which'll pass the configuration on to `Redis.new`.
 
+### Setting SSL options on Redis Connections
+
+If you need to connect to Redis with SSL, the recommended approach is to set your Redis instance manually by adding an entry to the `Kredis::Connections.connections` hash. Below an example showing how to connect to Redis using Client Authentication:
+
+```ruby
+Kredis::Connections.connections[:shared] = Redis.new(
+  url: ENV['REDIS_URL'],
+  ssl_params: {
+    cert_store: OpenSSL::X509::Store.new.tap { |store|
+      store.add_file(Rails.root.join('config', 'ca_cert.pem').to_s)
+    },
+
+    cert: OpenSSL::X509::Certificate.new(File.read(
+      Rails.root.join('config', 'client.crt')
+    )),
+
+    key: OpenSSL::PKey::RSA.new(
+      Rails.application.credentials.redis[:client_key]
+    ),
+
+    verify_mode: OpenSSL::SSL::VERIFY_PEER
+  }
+)
+```
+
+The above code could be added to either `config/environments/production.rb` or an initializer. Please ensure that your client private key, if used, is stored your credentials file or another secure location.
 
 ## License
 
