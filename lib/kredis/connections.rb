@@ -6,13 +6,13 @@ module Kredis::Connections
 
   def configured_for(name)
     connections[name] ||= begin
-      logger&.info "[Kredis] Connected to #{name}"
+      Kredis.instrument :meta, message: "Connected to #{name}"
       Redis.new configurator.config_for("redis/#{name}")
     end
   end
 
   def clear_all
-    logger&.info "[Kredis] Connections all cleared"
+    Kredis.instrument :meta, message: "Connections all cleared"
     connections.each_value do |connection|
       if Kredis.namespace
         keys = connection.keys("#{Kredis.namespace}:*")

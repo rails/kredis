@@ -9,7 +9,7 @@ class Kredis::Railtie < ::Rails::Railtie
   end
 
   initializer "kredis.logger" do
-    Kredis.logger = config.kredis.logger || Rails.logger
+    Kredis::LogSubscriber.logger = config.kredis.logger || Rails.logger
   end
 
   initializer "kredis.configurator" do
