@@ -17,6 +17,15 @@ class SetTest < ActiveSupport::TestCase
     assert_equal %w[ 1 2 3 ], @set.to_a
   end
 
+  test "add yields members to block" do
+    yielded_members = []
+    @set.add(%w[ 1 2 3 ]) do |members|
+      yielded_members = members
+    end
+
+    assert_equal %w[ 1 2 3 ], yielded_members
+  end
+
   test "remove" do
     @set.add(%w[ 1 2 3 4 ])
     @set.remove(%w[ 2 3 ])
@@ -30,10 +39,28 @@ class SetTest < ActiveSupport::TestCase
     assert_equal %w[ 1 2 3 4 ], @set.members
   end
 
+  test "remove yields members to the block" do
+    yielded_members = []
+    @set.add(%w[ 1 2 3 4 ])
+    @set.remove(%w[ 2 3 ]) do |members|
+      yielded_members = members
+    end
+    assert_equal %w[ 1 4 ], yielded_members
+  end
+
   test "replace" do
     @set.add(%w[ 1 2 3 4 ])
     @set.replace(%w[ 5 6 ])
     assert_equal %w[ 5 6 ], @set.members
+  end
+
+  test "replace yields members to the block" do
+    yielded_members = []
+    @set.add(%w[ 1 2 3 4 ])
+    @set.replace(%w[ 5 6 ]) do |members|
+      yielded_members = members
+    end
+    assert_equal %w[ 5 6 ], yielded_members
   end
 
   test "include" do

@@ -10,6 +10,14 @@ class ListTest < ActiveSupport::TestCase
     assert_equal %w[ 1 2 3 4 ], @list.elements
   end
 
+  test "append yields elements to block" do
+    yielded_elements = []
+    @list.append(%w[ 1 2 3 ]) do |elements|
+      yielded_elements = elements
+    end
+    assert_equal %w[ 1 2 3 ], yielded_elements
+  end
+
   test "append nothing" do
     @list.append(%w[ 1 2 3 ])
     @list.append([])
@@ -20,6 +28,14 @@ class ListTest < ActiveSupport::TestCase
     @list.prepend(%w[ 1 2 3 ])
     @list.prepend(4)
     assert_equal %w[ 4 3 2 1 ], @list.elements
+  end
+
+  test "prepend yields elements to block" do
+    yielded_elements = []
+    @list.prepend(%w[ 1 2 3 ]) do |elements|
+      yielded_elements = elements
+    end
+    assert_equal %w[ 3 2 1 ], yielded_elements
   end
 
   test "prepend nothing" do
@@ -33,6 +49,15 @@ class ListTest < ActiveSupport::TestCase
     @list.remove(%w[ 1 2 ])
     @list.remove(3)
     assert_equal %w[ 4 ], @list.elements
+  end
+
+  test "remove yields elements to the block" do
+    yielded_elements = []
+    @list.append(%w[ 1 2 3 4 ])
+    @list.remove(%w[ 1 2 ]) do |elements|
+      yielded_elements = elements
+    end
+    assert_equal %w[ 3 4 ], yielded_elements
   end
 
   test "typed as datetime" do

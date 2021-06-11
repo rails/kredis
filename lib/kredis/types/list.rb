@@ -10,14 +10,22 @@ class Kredis::Types::List < Kredis::Types::Proxying
 
   def remove(*elements)
     types_to_strings(elements).each { |element| lrem 0, element }
+
+    yield send(:elements) if block_given?
   end
 
   def prepend(*elements)
     lpush types_to_strings(elements) if elements.flatten.any?
+
+    # if called from a subclass/in a multi, don't yield from here
+    yield send(:elements) if block_given? && !(self.class < Kredis::Types::List)
   end
 
   def append(*elements)
     rpush types_to_strings(elements) if elements.flatten.any?
+
+    # if called from a subclass/in a multi, don't yield from here
+    yield send(:elements) if block_given? && !(self.class < Kredis::Types::List)
   end
   alias << append
 end

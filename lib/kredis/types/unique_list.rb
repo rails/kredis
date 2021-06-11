@@ -10,6 +10,8 @@ class Kredis::Types::UniqueList < Kredis::Types::List
       super
       ltrim 0, (limit - 1) if limit
     end if Array(elements).flatten.any?
+
+    yield send(:elements) if block_given?
   end
 
   def append(elements)
@@ -18,6 +20,8 @@ class Kredis::Types::UniqueList < Kredis::Types::List
       super
       ltrim (limit - 1), -1 if limit
     end if Array(elements).flatten.any?
+
+    yield send(:elements) if block_given?
   end
   alias << append
 end

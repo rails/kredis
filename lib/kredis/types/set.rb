@@ -10,11 +10,15 @@ class Kredis::Types::Set < Kredis::Types::Proxying
 
   def add(*members)
     sadd types_to_strings(members) if members.flatten.any?
+
+    yield send(:members) if block_given?
   end
   alias << add
 
   def remove(*members)
     srem types_to_strings(members) if members.flatten.any?
+
+    yield send(:members) if block_given?
   end
 
   def replace(*members)
@@ -22,6 +26,8 @@ class Kredis::Types::Set < Kredis::Types::Proxying
       del
       add members
     end
+
+    yield send(:members) if block_given?
   end
 
   def include?(member)
