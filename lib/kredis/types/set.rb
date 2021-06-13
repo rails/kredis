@@ -11,25 +11,25 @@ class Kredis::Types::Set < Kredis::Types::Proxying
   alias to_a members
 
   def add(*members)
-    sadd types_to_strings(members) if members.flatten.any?
-
-    @changed_callback&.call(self)
+    run_callbacks :change do
+      sadd types_to_strings(members) if members.flatten.any?
+    end
   end
   alias << add
 
   def remove(*members)
-    srem types_to_strings(members) if members.flatten.any?
-
-    @changed_callback&.call(self)
+    run_callbacks :change do
+      srem types_to_strings(members) if members.flatten.any?
+    end
   end
 
   def replace(*members)
-    multi do
-      del
-      add members
+    run_callbacks :change do
+      multi do
+        del
+        add members
+      end
     end
-
-    @changed_callback&.call(self)
   end
 
   def include?(member)
