@@ -2,7 +2,12 @@ require "test_helper"
 require "active_support/core_ext/object/inclusion"
 
 class SetTest < ActiveSupport::TestCase
-  setup { @set = Kredis.set "myset" }
+  setup do
+    @set = Kredis.set "myset"
+
+    @callback_mock = Minitest::Mock.new
+    @set_with_callback = Kredis.set "with_callback", changed: @callback_mock
+  end
 
   test "add" do
     @set.add(%w[ 1 2 3 ])
@@ -15,6 +20,13 @@ class SetTest < ActiveSupport::TestCase
     @set.add(%w[ 1 2 3 ])
     @set.add([])
     assert_equal %w[ 1 2 3 ], @set.to_a
+  end
+
+  test "add calls changed callback" do
+    @callback_mock.expect :call, nil, [@set_with_callback]
+    @set_with_callback.add(%w[ 1 2 3 ])
+
+    assert_mock @callback_mock
   end
 
   test "remove" do
@@ -30,10 +42,30 @@ class SetTest < ActiveSupport::TestCase
     assert_equal %w[ 1 2 3 4 ], @set.members
   end
 
+  test "remove calls changed callback" do
+    @callback_mock.expect :call, nil, [@set_with_callback]
+    @set_with_callback.add(%w[ 1 2 3 4 ])
+
+    @callback_mock.expect :call, nil, [@set_with_callback]
+    @set_with_callback.remove(%[ 2 3 ])
+
+    assert_mock @callback_mock
+  end
+
   test "replace" do
     @set.add(%w[ 1 2 3 4 ])
     @set.replace(%w[ 5 6 ])
     assert_equal %w[ 5 6 ], @set.members
+  end
+
+  test "replace calls changed callback" do
+    @callback_mock.expect :call, nil, [@set_with_callback]
+    @set_with_callback.add(%w[ 1 2 3 4 ])
+
+    @callback_mock.expect :call, nil, [@set_with_callback]
+    @set_with_callback.remove(%[ 5 6 ])
+
+    assert_mock @callback_mock
   end
 
   test "include" do

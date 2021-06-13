@@ -61,8 +61,8 @@ module Kredis::Types
     UniqueList.new configured_for(config), namespaced_key(key), typed: typed, limit: limit
   end
 
-  def set(key, typed: :string, config: :shared)
-    Set.new configured_for(config), namespaced_key(key), typed: typed
+  def set(key, typed: :string, config: :shared, changed: ->(set){})
+    Set.new configured_for(config), namespaced_key(key), typed: typed, changed: changed
   end
 
   def slot(key, config: :shared)
@@ -76,6 +76,7 @@ end
 
 require "kredis/types/proxy"
 require "kredis/types/proxying"
+require "kredis/types/callbacks"
 
 require "kredis/types/scalar"
 require "kredis/types/counter"
