@@ -1,6 +1,8 @@
 class Kredis::Types::List < Kredis::Types::Proxying
   proxying :lrange, :lrem, :lpush, :rpush
 
+  include Kredis::Types::Callbacks
+
   attr_accessor :typed
 
   def elements
@@ -9,15 +11,21 @@ class Kredis::Types::List < Kredis::Types::Proxying
   alias to_a elements
 
   def remove(*elements)
-    types_to_strings(elements).each { |element| lrem 0, element }
+    run_callbacks :change do
+      types_to_strings(elements).each { |element| lrem 0, element }
+    end
   end
 
   def prepend(*elements)
-    lpush types_to_strings(elements) if elements.flatten.any?
+    run_callbacks :change do
+      lpush types_to_strings(elements) if elements.flatten.any?
+    end
   end
 
   def append(*elements)
-    rpush types_to_strings(elements) if elements.flatten.any?
+    run_callbacks :change do
+      rpush types_to_strings(elements) if elements.flatten.any?
+    end
   end
   alias << append
 end

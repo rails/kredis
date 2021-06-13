@@ -2,7 +2,12 @@ require "test_helper"
 require "active_support/core_ext/integer"
 
 class ListTest < ActiveSupport::TestCase
-  setup { @list = Kredis.list "mylist" }
+  setup do
+    @list = Kredis.list "mylist"
+
+    @callback_mock = Minitest::Mock.new
+    @list_with_callback = Kredis.list "with_callback", changed: @callback_mock
+  end
 
   test "append" do
     @list.append(%w[ 1 2 3 ])
@@ -14,6 +19,13 @@ class ListTest < ActiveSupport::TestCase
     @list.append(%w[ 1 2 3 ])
     @list.append([])
     assert_equal %w[ 1 2 3 ], @list.to_a
+  end
+
+  test "append calls changed callback" do
+    @callback_mock.expect :call, nil, [@list_with_callback]
+    @list_with_callback.append(%w[ 1 2 3 ])
+
+    assert_mock @callback_mock
   end
 
   test "prepend" do
@@ -28,11 +40,28 @@ class ListTest < ActiveSupport::TestCase
     assert_equal %w[ 3 2 1 ], @list.elements
   end
 
+  test "prepend calls changed callback" do
+    @callback_mock.expect :call, nil, [@list_with_callback]
+    @list_with_callback.prepend(%w[ 1 2 3 ])
+
+    assert_mock @callback_mock
+  end
+
   test "remove" do
     @list.append(%w[ 1 2 3 4 ])
     @list.remove(%w[ 1 2 ])
     @list.remove(3)
     assert_equal %w[ 4 ], @list.elements
+  end
+
+  test "remove calls changed callback" do
+    @callback_mock.expect :call, nil, [@list_with_callback]
+    @list_with_callback.append(%w[ 1 2 3 4 ])
+
+    @callback_mock.expect :call, nil, [@list_with_callback]
+    @list_with_callback.remove(%w[ 1 2 ])
+
+    assert_mock @callback_mock
   end
 
   test "typed as datetime" do

@@ -53,8 +53,8 @@ module Kredis::Types
     Enum.new configured_for(config), namespaced_key(key), values: values, default: default
   end
 
-  def list(key, typed: :string, config: :shared)
-    List.new configured_for(config), namespaced_key(key), typed: typed
+  def list(key, typed: :string, config: :shared, changed: ->(list){})
+    List.new configured_for(config), namespaced_key(key), typed: typed, changed: changed
   end
 
   def unique_list(key, typed: :string, limit: nil, config: :shared)
