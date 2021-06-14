@@ -38,16 +38,16 @@ module Kredis::Attributes
       kredis_connection_with __method__, name, key, config: config
     end
 
-    def kredis_list(name, key: nil, typed: :string, config: :shared)
-      kredis_connection_with __method__, name, key, typed: typed, config: config
+    def kredis_list(name, key: nil, typed: :string, config: :shared, changed: ->(list){})
+      kredis_connection_with __method__, name, key, typed: typed, config: config, changed: changed
     end
 
-    def kredis_unique_list(name, limit: nil, key: nil, typed: :string, config: :shared)
-      kredis_connection_with __method__, name, key, limit: limit, typed: typed, config: config
+    def kredis_unique_list(name, limit: nil, key: nil, typed: :string, config: :shared, changed: ->(list){})
+      kredis_connection_with __method__, name, key, limit: limit, typed: typed, config: config, changed: changed
     end
 
-    def kredis_set(name, key: nil, typed: :string, config: :shared)
-      kredis_connection_with __method__, name, key, typed: typed, config: config
+    def kredis_set(name, key: nil, typed: :string, config: :shared, changed: ->(set){})
+      kredis_connection_with __method__, name, key, typed: typed, config: config, changed: changed
     end
 
     def kredis_slot(name, key: nil, config: :shared)
