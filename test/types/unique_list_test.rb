@@ -1,7 +1,12 @@
 require "test_helper"
 
 class UniqueListTest < ActiveSupport::TestCase
-  setup { @list = Kredis.unique_list "myuniquelist" }
+  setup do
+    @list = Kredis.unique_list "myuniquelist"
+
+    @callback_mock = Minitest::Mock.new
+    @list_with_callback = Kredis.list "with_callback", changed: @callback_mock
+  end
 
   test "append" do
     @list.append(%w[ 1 2 3 ])
@@ -39,5 +44,19 @@ class UniqueListTest < ActiveSupport::TestCase
 
     @list.remove(2)
     assert_equal [ 1 ], @list.elements
+  end
+
+  test "append calls changed callback" do
+    @callback_mock.expect :call, nil, [@list_with_callback]
+    @list_with_callback.append(%w[ 1 2 3 ])
+
+    assert_mock @callback_mock
+  end
+
+  test "prepend calls changed callback" do
+    @callback_mock.expect :call, nil, [@list_with_callback]
+    @list_with_callback.prepend(%w[ 1 2 3 ])
+
+    assert_mock @callback_mock
   end
 end

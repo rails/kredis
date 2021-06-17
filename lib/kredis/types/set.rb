@@ -1,7 +1,8 @@
 class Kredis::Types::Set < Kredis::Types::Proxying
   proxying :smembers, :sadd, :srem, :multi, :del, :sismember, :scard, :spop
 
-  include Kredis::Types::Callbacks
+  prepend Kredis::Types::Callbacks
+  runs_callbacks_for :add, :remove, :replace
 
   attr_accessor :typed
 
@@ -11,24 +12,18 @@ class Kredis::Types::Set < Kredis::Types::Proxying
   alias to_a members
 
   def add(*members)
-    run_callbacks :change do
-      sadd types_to_strings(members) if members.flatten.any?
-    end
+    sadd types_to_strings(members) if members.flatten.any?
   end
   alias << add
 
   def remove(*members)
-    run_callbacks :change do
-      srem types_to_strings(members) if members.flatten.any?
-    end
+    srem types_to_strings(members) if members.flatten.any?
   end
 
   def replace(*members)
-    run_callbacks :change do
-      multi do
-        del
-        add members
-      end
+    multi do
+      del
+      add members
     end
   end
 

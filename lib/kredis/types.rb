@@ -57,8 +57,8 @@ module Kredis::Types
     List.new configured_for(config), namespaced_key(key), typed: typed, changed: changed
   end
 
-  def unique_list(key, typed: :string, limit: nil, config: :shared)
-    UniqueList.new configured_for(config), namespaced_key(key), typed: typed, limit: limit
+  def unique_list(key, typed: :string, limit: nil, config: :shared, changed: ->(unique_list){})
+    UniqueList.new configured_for(config), namespaced_key(key), typed: typed, limit: limit, changed: changed
   end
 
   def set(key, typed: :string, config: :shared, changed: ->(set){})
