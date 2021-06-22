@@ -71,7 +71,7 @@ module Kredis::Attributes
           if instance_variable_defined?(ivar_symbol)
             instance_variable_get(ivar_symbol)
           else
-            instance_variable_set(ivar_symbol, Kredis.send(type, kredis_key_evaluated(key) || kredis_key_for_attribute(name), **options))
+            instance_variable_set(ivar_symbol, Kredis::CallbacksProxy.new(Kredis.send(type, kredis_key_evaluated(key) || kredis_key_for_attribute(name), **options), self))
           end
         end
       end

@@ -8,6 +8,7 @@ require "kredis/namespace"
 require "kredis/type_casting"
 require "kredis/types"
 require "kredis/attributes"
+require "kredis/callbacks_proxy"
 
 require "kredis/railtie" if defined?(Rails::Railtie)
 
