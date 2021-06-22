@@ -9,9 +9,11 @@ class Kredis::CallbacksProxy
   def method_missing(method, *args, **kwargs, &block)
     result = @type.send(method, *args, **kwargs, &block)
 
-    case @callback
-    when Symbol then @record.send(@callback, @record)
-    when Proc then @callback.call(@record)
+    if @type.callback_operations.include? method
+      case @callback
+      when Symbol then @record.send(@callback, @record)
+      when Proc then @callback.call(@record)
+      end
     end
 
     result
