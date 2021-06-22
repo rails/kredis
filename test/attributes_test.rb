@@ -8,6 +8,8 @@ class Person
   kredis_proxy :something, key: ->(p) { "person:#{p.id}:something" }
   kredis_list :names
   kredis_list :names_with_custom_key, key: ->(p) { "person:#{p.id}:names_customized" }
+  kredis_list :names_with_after_change_proc_callback, after_change: ->(p) {}
+  kredis_list :names_with_after_change_method_callback, after_change: :changed
   kredis_unique_list :skills, limit: 2
   kredis_flag :special
   kredis_string :address
@@ -27,6 +29,9 @@ class Person
 
   def id
     8
+  end
+
+  def changed(p)
   end
 end
 
@@ -63,6 +68,23 @@ class AttributesTest < ActiveSupport::TestCase
   test "list with custom proc key" do
     @person.names_with_custom_key.append(%w[ david kasper ])
     assert_equal %w[ david kasper ], Kredis.redis.lrange("person:8:names_customized", 0, -1)
+  end
+
+  test "list with after_change proc callback" do
+    @person.names_with_after_change_proc_callback.append(%w[ david kasper ])
+  end
+
+  test "list with after_change method callback" do
+    person_mock = Minitest::Mock.new
+
+    Person.stub :new, person_mock do
+      person = Person.new
+      person_mock.expect(:names_with_after_change_method_callback, Kredis::CallbacksProxy.new(Kredis.list("person:8:names"), person, :changed))
+      person_mock.expect(:changed, nil, [person])
+      person.names_with_after_change_method_callback.append(%w[ david kasper ])
+    end
+
+    assert_mock person_mock
   end
 
   test "unique list" do

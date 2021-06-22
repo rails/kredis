@@ -38,8 +38,8 @@ module Kredis::Attributes
       kredis_connection_with __method__, name, key, config: config
     end
 
-    def kredis_list(name, key: nil, typed: :string, config: :shared)
-      kredis_connection_with __method__, name, key, typed: typed, config: config
+    def kredis_list(name, key: nil, typed: :string, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, typed: typed, config: config, after_change: after_change
     end
 
     def kredis_unique_list(name, limit: nil, key: nil, typed: :string, config: :shared)
@@ -66,12 +66,18 @@ module Kredis::Attributes
       def kredis_connection_with(method, name, key, **options)
         ivar_symbol = :"@#{name}_#{method}"
         type = method.to_s.sub("kredis_", "")
+        callback = options.delete(:after_change)
 
         define_method(name) do
           if instance_variable_defined?(ivar_symbol)
             instance_variable_get(ivar_symbol)
           else
-            instance_variable_set(ivar_symbol, Kredis::CallbacksProxy.new(Kredis.send(type, kredis_key_evaluated(key) || kredis_key_for_attribute(name), **options), self))
+            instance_variable_set(ivar_symbol,
+                                  Kredis::CallbacksProxy.new(
+                                    Kredis.send(type, kredis_key_evaluated(key) || kredis_key_for_attribute(name), **options),
+                                    self,
+                                    callback)
+                                 )
           end
         end
       end
