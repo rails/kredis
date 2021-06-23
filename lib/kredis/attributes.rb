@@ -2,64 +2,64 @@ module Kredis::Attributes
   extend ActiveSupport::Concern
 
   class_methods do
-    def kredis_proxy(name, key: nil, config: :shared)
-      kredis_connection_with __method__, name, key, config: config
+    def kredis_proxy(name, key: nil, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change
     end
 
-    def kredis_string(name, key: nil, config: :shared)
-      kredis_connection_with __method__, name, key, config: config
+    def kredis_string(name, key: nil, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change
     end
 
-    def kredis_integer(name, key: nil, config: :shared)
-      kredis_connection_with __method__, name, key, config: config
+    def kredis_integer(name, key: nil, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change
     end
 
-    def kredis_decimal(name, key: nil, config: :shared)
-      kredis_connection_with __method__, name, key, config: config
+    def kredis_decimal(name, key: nil, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change
     end
 
-    def kredis_datetime(name, key: nil, config: :shared)
-      kredis_connection_with __method__, name, key, config: config
+    def kredis_datetime(name, key: nil, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change
     end
 
-    def kredis_flag(name, key: nil, config: :shared)
-      kredis_connection_with __method__, name, key, config: config
+    def kredis_flag(name, key: nil, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change
 
       define_method("#{name}?") do
         send(name).marked?
       end
     end
 
-    def kredis_enum(name, key: nil, values:, default:, config: :shared)
-      kredis_connection_with __method__, name, key, values: values, default: default, config: config
+    def kredis_enum(name, key: nil, values:, default:, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, values: values, default: default, config: config, after_change: after_change
     end
 
-    def kredis_json(name, key: nil, config: :shared)
-      kredis_connection_with __method__, name, key, config: config
+    def kredis_json(name, key: nil, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change
     end
 
     def kredis_list(name, key: nil, typed: :string, config: :shared, after_change: nil)
       kredis_connection_with __method__, name, key, typed: typed, config: config, after_change: after_change
     end
 
-    def kredis_unique_list(name, limit: nil, key: nil, typed: :string, config: :shared)
-      kredis_connection_with __method__, name, key, limit: limit, typed: typed, config: config
+    def kredis_unique_list(name, limit: nil, key: nil, typed: :string, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, limit: limit, typed: typed, config: config, after_change: after_change
     end
 
     def kredis_set(name, key: nil, typed: :string, config: :shared, after_change: nil)
       kredis_connection_with __method__, name, key, typed: typed, config: config, after_change: after_change
     end
 
-    def kredis_slot(name, key: nil, config: :shared)
-      kredis_connection_with __method__, name, key, config: config
+    def kredis_slot(name, key: nil, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change
     end
 
-    def kredis_slots(name, available:, key: nil, config: :shared)
-      kredis_connection_with __method__, name, key, available: available, config: config
+    def kredis_slots(name, available:, key: nil, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, available: available, config: config, after_change: after_change
     end
 
-    def kredis_counter(name, key: nil, config: :shared)
-      kredis_connection_with __method__, name, key, config: config
+    def kredis_counter(name, key: nil, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change
     end
 
     private
