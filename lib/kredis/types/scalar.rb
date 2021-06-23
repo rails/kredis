@@ -3,6 +3,10 @@ class Kredis::Types::Scalar < Kredis::Types::Proxying
 
   attr_accessor :typed, :default
 
+  def callback_operations
+    %i[value= clear].freeze
+  end
+
   def value=(value)
     set type_to_string(value)
   end

@@ -3,6 +3,10 @@ class Kredis::Types::List < Kredis::Types::Proxying
 
   attr_accessor :typed
 
+  def callback_operations
+    %i[remove prepend append].freeze
+  end
+
   def elements
     strings_to_types(lrange(0, -1) || [], typed)
   end

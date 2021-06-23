@@ -5,6 +5,10 @@ class Kredis::Types::Slots < Kredis::Types::Proxying
 
   attr_accessor :available
 
+  def callback_operations
+    %i[reserve release reset].freeze
+  end
+
   def reserve
     failsafe returning: false do
       if block_given?

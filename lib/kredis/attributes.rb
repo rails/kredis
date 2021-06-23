@@ -46,8 +46,8 @@ module Kredis::Attributes
       kredis_connection_with __method__, name, key, limit: limit, typed: typed, config: config
     end
 
-    def kredis_set(name, key: nil, typed: :string, config: :shared)
-      kredis_connection_with __method__, name, key, typed: typed, config: config
+    def kredis_set(name, key: nil, typed: :string, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, typed: typed, config: config, after_change: after_change
     end
 
     def kredis_slot(name, key: nil, config: :shared)
