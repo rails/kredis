@@ -10,9 +10,10 @@ class Kredis::CallbacksProxy
     result = @type.send(method, *args, **kwargs, &block)
 
     if @type.callback_operations&.include? method
-      case @callback
-      when Symbol then @record.send(@callback, @record)
-      when Proc then @callback.call(@record)
+      if @callback.respond_to? :call
+        @callback.call(@record)
+      elsif @callback.is_a? Symbol
+        @record.send(@callback, @record)
       end
     end
 
