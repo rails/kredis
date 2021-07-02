@@ -3,6 +3,8 @@ class Kredis::Types::Slots < Kredis::Types::Proxying
 
   proxying :incr, :decr, :get, :del
 
+  invoke_after_change_on :reserve, :release, :reset
+
   attr_accessor :available
 
   def reserve

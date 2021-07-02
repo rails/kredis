@@ -1,6 +1,8 @@
 class Kredis::Types::Set < Kredis::Types::Proxying
   proxying :smembers, :sadd, :srem, :multi, :del, :sismember, :scard, :spop
 
+  invoke_after_change_on :add, :remove, :replace, :take, :clear
+
   attr_accessor :typed
 
   def members

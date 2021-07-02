@@ -1,6 +1,8 @@
 class Kredis::Types::Scalar < Kredis::Types::Proxying
   proxying :set, :get, :exists?, :del
 
+  invoke_after_change_on :value=, :clear
+
   attr_accessor :typed, :default
 
   def value=(value)

@@ -1,6 +1,8 @@
 class Kredis::Types::Enum < Kredis::Types::Proxying
   proxying :set, :get, :del
 
+  invoke_after_change_on :value=, :reset
+
   attr_accessor :values, :default
 
   def initialize(...)

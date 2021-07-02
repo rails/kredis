@@ -1,6 +1,8 @@
 class Kredis::Types::Counter < Kredis::Types::Proxying
   proxying :multi, :set, :incrby, :decrby, :get, :del
 
+  invoke_after_change_on :increment, :decrement, :reset
+
   attr_accessor :expires_in
 
   def increment(by: 1)

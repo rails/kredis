@@ -1,6 +1,9 @@
 require "active_support/core_ext/module/delegation"
 
 class Kredis::Types::Proxying
+  require_relative "proxying/after_change"
+  prepend AfterChange
+
   attr_accessor :proxy, :redis, :key
 
   def self.proxying(*commands)

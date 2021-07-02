@@ -1,6 +1,8 @@
 class Kredis::Types::List < Kredis::Types::Proxying
   proxying :lrange, :lrem, :lpush, :rpush
 
+  invoke_after_change_on :remove, :prepend, :append
+
   attr_accessor :typed
 
   def elements

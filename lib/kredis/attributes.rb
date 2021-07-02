@@ -2,68 +2,68 @@ module Kredis::Attributes
   extend ActiveSupport::Concern
 
   class_methods do
-    def kredis_proxy(name, key: nil, config: :shared)
-      kredis_connection_with __method__, name, key, config: config
+    def kredis_proxy(name, key: nil, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change
     end
 
-    def kredis_string(name, key: nil, config: :shared)
-      kredis_connection_with __method__, name, key, config: config
+    def kredis_string(name, key: nil, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change
     end
 
-    def kredis_integer(name, key: nil, config: :shared)
-      kredis_connection_with __method__, name, key, config: config
+    def kredis_integer(name, key: nil, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change
     end
 
-    def kredis_decimal(name, key: nil, config: :shared)
-      kredis_connection_with __method__, name, key, config: config
+    def kredis_decimal(name, key: nil, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change
     end
 
-    def kredis_datetime(name, key: nil, config: :shared)
-      kredis_connection_with __method__, name, key, config: config
+    def kredis_datetime(name, key: nil, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change
     end
 
-    def kredis_flag(name, key: nil, config: :shared)
-      kredis_connection_with __method__, name, key, config: config
+    def kredis_flag(name, key: nil, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change
 
       define_method("#{name}?") do
         send(name).marked?
       end
     end
 
-    def kredis_enum(name, key: nil, values:, default:, config: :shared)
-      kredis_connection_with __method__, name, key, values: values, default: default, config: config
+    def kredis_enum(name, key: nil, values:, default:, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, values: values, default: default, config: config, after_change: after_change
     end
 
-    def kredis_json(name, key: nil, config: :shared)
-      kredis_connection_with __method__, name, key, config: config
+    def kredis_json(name, key: nil, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change
     end
 
-    def kredis_list(name, key: nil, typed: :string, config: :shared)
-      kredis_connection_with __method__, name, key, typed: typed, config: config
+    def kredis_list(name, key: nil, typed: :string, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, typed: typed, config: config, after_change: after_change
     end
 
-    def kredis_unique_list(name, limit: nil, key: nil, typed: :string, config: :shared)
-      kredis_connection_with __method__, name, key, limit: limit, typed: typed, config: config
+    def kredis_unique_list(name, limit: nil, key: nil, typed: :string, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, limit: limit, typed: typed, config: config, after_change: after_change
     end
 
-    def kredis_set(name, key: nil, typed: :string, config: :shared)
-      kredis_connection_with __method__, name, key, typed: typed, config: config
+    def kredis_set(name, key: nil, typed: :string, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, typed: typed, config: config, after_change: after_change
     end
 
-    def kredis_slot(name, key: nil, config: :shared)
-      kredis_connection_with __method__, name, key, config: config
+    def kredis_slot(name, key: nil, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change
     end
 
-    def kredis_slots(name, available:, key: nil, config: :shared)
-      kredis_connection_with __method__, name, key, available: available, config: config
+    def kredis_slots(name, available:, key: nil, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, available: available, config: config, after_change: after_change
     end
 
-    def kredis_counter(name, key: nil, config: :shared)
-      kredis_connection_with __method__, name, key, config: config
+    def kredis_counter(name, key: nil, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change
     end
 
     private
-      def kredis_connection_with(method, name, key, **options)
+      def kredis_connection_with(method, name, key, after_change: nil, **options)
         ivar_symbol = :"@#{name}_#{method}"
         type = method.to_s.sub("kredis_", "")
 
@@ -71,7 +71,9 @@ module Kredis::Attributes
           if instance_variable_defined?(ivar_symbol)
             instance_variable_get(ivar_symbol)
           else
-            instance_variable_set(ivar_symbol, Kredis.send(type, kredis_key_evaluated(key) || kredis_key_for_attribute(name), **options))
+            key = kredis_key_evaluated(key) || kredis_key_for_attribute(name)
+            after_change = enrich_after_change_with_record_access(after_change)
+            instance_variable_set(ivar_symbol, Kredis.send(type, key, after_change: after_change, **options))
           end
         end
       end
@@ -91,5 +93,13 @@ module Kredis::Attributes
 
     def extract_kredis_id
       try(:id) or raise NotImplementedError, "kredis needs a unique id, either implement an id method or pass a custom key."
+    end
+
+
+    def enrich_after_change_with_record_access(after_change)
+      case after_change
+      when Proc   then proc { after_change.call(self) }
+      when Symbol then proc { send(after_change) }
+      end
     end
 end

@@ -1,4 +1,6 @@
 class Kredis::Types::Cycle < Kredis::Types::Counter
+  invoke_after_change_on :next
+
   attr_accessor :values
 
   alias index value
