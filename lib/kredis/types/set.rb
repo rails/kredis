@@ -3,10 +3,6 @@ class Kredis::Types::Set < Kredis::Types::Proxying
 
   attr_accessor :typed
 
-  def callback_operations
-    %i[add remove replace take clear].freeze
-  end
-
   def members
     strings_to_types(smembers || [], typed).sort
   end

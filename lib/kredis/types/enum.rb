@@ -3,10 +3,6 @@ class Kredis::Types::Enum < Kredis::Types::Proxying
 
   attr_accessor :values, :default
 
-  def callback_operations
-    %i[value= reset].freeze
-  end
-
   def initialize(...)
     super
     define_predicates_for_values
