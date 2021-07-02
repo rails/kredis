@@ -1,200 +1,144 @@
 require "test_helper"
 
-def with_mocked_record
-  person_mock = Minitest::Mock.new
+class Person
+  include Kredis::Attributes
 
-  Person.stub :new, person_mock do
-    person = Person.new
-    yield person_mock, person
+  kredis_list :names_with_proc_callback, after_change: ->(p) { p.callback_flag = true }
+  kredis_list :names_with_method_callback, after_change: :changed
+  kredis_flag :special_with_proc_callback, after_change: ->(p) { p.callback_flag = true }
+  kredis_flag :special_with_method_callback, after_change: :changed
+  kredis_string :address_with_proc_callback, after_change: ->(p) { p.callback_flag = true }
+  kredis_string :address_with_method_callback, after_change: :changed
+  kredis_enum :morning_with_proc_callback, values: %w[ bright blue black ], default: "bright", after_change: ->(p) { p.callback_flag = true }
+  kredis_enum :morning_with_method_callback, values: %w[ bright blue black ], default: "bright", after_change: :changed
+  kredis_slot :attention_with_proc_callback, after_change: ->(p) { p.callback_flag = true }
+  kredis_slot :attention_with_method_callback, after_change: :changed
+  kredis_set :vacations_with_proc_callback, after_change: ->(p) { p.callback_flag = true }
+  kredis_set :vacations_with_method_callback, after_change: :changed
+  kredis_json :settings_with_proc_callback, after_change: ->(p) { p.callback_flag = true }
+  kredis_json :settings_with_method_callback, after_change: :changed
+  kredis_counter :amount_with_proc_callback, after_change: ->(p) { p.callback_flag = true }
+  kredis_counter :amount_with_method_callback, after_change: :changed
 
-    assert_mock person_mock
+  attr_accessor :callback_flag
+
+  def initialize
+    @callback_flag = false
   end
-end
 
-def with_mocked_proc
-  proc_mock = Minitest::Mock.new
+  def self.name
+    "Person"
+  end
 
-  yield proc_mock
+  def id
+    8
+  end
 
-  assert_mock proc_mock
+  def changed
+    @callback_flag = true
+  end
 end
 
 class CallbacksTest < ActiveSupport::TestCase
-  setup { @person_mock = Minitest::Mock.new }
+  setup do
+    @person = Person.new
+
+    refute @person.callback_flag
+  end
 
   test "list with after_change proc callback" do
-    with_mocked_proc do |proc_mock|
-      with_mocked_record do |person_mock, person|
-        names = Kredis.list("person:8:names")
-        person_mock.expect(:names, Kredis::CallbacksProxy.new(names, person, proc_mock))
-        proc_mock.expect(:call, nil, [person, names])
+    @person.names_with_proc_callback.append %w[ david kasper ]
 
-        person.names.append(%w[ david kasper ])
-      end
-    end
+    assert @person.callback_flag
   end
 
   test "list with after_change method callback" do
-    with_mocked_record do |person_mock, person|
-      names = Kredis.list("person:8:names")
-      person_mock.expect(:names, Kredis::CallbacksProxy.new(names, person, :changed))
-      person_mock.expect(:changed, nil, [person, names])
+    @person.names_with_method_callback.append %w[ david kasper ]
 
-      person.names.append(%w[ david kasper ])
-    end
+    assert @person.callback_flag
   end
 
   test "flag with after_change proc callback" do
-    with_mocked_proc do |proc_mock|
-      with_mocked_record do |person_mock, person|
-        special = Kredis.flag("person:8:special")
-        person_mock.expect(:special, Kredis::CallbacksProxy.new(special, person, proc_mock))
-        proc_mock.expect(:call, nil, [person, special])
+    @person.special_with_proc_callback.mark
 
-        person.special.mark
-      end
-    end
+    assert @person.callback_flag
   end
 
   test "flag with after_change method callback" do
-    with_mocked_record do |person_mock, person|
-      special = Kredis.flag("person:8:special")
-      person_mock.expect(:special, Kredis::CallbacksProxy.new(special, person, :changed))
-      person_mock.expect(:changed, nil, [person, special])
+    @person.special_with_method_callback.mark
 
-      person.special.mark
-    end
+    assert @person.callback_flag
   end
 
   test "string with after_change proc callback" do
-    with_mocked_proc do |proc_mock|
-      with_mocked_record do |person_mock, person|
-        address = Kredis.string("person:8:address")
-        person_mock.expect(:address, Kredis::CallbacksProxy.new(address, person, proc_mock))
-        proc_mock.expect(:call, nil, [person, address])
+    @person.address_with_proc_callback.value = "Copenhagen"
 
-        person.address.value = "Copenhagen"
-      end
-    end
+    assert @person.callback_flag
   end
 
   test "string with after_change method callback" do
-    with_mocked_record do |person_mock, person|
-      address = Kredis.string("person:8:address")
-      person_mock.expect(:address, Kredis::CallbacksProxy.new(address, person, :changed))
-      person_mock.expect(:changed, nil, [person, address])
+    @person.address_with_proc_callback.value = "Copenhagen"
 
-      person.address.value = "Copenhagen"
-    end
+    assert @person.callback_flag
   end
 
   test "slot with after_change proc callback" do
-    with_mocked_proc do |proc_mock|
-      with_mocked_record do |person_mock, person|
-        attention = Kredis.slot("person:8:attention")
-        person_mock.expect(:attention, Kredis::CallbacksProxy.new(attention, person, proc_mock))
-        proc_mock.expect(:call, nil, [person, attention])
+    @person.attention_with_proc_callback.reserve
 
-        person.attention.reserve
-      end
-    end
+    assert @person.callback_flag
   end
 
   test "slot with after_change method callback" do
-    with_mocked_record do |person_mock, person|
-      attention = Kredis.slot("person:8:attention")
-      person_mock.expect(:attention, Kredis::CallbacksProxy.new(attention, person, :changed))
-      person_mock.expect(:changed, nil, [person, attention])
+    @person.attention_with_method_callback.reserve
 
-      person.attention.reserve
-    end
+    assert @person.callback_flag
   end
 
   test "enum with after_change proc callback" do
-    with_mocked_proc do |proc_mock|
-      with_mocked_record do |person_mock, person|
-        morning = Kredis.enum("person:8:morning", values: %w[ bright blue black ], default: "bright")
-        person_mock.expect(:morning, Kredis::CallbacksProxy.new(morning, person, proc_mock))
-        proc_mock.expect(:call, nil, [person, morning])
+    @person.morning_with_proc_callback.value = "blue"
 
-        person.morning.value = "blue"
-      end
-    end
+    assert @person.callback_flag
   end
 
   test "enum with after_change method callback" do
-    with_mocked_record do |person_mock, person|
-      morning = Kredis.enum("person:8:morning", values: %w[ bright blue black ], default: "bright")
-      person_mock.expect(:morning, Kredis::CallbacksProxy.new(morning, person, :changed))
-      person_mock.expect(:changed, nil, [person, morning])
+    @person.morning_with_method_callback.value = "blue"
 
-      person.morning.value = "blue"
-    end
+    assert @person.callback_flag
   end
 
   test "set with after_change proc callback" do
-    with_mocked_proc do |proc_mock|
-      with_mocked_record do |person_mock, person|
-        vacations = Kredis.set("person:8:vacations")
-        person_mock.expect(:vacations, Kredis::CallbacksProxy.new(vacations, person, proc_mock))
-        proc_mock.expect(:call, nil, [person, vacations])
+    @person.vacations_with_proc_callback.add "paris"
 
-        person.vacations.add "paris"
-      end
-    end
+    assert @person.callback_flag
   end
 
   test "set with after_change method callback" do
-    with_mocked_record do |person_mock, person|
-      vacations = Kredis.set("person:8:vacations")
-      person_mock.expect(:vacations, Kredis::CallbacksProxy.new(vacations, person, :changed))
-      person_mock.expect(:changed, nil, [person, vacations])
+    @person.vacations_with_method_callback.add "paris"
 
-      person.vacations.add "paris"
-    end
+    assert @person.callback_flag
   end
 
   test "json with after_change proc callback" do
-    with_mocked_proc do |proc_mock|
-      with_mocked_record do |person_mock, person|
-        settings = Kredis.json("person:8:settings")
-        person_mock.expect(:settings, Kredis::CallbacksProxy.new(settings, person, proc_mock))
-        proc_mock.expect(:call, nil, [person, settings])
+    @person.settings_with_proc_callback.value = { "color" => "red", "count" => 2 }
 
-        person.settings.value = { "color" => "red", "count" => 2 }
-      end
-    end
+    assert @person.callback_flag
   end
 
   test "json with after_change method callback" do
-    with_mocked_record do |person_mock, person|
-      settings = Kredis.json("person:8:settings")
-      person_mock.expect(:settings, Kredis::CallbacksProxy.new(settings, person, :changed))
-      person_mock.expect(:changed, nil, [person, settings])
+    @person.settings_with_method_callback.value = { "color" => "red", "count" => 2 }
 
-      person.settings.value = { "color" => "red", "count" => 2 }
-    end
+    assert @person.callback_flag
   end
 
   test "counter with after_change proc callback" do
-    with_mocked_proc do |proc_mock|
-      with_mocked_record do |person_mock, person|
-        amount = Kredis.counter("person:8:amount")
-        person_mock.expect(:amount, Kredis::CallbacksProxy.new(amount, person, proc_mock))
-        proc_mock.expect(:call, nil, [person, amount])
+    @person.amount_with_proc_callback.increment
 
-        person.amount.increment
-      end
-    end
+    assert @person.callback_flag
   end
 
   test "counter with after_change method callback" do
-    with_mocked_record do |person_mock, person|
-      amount = Kredis.counter("person:8:amount")
-      person_mock.expect(:amount, Kredis::CallbacksProxy.new(amount, person, :changed))
-      person_mock.expect(:changed, nil, [person, amount])
+    @person.amount_with_method_callback.increment
 
-      person.amount.increment
-    end
+    assert @person.callback_flag
   end
 end
