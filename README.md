@@ -146,7 +146,7 @@ class Person < ApplicationRecord
   kredis_list :names, after_change: ->(p) {  }
   kredis_unique_list :skills, limit: 2, after_change: :skillset_changed
 
-  def skillset_changed(p)
+  def skillset_changed
   end
 end
 ```
