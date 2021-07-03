@@ -139,6 +139,17 @@ person.morning.value = "blue"                        # => SET people:1:morning
 true == person.morning.blue?                         # => GET people:1:morning
 ```
 
+You can also define `after_change` callbacks that trigger on mutations:
+
+```ruby
+class Person < ApplicationRecord
+  kredis_list :names, after_change: ->(p) {  }
+  kredis_unique_list :skills, limit: 2, after_change: :skillset_changed
+
+  def skillset_changed
+  end
+end
+```
 
 ## Installation
 
