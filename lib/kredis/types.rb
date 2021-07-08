@@ -72,6 +72,12 @@ module Kredis::Types
   def slots(key, available:, config: :shared)
     Slots.new configured_for(config), namespaced_key(key), available: available
   end
+
+
+  def with_callback(type, key, **options)
+    callback = options.delete(:after_change)
+    Kredis::CallbacksProxy.new(Kredis.send(type, key, **options), nil, callback)
+  end
 end
 
 require "kredis/types/proxy"

@@ -22,7 +22,7 @@ class Kredis::CallbacksProxy
 
     if CALLBACK_OPERATIONS[@type.class]&.include? method
       if @callback.respond_to? :call
-        @callback.call(@record)
+        @callback.call(@record || @type)
       elsif @callback.is_a? Symbol
         @record.send(@callback)
       end
