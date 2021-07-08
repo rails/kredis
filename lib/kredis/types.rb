@@ -4,36 +4,36 @@ module Kredis::Types
   end
 
 
-  def scalar(key, typed: :string, default: nil, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: typed, default: default
+  def scalar(key, typed: :string, default: nil, expires_in: nil, config: :shared)
+    Scalar.new configured_for(config), namespaced_key(key), typed: typed, default: default, expires_in: expires_in
   end
 
-  def string(key, default: nil, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: :string, default: default
+  def string(key, default: nil, expires_in: nil, config: :shared)
+    Scalar.new configured_for(config), namespaced_key(key), typed: :string, default: default, expires_in: expires_in
   end
 
-  def integer(key, default: nil, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: :integer, default: default
+  def integer(key, default: nil, expires_in: nil, config: :shared)
+    Scalar.new configured_for(config), namespaced_key(key), typed: :integer, default: default, expires_in: expires_in
   end
 
-  def decimal(key, default: nil, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: :decimal, default: default
+  def decimal(key, default: nil, expires_in: nil, config: :shared)
+    Scalar.new configured_for(config), namespaced_key(key), typed: :decimal, default: default, expires_in: expires_in
   end
 
-  def float(key, default: nil, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: :float, default: default
+  def float(key, default: nil, expires_in: nil, config: :shared)
+    Scalar.new configured_for(config), namespaced_key(key), typed: :float, default: default, expires_in: expires_in
   end
 
-  def boolean(key, default: nil, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: :boolean, default: default
+  def boolean(key, default: nil, expires_in: nil, config: :shared)
+    Scalar.new configured_for(config), namespaced_key(key), typed: :boolean, default: default, expires_in: expires_in
   end
 
-  def datetime(key, default: nil, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: :datetime, default: default
+  def datetime(key, default: nil, expires_in: nil, config: :shared)
+    Scalar.new configured_for(config), namespaced_key(key), typed: :datetime, default: default, expires_in: expires_in
   end
 
-  def json(key, default: nil, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: :json, default: default
+  def json(key, default: nil, expires_in: nil, config: :shared)
+    Scalar.new configured_for(config), namespaced_key(key), typed: :json, default: default, expires_in: expires_in
   end
 
 
