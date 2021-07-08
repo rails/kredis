@@ -47,6 +47,6 @@ class Kredis::Migration
     end
 
     def log_migration(message)
-      Kredis.logger&.debug "[Kredis Migration] #{message}"
+      Kredis.instrument :migration, message: message
     end
 end
