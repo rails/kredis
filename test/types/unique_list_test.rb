@@ -39,5 +39,9 @@ class UniqueListTest < ActiveSupport::TestCase
 
     @list.remove(2)
     assert_equal [ 1 ], @list.elements
+
+    @list.append [ "1-a", 2 ]
+
+    assert_equal [ 1, 2 ], @list.elements
   end
 end

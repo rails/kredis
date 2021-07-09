@@ -4,7 +4,7 @@ class Kredis::Types::Scalar < Kredis::Types::Proxying
   attr_accessor :typed, :default
 
   def value=(value)
-    set type_to_string(value)
+    set type_to_string(value, typed)
   end
 
   def value
