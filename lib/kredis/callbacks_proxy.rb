@@ -7,6 +7,7 @@ class Kredis::CallbacksProxy
     Kredis::Types::Cycle => %i[ next ],
     Kredis::Types::Enum => %i[ value= reset ],
     Kredis::Types::Flag => %i[ mark remove ],
+    Kredis::Types::Hash => %i[ set ],
     Kredis::Types::List => %i[ remove prepend append ],
     Kredis::Types::Scalar => %i[ value= clear ],
     Kredis::Types::Set => %i[ add remove replace take clear ],
