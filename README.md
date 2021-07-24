@@ -51,7 +51,7 @@ set << DateTime.tomorrow                                 # => SADD myset "2021-0
 2 == set.size                                            # => SCARD myset
 [ DateTime.tomorrow, DateTime.yesterday ] == set.members # => SMEMBERS myset
 
-hash = Kredis.set "myhash"
+hash = Kredis.hash "myhash"
 hash.set("key" => "value", "key2" => "value2")        # => HSET myhash "key", "value", "key2", "value2"
 { "key" => "value", "key2" => "value2" } == hash.to_h # => HGETALL myhash
 "value2" == hash.get("key2")                          # => HMGET myhash "key2"
