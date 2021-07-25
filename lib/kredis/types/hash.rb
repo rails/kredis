@@ -1,10 +1,12 @@
+require "active_support/core_ext/hash"
+
 class Kredis::Types::Hash < Kredis::Types::Proxying
   proxying :hset, :hmget, :hgetall, :hdel, :hkeys, :hvals
 
   attr_accessor :typed
 
   def entries
-    (hgetall || {}).transform_values { |val| string_to_type(val, typed) }
+    (hgetall || {}).transform_values { |val| string_to_type(val, typed) }.with_indifferent_access
   end
   alias to_h entries
 
