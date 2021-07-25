@@ -58,6 +58,12 @@ hash.set("key" => "value", "key2" => "value2")        # => HSET myhash "key", "v
 %w[ key key2 ] == hash.keys                           # => HKEYS myhash
 %w[ value value2 ] == hash.values                     # => HVALS myhash
 
+high_scores = Kredis.hash "high_scores"
+high_scores.set(space_invaders: 100, pong: 42)                # HSET high_scores "space_invaders", "100", "pong", "42"
+%w[ space_invaders pong ] == high_scores.keys                 # HKEYS high_scores
+[100, 42] == high_scores.values                               # HVALS high_scores
+{ "space_invaders" => 100, "pong" => 42 } == high_scores.to_h # HGETALL high_scores
+
 head_count = Kredis.counter "headcount"
 0 == head_count.value              # => GET "headcount"
 head_count.increment               # => SET headcount 0 NX + INCRBY headcount 1
