@@ -4,7 +4,7 @@ class Kredis::Types::Hash < Kredis::Types::Proxying
   attr_accessor :typed
 
   def entries
-    Hash[*strings_to_types(hgetall || {}, typed)]
+    (hgetall || {}).transform_values { |val| string_to_type(val, typed) }
   end
   alias to_h entries
 
@@ -22,7 +22,7 @@ class Kredis::Types::Hash < Kredis::Types::Proxying
   end
 
   def keys
-    strings_to_types(hkeys || [], typed)
+    hkeys || []
   end
 
   def values
