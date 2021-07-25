@@ -18,6 +18,15 @@ class HashTest < ActiveSupport::TestCase
     assert_nil @hash.get("key")
   end
 
+  test "del" do
+    @hash.set(key: :value)
+    @hash.set("key2" => "value2", "key3" => "value3")
+    assert_equal({ "key" => "value", "key2" => "value2", "key3" => "value3" }, @hash.to_h)
+
+    @hash.del("key", "key2")
+    assert_equal({ "key3" => "value3" }, @hash.to_h)
+  end
+
   test "keys" do
     @hash.set(key: :value)
     @hash.set("key2" => "value2", "key3" => "value3")

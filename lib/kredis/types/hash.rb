@@ -1,5 +1,5 @@
 class Kredis::Types::Hash < Kredis::Types::Proxying
-  proxying :hset, :hmget, :hgetall, :hkeys, :hvals
+  proxying :hset, :hmget, :hgetall, :hdel, :hkeys, :hvals
 
   attr_accessor :typed
 
@@ -15,6 +15,10 @@ class Kredis::Types::Hash < Kredis::Types::Proxying
   def get(*keys)
     values = strings_to_types(hmget(keys) || [], typed)
     values.size == 1 ? values.first : values
+  end
+
+  def del(*keys)
+    hdel types_to_strings(keys) if keys.flatten.any?
   end
 
   def keys
