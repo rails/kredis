@@ -22,8 +22,9 @@ class Kredis::Migration
     namespaced_to = Kredis.namespaced_key(to)
 
     if to.present? && from != namespaced_to
-      log_migration "Migrating key #{from} to #{namespaced_to}"
-      @redis.evalsha @copy_sha, keys: [ from, namespaced_to ]
+      log_migration "Migrating key #{from} to #{namespaced_to}" do
+        @redis.evalsha @copy_sha, keys: [ from, namespaced_to ]
+      end
     else
       log_migration "Skipping blank/unaltered migration key #{from} → #{to}"
     end
@@ -46,7 +47,7 @@ class Kredis::Migration
       end until cursor == "0"
     end
 
-    def log_migration(message)
-      Kredis.instrument :migration, message: message
+    def log_migration(message, &block)
+      Kredis.instrument :migration, message: message, &block
     end
 end

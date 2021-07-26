@@ -25,7 +25,7 @@ module Kredis
     configured_for(config)
   end
 
-  def instrument(channel, **options)
-    ActiveSupport::Notifications.instrument("#{channel}.kredis", **options)
+  def instrument(channel, **options, &block)
+    ActiveSupport::Notifications.instrument("#{channel}.kredis", **options, &block)
   end
 end

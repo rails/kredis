@@ -14,9 +14,10 @@ class Kredis::Types::Proxy
   end
 
   def method_missing(method, *args, **kwargs)
-    failsafe do
-      Kredis.instrument :proxy, **log_message(method, *args, **kwargs)
-      redis.public_send method, key, *args, **kwargs
+    Kredis.instrument :proxy, **log_message(method, *args, **kwargs) do
+      failsafe do
+        redis.public_send method, key, *args, **kwargs
+      end
     end
   end
 
