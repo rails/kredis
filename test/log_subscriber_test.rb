@@ -4,14 +4,12 @@ require "active_support/log_subscriber/test_helper"
 class LogSubscriberTest < ActiveSupport::TestCase
   include ActiveSupport::LogSubscriber::TestHelper
 
-  setup do
-    ActiveSupport::LogSubscriber.colorize_logging = true
-    ActiveSupport::LogSubscriber.attach_to :kredis, Kredis::LogSubscriber.new
-  end
-
   teardown { ActiveSupport::LogSubscriber.log_subscribers.clear }
 
   test "proxy" do
+    ActiveSupport::LogSubscriber.colorize_logging = true
+    ActiveSupport::LogSubscriber.attach_to :kredis, Kredis::LogSubscriber.new
+
     instrument "proxy.kredis", message: "foo", type: "bar"
 
     assert_equal 1, @logger.logged(:debug).size
@@ -22,6 +20,9 @@ class LogSubscriberTest < ActiveSupport::TestCase
   end
 
   test "migration" do
+    ActiveSupport::LogSubscriber.colorize_logging = true
+    ActiveSupport::LogSubscriber.attach_to :kredis, Kredis::LogSubscriber.new
+
     instrument "migration.kredis", message: "foo"
 
     assert_equal 1, @logger.logged(:debug).size
@@ -32,6 +33,9 @@ class LogSubscriberTest < ActiveSupport::TestCase
   end
 
   test "meta" do
+    ActiveSupport::LogSubscriber.colorize_logging = true
+    ActiveSupport::LogSubscriber.attach_to :kredis, Kredis::LogSubscriber.new
+
     instrument "meta.kredis", message: "foo"
 
     assert_equal 1, @logger.logged(:info).size
