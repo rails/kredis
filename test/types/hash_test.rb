@@ -4,10 +4,11 @@ require "active_support/core_ext/integer"
 class HashTest < ActiveSupport::TestCase
   setup { @hash = Kredis.hash "myhash" }
 
-  test "update" do
-    @hash.update(key: :value)
+  test "[] reading" do
     @hash.update("key2" => "value2", "key3" => "value3")
-    assert_equal({ "key" => "value", "key2" => "value2", "key3" => "value3" }, @hash.to_h)
+    assert_equal "value2", @hash["key2"]
+    assert_equal "value3", @hash[:key3]
+    assert_nil @hash["key"]
   end
 
   test "[]= assigment" do
@@ -16,12 +17,15 @@ class HashTest < ActiveSupport::TestCase
     assert_equal({ "key" => "value", "key2" => "value2" }, @hash.to_h)
   end
 
-  test "reading" do
+  test "update" do
+    @hash.update(key: :value)
     @hash.update("key2" => "value2", "key3" => "value3")
-    assert_equal "value2", @hash["key2"]
-    assert_equal "value3", @hash[:key3]
+    assert_equal({ "key" => "value", "key2" => "value2", "key3" => "value3" }, @hash.to_h)
+  end
+
+  test "values_at" do
+    @hash.update("key2" => "value2", "key3" => "value3")
     assert_equal %w[ value2 value3 ], @hash.values_at("key2", "key3")
-    assert_nil @hash["key"]
   end
 
   test "delete" do
@@ -34,6 +38,13 @@ class HashTest < ActiveSupport::TestCase
 
     @hash.delete("key2", "key3")
     assert_equal({}, @hash.to_h)
+  end
+
+  test "entries" do
+    @hash.update(key: :value)
+    @hash.update("key2" => "value2", "key3" => "value3")
+    assert_equal({ "key" => "value", "key2" => "value2", "key3" => "value3" }, @hash.entries)
+    assert_equal @hash.to_h, @hash.entries
   end
 
   test "keys" do
