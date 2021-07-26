@@ -2,7 +2,7 @@ require "active_support/log_subscriber"
 
 class Kredis::LogSubscriber < ActiveSupport::LogSubscriber
   def proxy(event)
-    debug formatted_in(YELLOW, event, type: event.payload[:type])
+    debug formatted_in(YELLOW, event, type: "Proxy")
   end
 
   def migration(event)

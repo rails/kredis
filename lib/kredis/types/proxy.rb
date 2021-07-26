@@ -25,9 +25,7 @@ class Kredis::Types::Proxy
     def log_message(method, *args, **kwargs)
       args      = args.flatten.reject(&:blank?).presence
       kwargs    = kwargs.reject { |_k, v| v.blank? }.presence
-      type_name = self.class.name.split("::").last
 
-      { type: type_name,
-        message: "#{method.upcase} #{key} #{args&.inspect} #{kwargs&.inspect}".chomp }
+      { message: "#{method.upcase} #{key} #{args&.inspect} #{kwargs&.inspect}".chomp }
     end
 end
