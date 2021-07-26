@@ -15,7 +15,7 @@ class Kredis::Types::Proxy
 
   def method_missing(method, *args, **kwargs)
     failsafe do
-      Kredis.logger&.debug log_message(method, *args, **kwargs)
+      Kredis.instrument :proxy, **log_message(method, *args, **kwargs)
       redis.public_send method, key, *args, **kwargs
     end
   end
@@ -26,6 +26,7 @@ class Kredis::Types::Proxy
       kwargs    = kwargs.reject { |_k, v| v.blank? }.presence
       type_name = self.class.name.split("::").last
 
-      "[Kredis #{type_name}] #{method.upcase} #{key} #{args&.inspect} #{kwargs&.inspect}".chomp
+      { type: type_name,
+        message: "#{method.upcase} #{key} #{args&.inspect} #{kwargs&.inspect}".chomp }
     end
 end
