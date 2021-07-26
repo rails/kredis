@@ -19,7 +19,7 @@ class Kredis::Types::Hash < Kredis::Types::Proxying
     values.size == 1 ? values.first : values
   end
 
-  def del(*keys)
+  def delete(*keys)
     hdel types_to_strings(keys) if keys.flatten.any?
   end
 
