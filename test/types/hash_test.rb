@@ -23,8 +23,11 @@ class HashTest < ActiveSupport::TestCase
     @hash.update("key2" => "value2", "key3" => "value3")
     assert_equal({ "key" => "value", "key2" => "value2", "key3" => "value3" }, @hash.to_h)
 
-    @hash.delete("key", "key2")
-    assert_equal({ "key3" => "value3" }, @hash.to_h)
+    @hash.delete("key")
+    assert_equal({ "key2" => "value2", "key3" => "value3" }, @hash.to_h)
+
+    @hash.delete("key2", "key3")
+    assert_equal({}, @hash.to_h)
   end
 
   test "keys" do
