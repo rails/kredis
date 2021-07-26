@@ -1,7 +1,7 @@
 require "active_support/core_ext/hash"
 
 class Kredis::Types::Hash < Kredis::Types::Proxying
-  proxying :hset, :hmget, :hgetall, :hdel, :hkeys, :hvals
+  proxying :hget, :hset, :hmget, :hgetall, :hdel, :hkeys, :hvals
 
   attr_accessor :typed
 
@@ -14,9 +14,12 @@ class Kredis::Types::Hash < Kredis::Types::Proxying
     hset types_to_strings(entries) if entries.flatten.any?
   end
 
-  def get(*keys)
-    values = strings_to_types(hmget(keys) || [], typed)
-    values.size == 1 ? values.first : values
+  def [](key)
+    string_to_type(hget(key), typed)
+  end
+
+  def values_at(*keys)
+    strings_to_types(hmget(keys) || [], typed)
   end
 
   def delete(*keys)
