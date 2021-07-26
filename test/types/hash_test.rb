@@ -43,10 +43,10 @@ class HashTest < ActiveSupport::TestCase
     @hash = Kredis.hash "myhash", typed: :integer
     @hash.update(space_invaders: 100, pong: 42)
 
-    assert_equal(%w[ space_invaders pong ], @hash.keys)
-    assert_equal([100, 42], @hash.values)
-    assert_equal(100, @hash[:space_invaders])
-    assert_equal(42, @hash["pong"])
+    assert_equal %w[ space_invaders pong ], @hash.keys
+    assert_equal [ 100, 42 ], @hash.values
+    assert_equal 100, @hash[:space_invaders]
+    assert_equal 42, @hash["pong"]
     assert_equal({ "space_invaders" => 100, "pong" => 42 }, @hash.to_h)
   end
 end
