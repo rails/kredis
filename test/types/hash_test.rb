@@ -13,7 +13,7 @@ class HashTest < ActiveSupport::TestCase
   test "get" do
     @hash.set("key2" => "value2", "key3" => "value3")
     assert_equal "value2", @hash.get("key2")
-    assert_equal "value3", @hash.get("key3")
+    assert_equal "value3", @hash.get(:key3)
     assert_equal %w[ value2 value3 ], @hash.get("key2", "key3")
     assert_nil @hash.get("key")
   end
@@ -46,6 +46,7 @@ class HashTest < ActiveSupport::TestCase
     assert_equal(%w[ space_invaders pong ], @hash.keys)
     assert_equal([100, 42], @hash.values)
     assert_equal(100, @hash.get(:space_invaders))
+    assert_equal(42, @hash.get("pong"))
     assert_equal({ "space_invaders" => 100, "pong" => 42 }, @hash.to_h)
   end
 end
