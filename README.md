@@ -54,7 +54,7 @@ set << DateTime.tomorrow                                 # => SADD myset "2021-0
 hash = Kredis.hash "myhash"
 hash.update("key" => "value", "key2" => "value2")     # => HSET myhash "key", "value", "key2", "value2"
 { "key" => "value", "key2" => "value2" } == hash.to_h # => HGETALL myhash
-"value2" == hash.get("key2")                          # => HMGET myhash "key2"
+"value2" == hash["key2"]                              # => HMGET myhash "key2"
 %w[ key key2 ] == hash.keys                           # => HKEYS myhash
 %w[ value value2 ] == hash.values                     # => HVALS myhash
 
