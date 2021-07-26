@@ -8,8 +8,7 @@ require "kredis"
 
 Kredis.configurator = Class.new { def config_for(name) {} end }.new
 
-ActiveSupport::LogSubscriber.logger =
-  ActiveSupport::Logger.new(STDOUT) if ENV["VERBOSE"]
+ActiveSupport::LogSubscriber.logger = ActiveSupport::Logger.new(STDOUT) if ENV["VERBOSE"]
 
 class ActiveSupport::TestCase
   teardown { Kredis.clear_all }
