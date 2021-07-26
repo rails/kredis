@@ -18,6 +18,10 @@ class Kredis::Types::Hash < Kredis::Types::Proxying
     string_to_type(hget(key), typed)
   end
 
+  def []=(key, value)
+    update key => value
+  end
+
   def values_at(*keys)
     strings_to_types(hmget(keys) || [], typed)
   end

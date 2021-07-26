@@ -10,6 +10,12 @@ class HashTest < ActiveSupport::TestCase
     assert_equal({ "key" => "value", "key2" => "value2", "key3" => "value3" }, @hash.to_h)
   end
 
+  test "[]= assigment" do
+    @hash[:key]  = :value
+    @hash[:key2] = "value2"
+    assert_equal({ "key" => "value", "key2" => "value2" }, @hash.to_h)
+  end
+
   test "reading" do
     @hash.update("key2" => "value2", "key3" => "value3")
     assert_equal "value2", @hash["key2"]
