@@ -62,6 +62,10 @@ module Kredis::Attributes
       kredis_connection_with __method__, name, key, config: config, after_change: after_change
     end
 
+    def kredis_hash(name, key: nil, typed: :string, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, typed: typed, config: config, after_change: after_change
+    end
+
     private
       def kredis_connection_with(method, name, key, **options)
         ivar_symbol = :"@#{name}_#{method}"
