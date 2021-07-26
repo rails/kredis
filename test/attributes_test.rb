@@ -202,8 +202,8 @@ class AttributesTest < ActiveSupport::TestCase
   end
 
   test "hash" do
-    @person.high_scores.set(space_invaders: 100, pong: 42)
-    assert_equal({ "space_invaders" => 100, "pong" => 42 }, @person.high_scores.to_h) 
+    @person.high_scores.update(space_invaders: 100, pong: 42)
+    assert_equal({ "space_invaders" => 100, "pong" => 42 }, @person.high_scores.to_h)
     assert_equal([ "space_invaders", "pong" ], @person.high_scores.keys)
     assert_equal([ 100, 42 ], @person.high_scores.values)
   end

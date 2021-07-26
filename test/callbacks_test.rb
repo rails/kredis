@@ -145,13 +145,13 @@ class CallbacksTest < ActiveSupport::TestCase
   end
 
   test "hash with after_change proc callback" do
-    @person.high_scores_with_proc_callback.set(space_invaders: 100, pong: 42) 
+    @person.high_scores_with_proc_callback.update(space_invaders: 100, pong: 42)
 
     assert @person.callback_flag
   end
 
   test "hash with after_change method callback" do
-    @person.high_scores_with_method_callback.set(space_invaders: 100, pong: 42) 
+    @person.high_scores_with_method_callback.update(space_invaders: 100, pong: 42)
 
     assert @person.callback_flag
   end

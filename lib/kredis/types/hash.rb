@@ -10,7 +10,7 @@ class Kredis::Types::Hash < Kredis::Types::Proxying
   end
   alias to_h entries
 
-  def set(**entries)
+  def update(**entries)
     hset types_to_strings(entries) if entries.flatten.any?
   end
 
