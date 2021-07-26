@@ -5,18 +5,14 @@ class LogSubscriberTest < ActiveSupport::TestCase
   include ActiveSupport::LogSubscriber::TestHelper
 
   setup do
-    @log_subscriber = Kredis::LogSubscriber.new
-  end
-
-  teardown do
-    ActiveSupport::LogSubscriber.log_subscribers.clear
-  end
-
-  test "#proxy" do
     ActiveSupport::LogSubscriber.colorize_logging = true
-    ActiveSupport::LogSubscriber.attach_to :kredis, @log_subscriber
+    ActiveSupport::LogSubscriber.attach_to :kredis, Kredis::LogSubscriber.new
+  end
+
+  teardown { ActiveSupport::LogSubscriber.log_subscribers.clear }
+
+  test "proxy" do
     instrument "proxy.kredis", message: "foo", type: "bar"
-    wait
 
     assert_equal 1, @logger.logged(:debug).size
     assert_match(
@@ -25,11 +21,8 @@ class LogSubscriberTest < ActiveSupport::TestCase
     )
   end
 
-  test "#migration" do
-    ActiveSupport::LogSubscriber.colorize_logging = true
-    ActiveSupport::LogSubscriber.attach_to :kredis, @log_subscriber
+  test "migration" do
     instrument "migration.kredis", message: "foo"
-    wait
 
     assert_equal 1, @logger.logged(:debug).size
     assert_match(
@@ -38,11 +31,8 @@ class LogSubscriberTest < ActiveSupport::TestCase
     )
   end
 
-  test "#meta" do
-    ActiveSupport::LogSubscriber.colorize_logging = true
-    ActiveSupport::LogSubscriber.attach_to :kredis, @log_subscriber
+  test "meta" do
     instrument "meta.kredis", message: "foo"
-    wait
 
     assert_equal 1, @logger.logged(:info).size
     assert_match(
@@ -52,8 +42,8 @@ class LogSubscriberTest < ActiveSupport::TestCase
   end
 
   private
-
-  def instrument(*args, &block)
-    ActiveSupport::Notifications.instrument(*args, &block)
-  end
+    def instrument(...)
+      ActiveSupport::Notifications.instrument(...)
+      wait
+    end
 end
