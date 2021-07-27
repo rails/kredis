@@ -49,6 +49,14 @@ class CallbacksTest < ActiveSupport::TestCase
     assert_equal ["paris"], @callback_check
   end
 
+  test "hash with after_change proc callback" do
+    @callback_check = nil
+    high_scores = Kredis.with_callback :hash, "high_scores", typed: :integer, after_change: ->(hash) { @callback_check = hash.entries }
+    high_scores.update(space_invaders: 100, pong: 42)
+
+    assert_equal({ "space_invaders" => 100, "pong" => 42 }, @callback_check)
+  end
+
   test "json with after_change proc callback" do
     @callback_check = nil
     settings = Kredis.with_callback :json, "settings", after_change: ->(json) { @callback_check = settings.value }
