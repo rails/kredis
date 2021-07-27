@@ -1,87 +1,88 @@
 module Kredis::Types
-  def proxy(key, config: :shared)
-    Proxy.new configured_for(config), namespaced_key(key)
+  def proxy(key, config: :shared, after_change: nil)
+    type_from(Proxy, config, key, after_change: after_change)
   end
 
 
-  def scalar(key, typed: :string, default: nil, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: typed, default: default
+  def scalar(key, typed: :string, default: nil, config: :shared, after_change: nil)
+    type_from(Scalar, config, key, after_change: after_change, typed: typed, default: default)
   end
 
-  def string(key, default: nil, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: :string, default: default
+  def string(key, default: nil, config: :shared, after_change: nil)
+    type_from(Scalar, config, key, after_change: after_change, typed: :string, default: default)
   end
 
-  def integer(key, default: nil, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: :integer, default: default
+  def integer(key, default: nil, config: :shared, after_change: nil)
+    type_from(Scalar, config, key, after_change: after_change, typed: :integer, default: default)
   end
 
-  def decimal(key, default: nil, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: :decimal, default: default
+  def decimal(key, default: nil, config: :shared, after_change: nil)
+    type_from(Scalar, config, key, after_change: after_change, typed: :decimal, default: default)
   end
 
-  def float(key, default: nil, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: :float, default: default
+  def float(key, default: nil, config: :shared, after_change: nil)
+    type_from(Scalar, config, key, after_change: after_change, typed: :float, default: default)
   end
 
-  def boolean(key, default: nil, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: :boolean, default: default
+  def boolean(key, default: nil, config: :shared, after_change: nil)
+    type_from(Scalar, config, key, after_change: after_change, typed: :boolean, default: default)
   end
 
-  def datetime(key, default: nil, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: :datetime, default: default
+  def datetime(key, default: nil, config: :shared, after_change: nil)
+    type_from(Scalar, config, key, after_change: after_change, typed: :datetime, default: default)
   end
 
-  def json(key, default: nil, config: :shared)
-    Scalar.new configured_for(config), namespaced_key(key), typed: :json, default: default
-  end
-
-
-  def counter(key, expires_in: nil, config: :shared)
-    Counter.new configured_for(config), namespaced_key(key), expires_in: expires_in
-  end
-
-  def cycle(key, values:, expires_in: nil, config: :shared)
-    Cycle.new configured_for(config), namespaced_key(key), values: values, expires_in: expires_in
-  end
-
-  def flag(key, config: :shared)
-    Flag.new configured_for(config), namespaced_key(key)
-  end
-
-  def enum(key, values:, default:, config: :shared)
-    Enum.new configured_for(config), namespaced_key(key), values: values, default: default
-  end
-
-  def hash(key, typed: :string, config: :shared)
-    Hash.new configured_for(config), namespaced_key(key), typed: typed
-  end
-
-  def list(key, typed: :string, config: :shared)
-    List.new configured_for(config), namespaced_key(key), typed: typed
-  end
-
-  def unique_list(key, typed: :string, limit: nil, config: :shared)
-    UniqueList.new configured_for(config), namespaced_key(key), typed: typed, limit: limit
-  end
-
-  def set(key, typed: :string, config: :shared)
-    Set.new configured_for(config), namespaced_key(key), typed: typed
-  end
-
-  def slot(key, config: :shared)
-    Slots.new configured_for(config), namespaced_key(key), available: 1
-  end
-
-  def slots(key, available:, config: :shared)
-    Slots.new configured_for(config), namespaced_key(key), available: available
+  def json(key, default: nil, config: :shared, after_change: nil)
+    type_from(Scalar, config, key, after_change: after_change, typed: :json, default: default)
   end
 
 
-  def with_callback(type, key, **options)
-    callback = options.delete(:after_change)
-    Kredis::CallbacksProxy.new(Kredis.send(type, key, **options), nil, callback)
+  def counter(key, expires_in: nil, config: :shared, after_change: nil)
+    type_from(Counter, config, key, after_change: after_change, expires_in: expires_in)
   end
+
+  def cycle(key, values:, expires_in: nil, config: :shared, after_change: nil)
+    type_from(Cycle, config, key, after_change: after_change, values: values, expires_in: expires_in)
+  end
+
+  def flag(key, config: :shared, after_change: nil)
+    type_from(Flag, config, key, after_change: after_change)
+  end
+
+  def enum(key, values:, default:, config: :shared, after_change: nil)
+    type_from(Enum, config, key, after_change: after_change, values: values, default: default)
+  end
+
+  def hash(key, typed: :string, config: :shared, after_change: nil)
+    type_from(Hash, config, key, after_change: after_change, typed: typed)
+  end
+
+  def list(key, typed: :string, config: :shared, after_change: nil)
+    type_from(List, config, key, after_change: after_change, typed: typed)
+  end
+
+  def unique_list(key, typed: :string, limit: nil, config: :shared, after_change: nil)
+    type_from(UniqueList, config, key, after_change: after_change, typed: typed, limit: limit)
+  end
+
+  def set(key, typed: :string, config: :shared, after_change: nil)
+    type_from(Set, config, key, after_change: after_change, typed: typed)
+  end
+
+  def slot(key, config: :shared, after_change: nil)
+    type_from(Slots, config, key, after_change: after_change, available: 1)
+  end
+
+  def slots(key, available:, config: :shared, after_change: nil)
+    type_from(Slots, config, key, after_change: after_change, available: available)
+  end
+
+  private
+    def type_from(type_klass, config, key, after_change: nil, **options)
+      type_klass.new(configured_for(config), namespaced_key(key), **options).then do |type|
+        after_change ? Kredis::CallbacksProxy.new(type, nil, after_change) : type
+      end
+    end
 end
 
 require "kredis/types/proxy"
