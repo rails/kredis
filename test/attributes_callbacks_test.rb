@@ -19,6 +19,8 @@ class Person
   kredis_json :settings_with_method_callback, after_change: :changed
   kredis_counter :amount_with_proc_callback, after_change: ->(p) { p.callback_flag = true }
   kredis_counter :amount_with_method_callback, after_change: :changed
+  kredis_hash :high_scores_with_proc_callback, after_change: ->(p) { p.callback_flag = true }
+  kredis_hash :high_scores_with_method_callback, after_change: :changed
 
   attr_accessor :callback_flag
 
@@ -138,6 +140,18 @@ class AttributesCallbacksTest < ActiveSupport::TestCase
 
   test "counter with after_change method callback" do
     @person.amount_with_method_callback.increment
+
+    assert @person.callback_flag
+  end
+
+  test "hash with after_change proc callback" do
+    @person.high_scores_with_proc_callback.update(space_invaders: 100, pong: 42)
+
+    assert @person.callback_flag
+  end
+
+  test "hash with after_change method callback" do
+    @person.high_scores_with_method_callback.update(space_invaders: 100, pong: 42)
 
     assert @person.callback_flag
   end

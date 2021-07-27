@@ -20,6 +20,7 @@ class Person
   kredis_set :vacations
   kredis_json :settings
   kredis_counter :amount
+  kredis_hash :high_scores, typed: :integer
 
   def self.name
     "Person"
@@ -198,6 +199,13 @@ class AttributesTest < ActiveSupport::TestCase
     assert_equal 1, @person.amount.value
     @person.amount.decrement
     assert_equal 0, @person.amount.value
+  end
+
+  test "hash" do
+    @person.high_scores.update(space_invaders: 100, pong: 42)
+    assert_equal({ "space_invaders" => 100, "pong" => 42 }, @person.high_scores.to_h)
+    assert_equal([ "space_invaders", "pong" ], @person.high_scores.keys)
+    assert_equal([ 100, 42 ], @person.high_scores.values)
   end
 
   test "missing id to constrain key" do

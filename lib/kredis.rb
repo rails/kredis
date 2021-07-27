@@ -4,6 +4,7 @@ require "active_support/core_ext/module/attribute_accessors"
 require "kredis/version"
 
 require "kredis/connections"
+require "kredis/log_subscriber"
 require "kredis/namespace"
 require "kredis/type_casting"
 require "kredis/types"
@@ -22,5 +23,9 @@ module Kredis
 
   def redis(config: :shared)
     configured_for(config)
+  end
+
+  def instrument(channel, **options, &block)
+    ActiveSupport::Notifications.instrument("#{channel}.kredis", **options, &block)
   end
 end

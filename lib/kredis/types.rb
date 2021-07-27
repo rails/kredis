@@ -53,6 +53,10 @@ module Kredis::Types
     Enum.new configured_for(config), namespaced_key(key), values: values, default: default
   end
 
+  def hash(key, typed: :string, config: :shared)
+    Hash.new configured_for(config), namespaced_key(key), typed: typed
+  end
+
   def list(key, typed: :string, config: :shared)
     List.new configured_for(config), namespaced_key(key), typed: typed
   end
@@ -88,6 +92,7 @@ require "kredis/types/counter"
 require "kredis/types/cycle"
 require "kredis/types/flag"
 require "kredis/types/enum"
+require "kredis/types/hash"
 require "kredis/types/list"
 require "kredis/types/unique_list"
 require "kredis/types/set"
