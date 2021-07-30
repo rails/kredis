@@ -14,19 +14,15 @@ class Kredis::CallbacksProxy
     Kredis::Types::Slots => %i[ reserve release reset ]
   }
 
-  def initialize(type, record, callback)
-    @type, @record, @callback = type, record, callback
+  def initialize(type, callback)
+    @type, @callback = type, callback
   end
 
   def method_missing(method, *args, **kwargs, &block)
     result = @type.send(method, *args, **kwargs, &block)
 
     if CALLBACK_OPERATIONS[@type.class]&.include? method
-      if @callback.respond_to? :call
-        @callback.call(@record)
-      elsif @callback.is_a? Symbol
-        @record.send(@callback)
-      end
+      @callback.call(@type)
     end
 
     result
