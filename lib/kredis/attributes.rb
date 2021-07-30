@@ -78,7 +78,7 @@ module Kredis::Attributes
           else
             new_type = Kredis.send(type, kredis_key_evaluated(key) || kredis_key_for_attribute(name), **options)
             instance_variable_set ivar_symbol,
-                                  after_change ? enrich_after_change_with_record_access(new_type, after_change) : new_type
+              after_change ? enrich_after_change_with_record_access(new_type, after_change) : new_type
           end
         end
       end
