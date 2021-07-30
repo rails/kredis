@@ -2,7 +2,7 @@ class Kredis::Types::CallbacksProxy
   attr_reader :type
   delegate :to_s, to: :type
 
-  CALLBACK_OPERATIONS = {
+  AFTER_CHANGE_OPERATIONS = {
     Kredis::Types::Counter => %i[ increment decrement reset ],
     Kredis::Types::Cycle => %i[ next ],
     Kredis::Types::Enum => %i[ value= reset ],
@@ -21,7 +21,7 @@ class Kredis::Types::CallbacksProxy
   def method_missing(method, *args, **kwargs, &block)
     result = type.send(method, *args, **kwargs, &block)
 
-    if CALLBACK_OPERATIONS[type.class]&.include? method
+    if AFTER_CHANGE_OPERATIONS[type.class]&.include? method
       @callback.call(type)
     end
 
