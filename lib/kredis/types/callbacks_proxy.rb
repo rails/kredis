@@ -20,11 +20,12 @@ class Kredis::Types::CallbacksProxy
 
   def method_missing(method, *args, **kwargs, &block)
     result = type.send(method, *args, **kwargs, &block)
-
-    if AFTER_CHANGE_OPERATIONS[type.class]&.include? method
-      @callback.call(type)
-    end
-
+    invoke_suitable_after_change_callback_for method
     result
   end
+
+  private
+    def invoke_suitable_after_change_callback_for(method)
+      @callback.call(type) if AFTER_CHANGE_OPERATIONS[type.class]&.include? method
+    end
 end
