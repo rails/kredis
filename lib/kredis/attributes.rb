@@ -102,8 +102,8 @@ module Kredis::Attributes
 
     def enrich_after_change_with_record_access(type, original_after_change)
       case original_after_change
-      when Proc   then Kredis::CallbacksProxy.new(type, ->(_) { original_after_change.call(self) })
-      when Symbol then Kredis::CallbacksProxy.new(type, ->(_) { send(original_after_change) })
+      when Proc   then Kredis::Types::CallbacksProxy.new(type, ->(_) { original_after_change.call(self) })
+      when Symbol then Kredis::Types::CallbacksProxy.new(type, ->(_) { send(original_after_change) })
       end
     end
 end

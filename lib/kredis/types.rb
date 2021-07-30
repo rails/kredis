@@ -1,4 +1,6 @@
 module Kredis::Types
+  autoload :CallbacksProxy, "kredis/types/callbacks_proxy"
+
   def proxy(key, config: :shared, after_change: nil)
     type_from(Proxy, config, key, after_change: after_change)
   end
@@ -80,7 +82,7 @@ module Kredis::Types
   private
     def type_from(type_klass, config, key, after_change: nil, **options)
       type_klass.new(configured_for(config), namespaced_key(key), **options).then do |type|
-        after_change ? Kredis::CallbacksProxy.new(type, after_change) : type
+        after_change ? CallbacksProxy.new(type, after_change) : type
       end
     end
 end

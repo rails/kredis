@@ -1,4 +1,4 @@
-class Kredis::CallbacksProxy
+class Kredis::Types::CallbacksProxy
   attr_reader :type
   delegate :to_s, to: :type
 
