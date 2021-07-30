@@ -59,7 +59,7 @@ class CallbacksTest < ActiveSupport::TestCase
 
   test "json with after_change proc callback" do
     @callback_check = nil
-    settings = Kredis.json "settings", after_change: ->(json) { @callback_check = settings.value }
+    settings = Kredis.json "settings", after_change: ->(json) { @callback_check = json.value }
     settings.value = { "color" => "red", "count" => 2 }
 
     assert_equal ({ "color" => "red", "count" => 2 }), @callback_check
