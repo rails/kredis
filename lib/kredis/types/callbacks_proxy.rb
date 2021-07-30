@@ -19,10 +19,10 @@ class Kredis::Types::CallbacksProxy
   end
 
   def method_missing(method, *args, **kwargs, &block)
-    result = @type.send(method, *args, **kwargs, &block)
+    result = type.send(method, *args, **kwargs, &block)
 
-    if CALLBACK_OPERATIONS[@type.class]&.include? method
-      @callback.call(@type)
+    if CALLBACK_OPERATIONS[type.class]&.include? method
+      @callback.call(type)
     end
 
     result
