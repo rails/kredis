@@ -15,7 +15,7 @@ class AttributesCallbacksTest < ActiveSupport::TestCase
 
   test "list with after_change callback" do
     assert_callback_executed_for :kredis_list, :proc,   ->(type) { type.append %w[ david kasper ] }
-    assert_callback_executed_for :kredis_list, :method, ->(type) { type.append %w[ david kasper ] }
+    assert_callback_executed_for :kredis_list, :method, ->(type) { type << %w[ david kasper ] }
   end
 
   test "flag with after_change callback" do
@@ -40,7 +40,7 @@ class AttributesCallbacksTest < ActiveSupport::TestCase
 
   test "set with after_change callback" do
     assert_callback_executed_for :kredis_set, :proc,   ->(type) { type.add "paris" }
-    assert_callback_executed_for :kredis_set, :method, ->(type) { type.add "paris" }
+    assert_callback_executed_for :kredis_set, :method, ->(type) { type << "paris" }
   end
 
   test "json with after_change callback" do
@@ -56,6 +56,8 @@ class AttributesCallbacksTest < ActiveSupport::TestCase
   test "hash with after_change callback" do
     assert_callback_executed_for :kredis_hash, :proc,   ->(type) { type.update space_invaders: 100, pong: 42 }
     assert_callback_executed_for :kredis_hash, :method, ->(type) { type.update space_invaders: 100, pong: 42 }
+
+    assert_callback_executed_for :kredis_hash, :proc, ->(type) { type.delete "key" }
   end
 
   private
