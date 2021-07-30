@@ -1,158 +1,73 @@
 require "test_helper"
 
-class Person
-  include Kredis::Attributes
-
-  kredis_list :names_with_proc_callback, after_change: ->(p) { p.callback_flag = true }
-  kredis_list :names_with_method_callback, after_change: :changed
-  kredis_flag :special_with_proc_callback, after_change: ->(p) { p.callback_flag = true }
-  kredis_flag :special_with_method_callback, after_change: :changed
-  kredis_string :address_with_proc_callback, after_change: ->(p) { p.callback_flag = true }
-  kredis_string :address_with_method_callback, after_change: :changed
-  kredis_enum :morning_with_proc_callback, values: %w[ bright blue black ], default: "bright", after_change: ->(p) { p.callback_flag = true }
-  kredis_enum :morning_with_method_callback, values: %w[ bright blue black ], default: "bright", after_change: :changed
-  kredis_slot :attention_with_proc_callback, after_change: ->(p) { p.callback_flag = true }
-  kredis_slot :attention_with_method_callback, after_change: :changed
-  kredis_set :vacations_with_proc_callback, after_change: ->(p) { p.callback_flag = true }
-  kredis_set :vacations_with_method_callback, after_change: :changed
-  kredis_json :settings_with_proc_callback, after_change: ->(p) { p.callback_flag = true }
-  kredis_json :settings_with_method_callback, after_change: :changed
-  kredis_counter :amount_with_proc_callback, after_change: ->(p) { p.callback_flag = true }
-  kredis_counter :amount_with_method_callback, after_change: :changed
-  kredis_hash :high_scores_with_proc_callback, after_change: ->(p) { p.callback_flag = true }
-  kredis_hash :high_scores_with_method_callback, after_change: :changed
-
-  attr_accessor :callback_flag
-
-  def initialize
-    @callback_flag = false
-  end
-
-  def self.name
-    "Person"
-  end
-
-  def id
-    8
-  end
-
-  def changed
-    @callback_flag = true
-  end
-end
-
 class AttributesCallbacksTest < ActiveSupport::TestCase
-  setup do
-    @person = Person.new
+  class Person
+    include Kredis::Attributes
 
-    refute @person.callback_flag
+    def self.name
+      "Person"
+    end
+
+    def id
+      8
+    end
   end
 
-  test "list with after_change proc callback" do
-    @person.names_with_proc_callback.append %w[ david kasper ]
-
-    assert @person.callback_flag
+  test "list with after_change callback" do
+    assert_callback_executed_for :kredis_list, :proc,   ->(type) { type.append %w[ david kasper ] }
+    assert_callback_executed_for :kredis_list, :method, ->(type) { type.append %w[ david kasper ] }
   end
 
-  test "list with after_change method callback" do
-    @person.names_with_method_callback.append %w[ david kasper ]
-
-    assert @person.callback_flag
+  test "flag with after_change callback" do
+    assert_callback_executed_for :kredis_flag, :proc,   ->(type) { type.mark }
+    assert_callback_executed_for :kredis_flag, :method, ->(type) { type.mark }
   end
 
-  test "flag with after_change proc callback" do
-    @person.special_with_proc_callback.mark
-
-    assert @person.callback_flag
+  test "string with after_change callback" do
+    assert_callback_executed_for :kredis_string, :proc,   ->(type) { type.value = "Copenhagen" }
+    assert_callback_executed_for :kredis_string, :method, ->(type) { type.value = "Copenhagen" }
   end
 
-  test "flag with after_change method callback" do
-    @person.special_with_method_callback.mark
-
-    assert @person.callback_flag
+  test "slot with after_change callback" do
+    assert_callback_executed_for :kredis_slot, :proc,   ->(type) { type.reserve }
+    assert_callback_executed_for :kredis_slot, :method, ->(type) { type.reserve }
   end
 
-  test "string with after_change proc callback" do
-    @person.address_with_proc_callback.value = "Copenhagen"
-
-    assert @person.callback_flag
+  test "enum with after_change callback" do
+    assert_callback_executed_for :kredis_enum, :proc,   ->(type) { type.value = "blue" }, values: %w[ bright blue black ], default: "bright"
+    assert_callback_executed_for :kredis_enum, :method, ->(type) { type.value = "blue" }, values: %w[ bright blue black ], default: "bright"
   end
 
-  test "string with after_change method callback" do
-    @person.address_with_proc_callback.value = "Copenhagen"
-
-    assert @person.callback_flag
+  test "set with after_change callback" do
+    assert_callback_executed_for :kredis_set, :proc,   ->(type) { type.add "paris" }
+    assert_callback_executed_for :kredis_set, :method, ->(type) { type.add "paris" }
   end
 
-  test "slot with after_change proc callback" do
-    @person.attention_with_proc_callback.reserve
-
-    assert @person.callback_flag
+  test "json with after_change callback" do
+    assert_callback_executed_for :kredis_json, :proc,   ->(type) { type.value = { "color" => "red", "count" => 2 } }
+    assert_callback_executed_for :kredis_json, :method, ->(type) { type.value = { "color" => "red", "count" => 2 } }
   end
 
-  test "slot with after_change method callback" do
-    @person.attention_with_method_callback.reserve
-
-    assert @person.callback_flag
+  test "counter with after_change callback" do
+    assert_callback_executed_for :kredis_counter, :proc,   ->(type) { type.increment }
+    assert_callback_executed_for :kredis_counter, :method, ->(type) { type.increment }
   end
 
-  test "enum with after_change proc callback" do
-    @person.morning_with_proc_callback.value = "blue"
-
-    assert @person.callback_flag
+  test "hash with after_change callback" do
+    assert_callback_executed_for :kredis_hash, :proc,   ->(type) { type.update space_invaders: 100, pong: 42 }
+    assert_callback_executed_for :kredis_hash, :method, ->(type) { type.update space_invaders: 100, pong: 42 }
   end
 
-  test "enum with after_change method callback" do
-    @person.morning_with_method_callback.value = "blue"
+  private
+    def assert_callback_executed_for(attribute_type, kind, executor, **options)
+      called = false
 
-    assert @person.callback_flag
-  end
+      new_person = Class.new(Person) do
+        send attribute_type, :type, **options, after_change: kind == :proc ? proc { called = true } : :changed
+        define_method(:changed) { called = true }
+      end
 
-  test "set with after_change proc callback" do
-    @person.vacations_with_proc_callback.add "paris"
-
-    assert @person.callback_flag
-  end
-
-  test "set with after_change method callback" do
-    @person.vacations_with_method_callback.add "paris"
-
-    assert @person.callback_flag
-  end
-
-  test "json with after_change proc callback" do
-    @person.settings_with_proc_callback.value = { "color" => "red", "count" => 2 }
-
-    assert @person.callback_flag
-  end
-
-  test "json with after_change method callback" do
-    @person.settings_with_method_callback.value = { "color" => "red", "count" => 2 }
-
-    assert @person.callback_flag
-  end
-
-  test "counter with after_change proc callback" do
-    @person.amount_with_proc_callback.increment
-
-    assert @person.callback_flag
-  end
-
-  test "counter with after_change method callback" do
-    @person.amount_with_method_callback.increment
-
-    assert @person.callback_flag
-  end
-
-  test "hash with after_change proc callback" do
-    @person.high_scores_with_proc_callback.update(space_invaders: 100, pong: 42)
-
-    assert @person.callback_flag
-  end
-
-  test "hash with after_change method callback" do
-    @person.high_scores_with_method_callback.update(space_invaders: 100, pong: 42)
-
-    assert @person.callback_flag
-  end
+      executor.call(new_person.new.type)
+      assert called
+    end
 end
