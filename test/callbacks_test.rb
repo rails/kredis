@@ -62,7 +62,7 @@ class CallbacksTest < ActiveSupport::TestCase
     settings = Kredis.json "settings", after_change: ->(json) { @callback_check = json.value }
     settings.value = { "color" => "red", "count" => 2 }
 
-    assert_equal ({ "color" => "red", "count" => 2 }), @callback_check
+    assert_equal({ "color" => "red", "count" => 2 }, @callback_check)
   end
 
   test "counter with after_change proc callback" do
