@@ -74,6 +74,7 @@ hash.update("key" => "value", "key2" => "value2")     # => HSET myhash "key", "v
 "value2" == hash["key2"]                              # => HMGET myhash "key2"
 %w[ key key2 ] == hash.keys                           # => HKEYS myhash
 %w[ value value2 ] == hash.values                     # => HVALS myhash
+hash.remove                                           # => DEL myhash
 
 high_scores = Kredis.hash "high_scores", typed: :integer
 high_scores.update(space_invaders: 100, pong: 42)             # HSET high_scores "space_invaders", "100", "pong", "42"
