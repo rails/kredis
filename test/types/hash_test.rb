@@ -69,4 +69,11 @@ class HashTest < ActiveSupport::TestCase
     assert_equal 42, @hash["pong"]
     assert_equal({ "space_invaders" => 100, "pong" => 42 }, @hash.to_h)
   end
+
+  test "remove" do
+    @hash.update("key2" => "value2")
+    assert_equal "value2", @hash["key2"]
+    @hash.remove
+    assert_equal({}, @hash.to_h)
+  end
 end
