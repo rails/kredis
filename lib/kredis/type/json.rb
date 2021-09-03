@@ -3,7 +3,6 @@
 module Kredis
   module Type
     class Json < ActiveModel::Type::Value
-
       def type
         :json
       end
