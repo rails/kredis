@@ -3,7 +3,6 @@
 module Kredis
   module Type
     class DateTime < ActiveModel::Type::DateTime
-
       def serialize(value)
         super&.iso8601(9)
       end
