@@ -27,7 +27,7 @@ module Kredis::TypeCasting
   end
 
   def string_to_type(value, type)
-    raise InvalidType if type && !type.in?(VALID_TYPES)
+    raise InvalidType if type && !VALID_TYPES.include?(type)
 
     case type
     when nil, :string then value

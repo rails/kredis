@@ -20,6 +20,23 @@ integer = Kredis.integer "myinteger"
 integer.value = 5  # => SET myinteger "5"
 5 == integer.value # => GET myinteger
 
+decimal = Kredis.decimal "mydecimal" # accuracy!
+decimal.value = "%.47f" % (1.0/10) # => SET mydecimal "0.10000000000000000555111512312578270211815834045"
+BigDecimal("0.10000000000000000555111512312578270211815834045e0") == decimal.value # => GET mydecimal
+
+float = Kredis.float "myfloat" # speed!
+float.value = 1.0/10 # => SET myfloat "0.1"
+0.1 == float.value # => GET myfloat
+
+boolean = Kredis.boolean "myboolean"
+boolean.value = true # => SET myboolean "t"
+true == boolean.value # => GET myboolean
+
+datetime = Kredis.datetime "mydatetime"
+memoized_midnight = Time.zone.now.midnight
+datetime.value = memoized_midnight # SET mydatetime "2021-07-27T00:00:00.000000000Z"
+memoized_midnight == datetime.value # => GET mydatetime
+
 json = Kredis.json "myjson"
 json.value = { "one" => 1, "two" => "2" }  # => SET myjson "{\"one\":1,\"two\":\"2\"}"
 { "one" => 1, "two" => "2" } == json.value  # => GET myjson
@@ -29,87 +46,110 @@ There are data structures for counters, enums, flags, lists, unique lists, sets,
 
 ```ruby
 list = Kredis.list "mylist"
-list << "hello world!"
-[ "hello world!" ] == list.elements
+list << "hello world!"               # => RPUSH mylist "hello world!"
+[ "hello world!" ] == list.elements  # => LRANGE mylist 0, -1
 
 integer_list = Kredis.list "myintegerlist", typed: :integer
-integer_list.append([ 1, 2, 3 ])        # => LPUSH myintegerlist "1" "2" "3"
-integer_list << 4                       # => LPUSH myintegerlist "4"
-[ 1, 2, 3, 4 ] == integer_list.elements # LRANGE 0 -1
+integer_list.append([ 1, 2, 3 ])        # => RPUSH myintegerlist "1" "2" "3"
+integer_list << 4                       # => RPUSH myintegerlist "4"
+[ 1, 2, 3, 4 ] == integer_list.elements # => LRANGE myintegerlist 0 -1
 
 unique_list = Kredis.unique_list "myuniquelist"
-unique_list.append(%w[ 2 3 4 ])
-unique_list.prepend(%w[ 1 2 3 4 ])
+unique_list.append(%w[ 2 3 4 ])                # => LREM myuniquelist 0, "2" + LREM myuniquelist 0, "3" + LREM myuniquelist 0, "4"  + RPUSH myuniquelist "2", "3", "4"
+unique_list.prepend(%w[ 1 2 3 4 ])             # => LREM myuniquelist 0, "1"  + LREM myuniquelist 0, "2" + LREM myuniquelist 0, "3" + LREM myuniquelist 0, "4"  + LPUSH myuniquelist "1", "2", "3", "4"
 unique_list.append([])
-unique_list << "5"
-unique_list.remove(3)
-[ "1", "2", "4", "5" ] == unique_list.elements
+unique_list << "5"                             # => LREM myuniquelist 0, "5" + RPUSH myuniquelist "5"
+unique_list.remove(3)                          # => LREM myuniquelist 0, "3"
+[ "4", "2", "1", "5" ] == unique_list.elements # => LRANGE myuniquelist 0, -1
 
 set = Kredis.set "myset", typed: :datetime
-set.add(DateTime.tomorrow, DateTime.yesterday)            # => SADD myset "2021-02-03 00:00:00 +0100" "2021-02-01 00:00:00 +0100"
-set << DateTime.tomorrow                                  # => SADD myset "2021-02-03 00:00:00 +0100"
-2 == set.size                                             # => SCARD myset
-[ DateTime.tomorrow, DateTime.yesterday ] == set.elements # => SMEMBERS myset
+set.add(DateTime.tomorrow, DateTime.yesterday)           # => SADD myset "2021-02-03 00:00:00 +0100" "2021-02-01 00:00:00 +0100"
+set << DateTime.tomorrow                                 # => SADD myset "2021-02-03 00:00:00 +0100"
+2 == set.size                                            # => SCARD myset
+[ DateTime.tomorrow, DateTime.yesterday ] == set.members # => SMEMBERS myset
+
+hash = Kredis.hash "myhash"
+hash.update("key" => "value", "key2" => "value2")     # => HSET myhash "key", "value", "key2", "value2"
+{ "key" => "value", "key2" => "value2" } == hash.to_h # => HGETALL myhash
+"value2" == hash["key2"]                              # => HMGET myhash "key2"
+%w[ key key2 ] == hash.keys                           # => HKEYS myhash
+%w[ value value2 ] == hash.values                     # => HVALS myhash
+hash.remove                                           # => DEL myhash
+
+high_scores = Kredis.hash "high_scores", typed: :integer
+high_scores.update(space_invaders: 100, pong: 42)             # HSET high_scores "space_invaders", "100", "pong", "42"
+%w[ space_invaders pong ] == high_scores.keys                 # HKEYS high_scores
+[ 100, 42 ] == high_scores.values                             # HVALS high_scores
+{ "space_invaders" => 100, "pong" => 42 } == high_scores.to_h # HGETALL high_scores
 
 head_count = Kredis.counter "headcount"
 0 == head_count.value              # => GET "headcount"
-head_count.increment
-head_count.increment
-head_count.decrement
+head_count.increment               # => SET headcount 0 NX + INCRBY headcount 1
+head_count.increment               # => SET headcount 0 NX + INCRBY headcount 1
+head_count.decrement               # => SET headcount 0 NX + DECRBY headcount 1
 1 == head_count.value              # => GET "headcount"
 
 counter = Kredis.counter "mycounter", expires_in: 5.seconds
-counter.increment by: 2         # => SETEX "mycounter" 900 0 + INCR "mycounter" 2
+counter.increment by: 2         # => SET mycounter 0 EX 5 NX + INCRBY "mycounter" 2
 2 == counter.value              # => GET "mycounter"
 sleep 6.seconds
 0 == counter.value              # => GET "mycounter"
 
 cycle = Kredis.cycle "mycycle", values: %i[ one two three ]
-:one == cycle.value
-cycle.next
-:two == cycle.value
-cycle.next
-:three == cycle.value
-cycle.next
-:one == cycle.value
+:one == cycle.value             # => GET mycycle
+cycle.next                      # => GET mycycle + SET mycycle 1
+:two == cycle.value             # => GET mycycle
+cycle.next                      # => GET mycycle + SET mycycle 2
+:three == cycle.value           # => GET mycycle
+cycle.next                      # => GET mycycle + SET mycycle 0
+:one == cycle.value             # => GET mycycle
 
 enum = Kredis.enum "myenum", values: %w[ one two three ], default: "one"
-"one" == enum.value
-true == enum.one?
-enum.value = "two"
-"two" == enum.value
+"one" == enum.value             # => GET myenum  
+true == enum.one?               # => GET myenum
+enum.value = "two"              # => SET myenum "two"
+"two" == enum.value             # => GET myenum
 enum.value = "four"
-"two" == enum.value
-enum.reset
-"one" == enum.value
+"two" == enum.value             # => GET myenum
+enum.reset                      # => DEL myenum
+"one" == enum.value             # => GET myenum  
 
 slots = Kredis.slots "myslots", available: 3
-true == slots.available?
-slots.reserve
-true == slots.available?
-slots.reserve
-true == slots.available?
-slots.reserve
-true == slots.available?
-slots.reserve
-false == slots.available?
-slots.release
-true == slots.available?
-slots.reset
+true == slots.available?        # => GET myslots
+slots.reserve                   # => INCR myslots
+true == slots.available?        # => GET myslots
+slots.reserve                   # => INCR myslots     
+true == slots.available?        # => GET myslots
+slots.reserve                   # => INCR myslots
+false == slots.available?       # => GET myslots
+slots.reserve                   # => INCR myslots + DECR myslots  
+false == slots.available?       # => GET myslots
+slots.release                   # => DECR myslots
+true == slots.available?        # => GET myslots
+slots.reset                     # => DEL myslots
+
+
+slot = Kredis.slot "myslot"
+true == slot.available?        # => GET myslot
+slot.reserve                   # => INCR myslot
+false == slot.available?       # => GET myslot
+slot.release                   # => DECR myslot
+true == slot.available?        # => GET myslot
+slot.reset                     # => DEL myslot
 
 flag = Kredis.flag "myflag"
-false == flag.marked?
-flag.mark
-true == flag.marked?
-flag.remove
-false == flag.marked?
+false == flag.marked?           # => EXISTS myflag
+flag.mark                       # => SET myflag 1
+true == flag.marked?            # => EXISTS myflag
+flag.remove                     # => DEL myflag  
+false == flag.marked?           # => EXISTS myflag
 
-flag.mark(expires_in: 1.second)
-true == flag.marked?
+flag.mark(expires_in: 1.second) #=> SET myflag 1 EX 1
+true == flag.marked?            #=> EXISTS myflag
 sleep 0.5.seconds
-true == flag.marked?
+true == flag.marked?            #=> EXISTS myflag
 sleep 0.6.seconds
-false == flag.marked?
+false == flag.marked?           #=> EXISTS myflag
 ```
 
 And using structures on a different than the default `shared` redis instance, relying on `config/redis/secondary.yml`:
@@ -133,12 +173,23 @@ class Person < ApplicationRecord
 end
 
 person = Person.find(5)
-person.names.append "David", "Heinemeier", "Hansson" # => SADD person:5:names "David" "Heinemeier" "Hansson"
-true == person.morning.bright?
-person.morning.value = "blue"
-true == person.morning.blue?
+person.names.append "David", "Heinemeier", "Hansson" # => RPUSH people:5:names "David" "Heinemeier" "Hansson"
+true == person.morning.bright?                       # => GET people:1:morning
+person.morning.value = "blue"                        # => SET people:1:morning
+true == person.morning.blue?                         # => GET people:1:morning
 ```
 
+You can also define `after_change` callbacks that trigger on mutations:
+
+```ruby
+class Person < ApplicationRecord
+  kredis_list :names, after_change: ->(p) {  }
+  kredis_unique_list :skills, limit: 2, after_change: :skillset_changed
+
+  def skillset_changed
+  end
+end
+```
 
 ## Installation
 
@@ -165,6 +216,32 @@ test:
 
 Additional configurations can be added under `config/redis/*.yml` and referenced when a type is created, e.g. `Kredis.string("mystring", config: :strings)` would lookup `config/redis/strings.yml`. Under the hood `Kredis.configured_for` is called which'll pass the configuration on to `Redis.new`.
 
+### Setting SSL options on Redis Connections
+
+If you need to connect to Redis with SSL, the recommended approach is to set your Redis instance manually by adding an entry to the `Kredis::Connections.connections` hash. Below an example showing how to connect to Redis using Client Authentication:
+
+```ruby
+Kredis::Connections.connections[:shared] = Redis.new(
+  url: ENV['REDIS_URL'],
+  ssl_params: {
+    cert_store: OpenSSL::X509::Store.new.tap { |store|
+      store.add_file(Rails.root.join('config', 'ca_cert.pem').to_s)
+    },
+
+    cert: OpenSSL::X509::Certificate.new(File.read(
+      Rails.root.join('config', 'client.crt')
+    )),
+
+    key: OpenSSL::PKey::RSA.new(
+      Rails.application.credentials.redis[:client_key]
+    ),
+
+    verify_mode: OpenSSL::SSL::VERIFY_PEER
+  }
+)
+```
+
+The above code could be added to either `config/environments/production.rb` or an initializer. Please ensure that your client private key, if used, is stored your credentials file or another secure location.
 
 ## License
 

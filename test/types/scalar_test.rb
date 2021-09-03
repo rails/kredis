@@ -30,6 +30,12 @@ class ScalarTest < ActiveSupport::TestCase
     boolean = Kredis.boolean "myscalar"
     boolean.value = true
     assert_equal true, boolean.value
+    boolean.value = false
+    assert_equal false, boolean.value
+    boolean.value = 't'
+    assert_equal true, boolean.value
+    boolean.value = 'false'
+    assert_equal false, boolean.value
   end
 
   test "datetime" do
