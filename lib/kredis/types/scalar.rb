@@ -9,9 +9,12 @@ class Kredis::Types::Scalar < Kredis::Types::Proxying
 
   def value
     value_after_casting = string_to_type(get, typed)
-    return default if value_after_casting.nil?
-
-    value_after_casting
+    
+    if value_after_casting.nil?
+      default
+    else
+      value_after_casting
+    end
   end
 
   def to_s
