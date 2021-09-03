@@ -5,6 +5,7 @@ module Kredis::Types
     type_from(Proxy, config, key, after_change: after_change)
   end
 
+
   def scalar(key, typed: :string, default: nil, config: :shared, after_change: nil, expires_in: nil)
     type_from(Scalar, config, key, after_change: after_change, typed: typed, default: default, expires_in: expires_in)
   end
