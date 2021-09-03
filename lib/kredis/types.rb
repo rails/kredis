@@ -6,36 +6,36 @@ module Kredis::Types
   end
 
 
-  def scalar(key, typed: :string, default: nil, config: :shared, after_change: nil)
-    type_from(Scalar, config, key, after_change: after_change, typed: typed, default: default)
+  def scalar(key, typed: :string, default: nil, config: :shared, after_change: nil, expires_in: nil)
+    type_from(Scalar, config, key, after_change: after_change, typed: typed, default: default, expires_in: expires_in)
   end
 
-  def string(key, default: nil, config: :shared, after_change: nil)
-    type_from(Scalar, config, key, after_change: after_change, typed: :string, default: default)
+  def string(key, default: nil, config: :shared, after_change: nil, expires_in: nil)
+    type_from(Scalar, config, key, after_change: after_change, typed: :string, default: default, expires_in: expires_in)
   end
 
-  def integer(key, default: nil, config: :shared, after_change: nil)
-    type_from(Scalar, config, key, after_change: after_change, typed: :integer, default: default)
+  def integer(key, default: nil, config: :shared, after_change: nil, expires_in: nil)
+    type_from(Scalar, config, key, after_change: after_change, typed: :integer, default: default, expires_in: expires_in)
   end
 
-  def decimal(key, default: nil, config: :shared, after_change: nil)
-    type_from(Scalar, config, key, after_change: after_change, typed: :decimal, default: default)
+  def decimal(key, default: nil, config: :shared, after_change: nil, expires_in: nil)
+    type_from(Scalar, config, key, after_change: after_change, typed: :decimal, default: default, expires_in: expires_in)
   end
 
-  def float(key, default: nil, config: :shared, after_change: nil)
-    type_from(Scalar, config, key, after_change: after_change, typed: :float, default: default)
+  def float(key, default: nil, config: :shared, after_change: nil, expires_in: nil)
+    type_from(Scalar, config, key, after_change: after_change, typed: :float, default: default, expires_in: expires_in)
   end
 
-  def boolean(key, default: nil, config: :shared, after_change: nil)
-    type_from(Scalar, config, key, after_change: after_change, typed: :boolean, default: default)
+  def boolean(key, default: nil, config: :shared, after_change: nil, expires_in: nil)
+    type_from(Scalar, config, key, after_change: after_change, typed: :boolean, default: default, expires_in: expires_in)
   end
 
-  def datetime(key, default: nil, config: :shared, after_change: nil)
-    type_from(Scalar, config, key, after_change: after_change, typed: :datetime, default: default)
+  def datetime(key, default: nil, config: :shared, after_change: nil, expires_in: nil)
+    type_from(Scalar, config, key, after_change: after_change, typed: :datetime, default: default, expires_in: expires_in)
   end
 
-  def json(key, default: nil, config: :shared, after_change: nil)
-    type_from(Scalar, config, key, after_change: after_change, typed: :json, default: default)
+  def json(key, default: nil, config: :shared, after_change: nil, expires_in: nil)
+    type_from(Scalar, config, key, after_change: after_change, typed: :json, default: default, expires_in: expires_in)
   end
 
 

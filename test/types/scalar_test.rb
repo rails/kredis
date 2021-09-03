@@ -100,4 +100,62 @@ class ScalarTest < ActiveSupport::TestCase
 
     stub_redis_down(integer) { assert_equal 8, integer.value }
   end
+
+  test "telling a scalar to expire in a relative amount of time" do
+    string = Kredis.scalar "myscalar", default: "unassigned"
+    string.value = "assigned"
+    assert_changes "string.value", from: "assigned", to: "unassigned" do
+      string.expire_in 1.second
+      sleep 1.1.seconds
+    end
+  end
+
+  test "telling a scaler to expire at a specific point in time" do
+    string = Kredis.scalar "myscalar", default: "unassigned"
+    string.value = "assigned"
+    assert_changes "string.value", from: "assigned", to: "unassigned" do
+      string.expire_at 1.second.from_now
+      sleep 1.1.seconds
+    end
+  end
+
+  test "configuring a scaler to always expire after assignment" do
+    forever_string = Kredis.scalar "forever", default: "unassigned", expires_in: nil
+    ephemeral_string = Kredis.scalar "ephemeral", default: "unassigned", expires_in: 1.second
+
+    forever_string.value = "assigned"
+    ephemeral_string.value = "assigned"
+
+    assert_no_changes "forever_string.value" do
+      assert_changes "ephemeral_string.value", from: "assigned", to: "unassigned" do
+        sleep 1.1.seconds
+      end
+    end
+  end
+
+  test "all scalar types can be configured with expires_in" do
+    duration = 1.second
+    scalar = Kredis.scalar("ephemeral", expires_in: duration)
+
+    scalar = Kredis.string("ephemeral", expires_in: duration)
+    assert_equal duration, scalar.expires_in
+
+    scalar = Kredis.integer("ephemeral", expires_in: duration)
+    assert_equal duration, scalar.expires_in
+
+    scalar = Kredis.decimal("ephemeral", expires_in: duration)
+    assert_equal duration, scalar.expires_in
+
+    scalar = Kredis.float("ephemeral", expires_in: duration)
+    assert_equal duration, scalar.expires_in
+
+    scalar = Kredis.boolean("ephemeral", expires_in: duration)
+    assert_equal duration, scalar.expires_in
+
+    scalar = Kredis.datetime("ephemeral", expires_in: duration)
+    assert_equal duration, scalar.expires_in
+
+    scalar = Kredis.json("ephemeral", expires_in: duration)
+    assert_equal duration, scalar.expires_in
+  end
 end
