@@ -11,3 +11,4 @@ git tag v$VERSION
 git push --tags
 gem build kredis.gemspec
 gem push "kredis-$VERSION.gem"
+rm "kredis-$VERSION.gem"
