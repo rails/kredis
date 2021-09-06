@@ -14,6 +14,7 @@ class Person
   kredis_integer :age
   kredis_decimal :salary
   kredis_datetime :last_seen_at
+  kredis_float :height
   kredis_enum :morning, values: %w[ bright blue black ], default: "bright"
   kredis_slot :attention
   kredis_slots :meetings, available: 3
@@ -103,7 +104,13 @@ class AttributesTest < ActiveSupport::TestCase
   test "decimal" do
     @person.salary.value = 10000.07
     assert_equal 10000.07, @person.salary.value
-    assert_equal "10000.07", @person.salary.to_s
+    assert_equal "0.1000007e5", @person.salary.to_s
+  end
+
+  test "float" do
+    @person.height.value = 1.85
+    assert_equal 1.85, @person.height.value
+    assert_equal "1.85", @person.height.to_s
   end
 
   test "datetime" do
