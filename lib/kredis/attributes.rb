@@ -30,6 +30,10 @@ module Kredis::Attributes
       end
     end
 
+    def kredis_float(name, key: nil, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change
+    end
+
     def kredis_enum(name, key: nil, values:, default:, config: :shared, after_change: nil)
       kredis_connection_with __method__, name, key, values: values, default: default, config: config, after_change: after_change
     end
