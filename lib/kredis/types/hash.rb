@@ -13,9 +13,8 @@ class Kredis::Types::Hash < Kredis::Types::Proxying
     update key => value
   end
 
-
   def update(**entries)
-    hset types_to_strings(entries) if entries.flatten.any?
+    hset entries.transform_values{ |val| type_to_string(val, typed) } if entries.flatten.any?
   end
 
   def values_at(*keys)
@@ -23,11 +22,11 @@ class Kredis::Types::Hash < Kredis::Types::Proxying
   end
 
   def delete(*keys)
-    hdel types_to_strings(keys) if keys.flatten.any?
+    hdel keys if keys.flatten.any?
   end
 
   def remove
-    del 
+    del
   end
 
   def entries

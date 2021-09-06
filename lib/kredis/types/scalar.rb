@@ -4,12 +4,12 @@ class Kredis::Types::Scalar < Kredis::Types::Proxying
   attr_accessor :typed, :default, :expires_in
 
   def value=(value)
-    set type_to_string(value), ex: expires_in
+    set type_to_string(value, typed), ex: expires_in
   end
 
   def value
     value_after_casting = string_to_type(get, typed)
-    
+
     if value_after_casting.nil?
       default
     else

@@ -1,47 +1,35 @@
 require "json"
+require "active_model/type"
+require "kredis/type/json"
+require "kredis/type/datetime"
 
 module Kredis::TypeCasting
   class InvalidType < StandardError; end
 
-  VALID_TYPES = %i[ string integer decimal float boolean datetime json ]
+  TYPES = {
+    string: ActiveModel::Type::String.new,
+    integer: ActiveModel::Type::Integer.new,
+    decimal: ActiveModel::Type::Decimal.new,
+    float: ActiveModel::Type::Float.new,
+    boolean: ActiveModel::Type::Boolean.new,
+    datetime: Kredis::Type::DateTime.new,
+    json: Kredis::Type::Json.new
+  }
 
-  def type_to_string(value)
-    case value
-    when nil
-      ""
-    when Integer
-      value.to_s
-    when BigDecimal
-      value.to_d
-    when Float
-      value.to_s
-    when TrueClass, FalseClass
-      value ? "t" : "f"
-    when Time, DateTime, ActiveSupport::TimeWithZone
-      value.iso8601(9)
-    when Hash
-      JSON.dump(value)
-    else
-      value
-    end
+  def type_to_string(value, type)
+    raise InvalidType if type && !TYPES.key?(type)
+
+    TYPES[type || :string].serialize(value)
   end
 
   def string_to_type(value, type)
-    raise InvalidType if type && !VALID_TYPES.include?(type)
+    raise InvalidType if type && !TYPES.key?(type)
 
-    case type
-    when nil, :string then value
-    when :integer     then value.to_i
-    when :decimal     then value.to_d
-    when :float       then value.to_f
-    when :boolean     then value == "t" ? true : false
-    when :datetime    then Time.iso8601(value)
-    when :json        then JSON.load(value)
-    end if value.present?
+    TYPES[type || :string].cast(value)
   end
 
-  def types_to_strings(values)
-    Array(values).flatten.map { |value| type_to_string(value) }
+  def types_to_strings(values, type)
+    Array(values).flatten.map { |value| type_to_string(value, type) }
   end
 
   def strings_to_types(values, type)

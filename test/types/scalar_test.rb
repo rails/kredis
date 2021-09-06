@@ -50,6 +50,12 @@ class ScalarTest < ActiveSupport::TestCase
     assert_nil datetime.value
   end
 
+  test "datetime casting Dates" do
+    datetime = Kredis.datetime "myscalar"
+    datetime.value = Date.current
+    assert_equal Date.current.to_datetime, datetime.value
+  end
+
   test "json" do
     json = Kredis.json "myscalar"
     json.value = { "one" => 1, "string" => "hello" }
@@ -58,7 +64,7 @@ class ScalarTest < ActiveSupport::TestCase
 
   test "invalid type" do
     nothere = Kredis.scalar "myscalar", typed: :nothere
-    nothere.value = true
+    assert_raises(Kredis::TypeCasting::InvalidType) { nothere.value = true }
 
     assert_raises(Kredis::TypeCasting::InvalidType) { nothere.value }
   end
