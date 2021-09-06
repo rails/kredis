@@ -10,7 +10,7 @@ module Kredis::TypeCasting
     string: ActiveModel::Type::String.new,
     integer: ActiveModel::Type::Integer.new,
     decimal: ActiveModel::Type::Decimal.new,
-    float: ActiveModel::Type::Decimal.new,
+    float: ActiveModel::Type::Float.new,
     boolean: ActiveModel::Type::Boolean.new,
     datetime: Kredis::Type::DateTime.new,
     json: Kredis::Type::Json.new
