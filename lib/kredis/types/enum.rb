@@ -1,3 +1,5 @@
+require "active_support/core_ext/object/inclusion"
+
 class Kredis::Types::Enum < Kredis::Types::Proxying
   proxying :set, :get, :del
 
