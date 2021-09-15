@@ -1,4 +1,5 @@
 require "test_helper"
+require "active_support/core_ext/integer"
 
 class Person
   include Kredis::Attributes
@@ -21,6 +22,7 @@ class Person
   kredis_set :vacations
   kredis_json :settings
   kredis_counter :amount
+  kredis_string :temporary_password, expires_in: 1.second
   kredis_hash :high_scores, typed: :integer
 
   def self.name
@@ -226,5 +228,12 @@ class AttributesTest < ActiveSupport::TestCase
     def suddenly_implemented_person.id; 8; end
 
     assert_nil suddenly_implemented_person.anything.get
+  end
+
+  test "expiring scalars" do
+    @person.temporary_password.value = "assigned"
+    assert_changes "@person.temporary_password.value", from: "assigned", to: nil do
+      sleep 1.1.seconds
+    end
   end
 end

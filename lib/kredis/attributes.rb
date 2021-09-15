@@ -6,20 +6,20 @@ module Kredis::Attributes
       kredis_connection_with __method__, name, key, config: config, after_change: after_change
     end
 
-    def kredis_string(name, key: nil, config: :shared, after_change: nil)
-      kredis_connection_with __method__, name, key, config: config, after_change: after_change
+    def kredis_string(name, key: nil, config: :shared, after_change: nil, expires_in: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change, expires_in: expires_in
     end
 
-    def kredis_integer(name, key: nil, config: :shared, after_change: nil)
-      kredis_connection_with __method__, name, key, config: config, after_change: after_change
+    def kredis_integer(name, key: nil, config: :shared, after_change: nil, expires_in: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change, expires_in: expires_in
     end
 
-    def kredis_decimal(name, key: nil, config: :shared, after_change: nil)
-      kredis_connection_with __method__, name, key, config: config, after_change: after_change
+    def kredis_decimal(name, key: nil, config: :shared, after_change: nil, expires_in: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change, expires_in: expires_in
     end
 
-    def kredis_datetime(name, key: nil, config: :shared, after_change: nil)
-      kredis_connection_with __method__, name, key, config: config, after_change: after_change
+    def kredis_datetime(name, key: nil, config: :shared, after_change: nil, expires_in: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change, expires_in: expires_in
     end
 
     def kredis_flag(name, key: nil, config: :shared, after_change: nil)
@@ -30,16 +30,16 @@ module Kredis::Attributes
       end
     end
 
-    def kredis_float(name, key: nil, config: :shared, after_change: nil)
-      kredis_connection_with __method__, name, key, config: config, after_change: after_change
+    def kredis_float(name, key: nil, config: :shared, after_change: nil, expires_in: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change, expires_in: expires_in
     end
 
     def kredis_enum(name, key: nil, values:, default:, config: :shared, after_change: nil)
       kredis_connection_with __method__, name, key, values: values, default: default, config: config, after_change: after_change
     end
 
-    def kredis_json(name, key: nil, config: :shared, after_change: nil)
-      kredis_connection_with __method__, name, key, config: config, after_change: after_change
+    def kredis_json(name, key: nil, config: :shared, after_change: nil, expires_in: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change, expires_in: expires_in
     end
 
     def kredis_list(name, key: nil, typed: :string, config: :shared, after_change: nil)
