@@ -174,9 +174,9 @@ end
 
 person = Person.find(5)
 person.names.append "David", "Heinemeier", "Hansson" # => RPUSH people:5:names "David" "Heinemeier" "Hansson"
-true == person.morning.bright?                       # => GET people:1:morning
-person.morning.value = "blue"                        # => SET people:1:morning
-true == person.morning.blue?                         # => GET people:1:morning
+true == person.morning.bright?                       # => GET people:5:morning
+person.morning.value = "blue"                        # => SET people:5:morning
+true == person.morning.blue?                         # => GET people:5:morning
 ```
 
 You can also define `after_change` callbacks that trigger on mutations:
