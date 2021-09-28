@@ -13,7 +13,7 @@ class Kredis::Railtie < ::Rails::Railtie
   end
 
   initializer "kredis.configuration" do
-    Kredis::Connections.connector = config.kredis.connector || ->(config){ Redis.new(config) }
+    Kredis::Connections.connector = config.kredis.connector || ->(config) { Redis.new(config) }
   end
 
   initializer "kredis.configurator" do
