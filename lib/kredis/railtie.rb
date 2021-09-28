@@ -12,6 +12,10 @@ class Kredis::Railtie < ::Rails::Railtie
     Kredis::LogSubscriber.logger = config.kredis.logger || Rails.logger
   end
 
+  initializer "kredis.configuration" do
+    Kredis::Connections.connector = config.kredis.connector || ->(config) { Redis.new(config) }
+  end
+
   initializer "kredis.configurator" do
     Kredis.configurator = Rails.application
   end

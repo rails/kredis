@@ -3,11 +3,12 @@ require "redis"
 module Kredis::Connections
   mattr_accessor :connections, default: Hash.new
   mattr_accessor :configurator
+  mattr_accessor :connector, default: ->(config) { Redis.new(config) }
 
   def configured_for(name)
     connections[name] ||= begin
       Kredis.instrument :meta, message: "Connected to #{name}" do
-        Redis.new configurator.config_for("redis/#{name}")
+        connector.call configurator.config_for("redis/#{name}")
       end
     end
   end

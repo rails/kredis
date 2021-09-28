@@ -243,6 +243,16 @@ Kredis::Connections.connections[:shared] = Redis.new(
 
 The above code could be added to either `config/environments/production.rb` or an initializer. Please ensure that your client private key, if used, is stored your credentials file or another secure location.
 
+### Configure how the redis client is created
+
+You can configure how the redis client is created by setting `config.connector` in your `application.rb`:
+
+```ruby
+config.kredis.connector = ->(config) { SomeRedisProxy.new(config) }
+```
+
+By default Kredis will use `Redis.new(config)`.
+
 ## License
 
 Kredis is released under the [MIT License](https://opensource.org/licenses/MIT).
