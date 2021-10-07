@@ -1,5 +1,5 @@
 class Kredis::Types::Set < Kredis::Types::Proxying
-  proxying :smembers, :sadd, :srem, :multi, :del, :sismember, :scard, :spop
+  proxying :smembers, :sadd, :srem, :multi, :del, :sismember, :scard, :spop, :exists?
 
   attr_accessor :typed
 

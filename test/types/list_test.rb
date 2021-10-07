@@ -44,4 +44,11 @@ class ListTest < ActiveSupport::TestCase
     @list.remove(2.days.from_now.midnight)
     assert_equal [ 1.day.from_now.midnight ], @list.elements
   end
+
+  test "exists?" do
+    assert_not @list.exists?
+
+    @list.append(%w[ 1 2 3 ])
+    assert @list.exists?
+  end
 end

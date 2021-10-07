@@ -30,4 +30,11 @@ class EnumTest < ActiveSupport::TestCase
     @enum.reset
     assert @enum.one?
   end
+
+  test "exists?" do
+    assert_not @enum.exists?
+
+    @enum.value = "one"
+    assert @enum.exists?
+  end
 end

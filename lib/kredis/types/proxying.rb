@@ -3,8 +3,6 @@ require "active_support/core_ext/module/delegation"
 class Kredis::Types::Proxying
   attr_accessor :proxy, :redis, :key
 
-  delegate :exists?, to: :proxy
-
   def self.proxying(*commands)
     delegate *commands, to: :proxy
   end

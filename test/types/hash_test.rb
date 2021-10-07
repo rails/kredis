@@ -76,4 +76,11 @@ class HashTest < ActiveSupport::TestCase
     @hash.remove
     assert_equal({}, @hash.to_h)
   end
+
+  test "exists?" do
+    assert_not @hash.exists?
+
+    @hash[:key]  = :value
+    assert @hash.exists?
+  end
 end
