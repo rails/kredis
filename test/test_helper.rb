@@ -6,7 +6,7 @@ require "byebug"
 
 require "kredis"
 
-Kredis.configurator = Class.new { def config_for(name) {} end }.new
+Kredis.configurator = Class.new { def config_for(name) { db: "1" } end }.new
 
 ActiveSupport::LogSubscriber.logger = ActiveSupport::Logger.new(STDOUT) if ENV["VERBOSE"]
 
