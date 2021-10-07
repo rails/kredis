@@ -81,4 +81,11 @@ class SlotsTest < ActiveSupport::TestCase
       assert_not ran
     end
   end
+
+  test "exists?" do
+    assert_not @slots.exists?
+
+    @slots.reserve
+    assert @slots.exists?
+  end
 end

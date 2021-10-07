@@ -1,5 +1,5 @@
 class Kredis::Types::Counter < Kredis::Types::Proxying
-  proxying :multi, :set, :incrby, :decrby, :get, :del
+  proxying :multi, :set, :incrby, :decrby, :get, :del, :exists?
 
   attr_accessor :expires_in
 

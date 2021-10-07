@@ -81,4 +81,11 @@ class SetTest < ActiveSupport::TestCase
       assert_equal 0, @set.size
     end
   end
+
+  test "exists?" do
+    assert_not @set.exists?
+
+    @set.add(%w[ 1 2 3 ])
+    assert @set.exists?
+  end
 end

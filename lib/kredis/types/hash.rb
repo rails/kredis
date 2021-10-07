@@ -1,7 +1,7 @@
 require "active_support/core_ext/hash"
 
 class Kredis::Types::Hash < Kredis::Types::Proxying
-  proxying :hget, :hset, :hmget, :hdel, :hgetall, :hkeys, :hvals, :del
+  proxying :hget, :hset, :hmget, :hdel, :hgetall, :hkeys, :hvals, :del, :exists?
 
   attr_accessor :typed
 

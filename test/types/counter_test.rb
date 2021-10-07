@@ -63,4 +63,11 @@ class CounterTest < ActiveSupport::TestCase
     stub_redis_down(@counter) { @counter.increment }
     assert_equal 0, @counter.value
   end
+
+  test "exists?" do
+    assert_not @counter.exists?
+
+    @counter.increment
+    assert @counter.exists?
+  end
 end

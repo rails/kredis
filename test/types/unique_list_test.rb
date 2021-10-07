@@ -44,4 +44,11 @@ class UniqueListTest < ActiveSupport::TestCase
 
     assert_equal [ 1, 2 ], @list.elements
   end
+
+  test "exists?" do
+    assert_not @list.exists?
+
+    @list.append [ 1, 2 ]
+    assert @list.exists?
+  end
 end

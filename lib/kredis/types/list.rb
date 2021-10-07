@@ -1,5 +1,5 @@
 class Kredis::Types::List < Kredis::Types::Proxying
-  proxying :lrange, :lrem, :lpush, :rpush
+  proxying :lrange, :lrem, :lpush, :rpush, :exists?
 
   attr_accessor :typed
 
