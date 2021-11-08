@@ -244,4 +244,15 @@ class AttributesTest < ActiveSupport::TestCase
       sleep 1.1.seconds
     end
   end
+
+  test "expiring flag with force" do
+    assert @person.temporary_special.mark
+
+    sleep 0.5.seconds
+    assert_not @person.temporary_special.mark(force: false)
+
+    assert_changes "@person.temporary_special.marked?", from: true, to: false do
+      sleep 0.6.seconds
+    end
+  end
 end

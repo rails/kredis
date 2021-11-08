@@ -24,11 +24,11 @@ class FlagTest < ActiveSupport::TestCase
     assert_not @flag.marked?
   end
 
-  test "mark unless exists" do
-    assert @flag.mark(expires_in: 1.second, unless_exists: true)
+  test "mark with force" do
+    assert @flag.mark(expires_in: 1.second, force: false)
     assert @flag.mark(expires_in: 1.second)
-    assert @flag.mark(expires_in: 1.second, unless_exists: false)
-    assert_not @flag.mark(expires_in: 10.seconds, unless_exists: true)
+    assert @flag.mark(expires_in: 1.second, force: true)
+    assert_not @flag.mark(expires_in: 10.seconds, force: false)
 
     assert @flag.marked?
 
