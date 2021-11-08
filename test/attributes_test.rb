@@ -11,6 +11,7 @@ class Person
   kredis_list :names_with_custom_key, key: ->(p) { "person:#{p.id}:names_customized" }
   kredis_unique_list :skills, limit: 2
   kredis_flag :special
+  kredis_flag :temporary_special, expires_in: 1.second
   kredis_string :address
   kredis_integer :age
   kredis_decimal :salary
@@ -233,6 +234,13 @@ class AttributesTest < ActiveSupport::TestCase
   test "expiring scalars" do
     @person.temporary_password.value = "assigned"
     assert_changes "@person.temporary_password.value", from: "assigned", to: nil do
+      sleep 1.1.seconds
+    end
+  end
+
+  test "expiring flag" do
+    @person.temporary_special.mark
+    assert_changes "@person.temporary_special.marked?", from: true, to: false do
       sleep 1.1.seconds
     end
   end
