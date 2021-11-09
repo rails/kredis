@@ -144,7 +144,8 @@ true == flag.marked?            # => EXISTS myflag
 flag.remove                     # => DEL myflag  
 false == flag.marked?           # => EXISTS myflag
 
-flag.mark(expires_in: 1.second) #=> SET myflag 1 EX 1
+true == flag.mark(expires_in: 1.second, force: false)    #=> SET myflag 1 EX 1 NX
+false == flag.mark(expires_in: 10.seconds, force: false) #=> SET myflag 10 EX 1 NX
 true == flag.marked?            #=> EXISTS myflag
 sleep 0.5.seconds
 true == flag.marked?            #=> EXISTS myflag
