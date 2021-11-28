@@ -57,7 +57,12 @@ class AttributesCallbacksTest < ActiveSupport::TestCase
     assert_callback_executed_for :kredis_hash, :proc,   ->(type) { type.update space_invaders: 100, pong: 42 }
     assert_callback_executed_for :kredis_hash, :method, ->(type) { type.update space_invaders: 100, pong: 42 }
 
+    assert_callback_executed_for :kredis_hash, :proc,   ->(type) { type[:space_invaders] = 0 }
+    assert_callback_executed_for :kredis_hash, :method, ->(type) { type[:space_invaders] = 0 }
+
     assert_callback_executed_for :kredis_hash, :proc, ->(type) { type.delete "key" }
+
+    assert_callback_executed_for :kredis_hash, :method, ->(type) { type.remove }
   end
 
   private
