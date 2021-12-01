@@ -196,7 +196,7 @@ end
 
 1. Add the `kredis` gem to your Gemfile: `gem 'kredis'`
 2. Run `./bin/bundle install`
-3. Add a default configuration under `config/redis/shared.yml`
+3. Run `./bin/rails kredis:install` to add a default configuration under `config/redis/shared.yml`
 
 A default configuration can look like this for `config/redis/shared.yml`:
 
