@@ -1,7 +1,7 @@
 require "test_helper"
 
 class UniqueListTest < ActiveSupport::TestCase
-  setup { @list = Kredis.unique_list "myuniquelist" }
+  setup { @list = Kredis.unique_list "myuniquelist", limit: 5 }
 
   test "append" do
     @list.append(%w[ 1 2 3 ])
@@ -50,5 +50,17 @@ class UniqueListTest < ActiveSupport::TestCase
 
     @list.append [ 1, 2 ]
     assert @list.exists?
+  end
+
+  test "appending over limit" do
+    @list.append(%w[ 1 2 3 4 5 ])
+    @list.append(%w[ 6 7 8 ])
+    assert_equal %w[ 4 5 6 7 8 ], @list.elements
+  end
+
+  test "prepending over limit" do
+    @list.prepend(%w[ 1 2 3 4 5 ])
+    @list.prepend(%w[ 6 7 8 ])
+    assert_equal %w[ 8 7 6 5 4 ], @list.elements
   end
 end

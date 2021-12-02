@@ -16,7 +16,7 @@ class Kredis::Types::UniqueList < Kredis::Types::List
     multi do
       remove elements
       super
-      ltrim (limit - 1), -1 if limit
+      ltrim -limit, -1 if limit
     end if Array(elements).flatten.any?
   end
   alias << append
