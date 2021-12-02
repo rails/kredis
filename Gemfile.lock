@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    kredis (1.0.0)
+    kredis (1.0.1)
       activesupport (>= 6.0.0)
       redis (~> 4.2)
 
