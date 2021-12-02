@@ -105,24 +105,24 @@ cycle.next                      # => GET mycycle + SET mycycle 0
 :one == cycle.value             # => GET mycycle
 
 enum = Kredis.enum "myenum", values: %w[ one two three ], default: "one"
-"one" == enum.value             # => GET myenum  
+"one" == enum.value             # => GET myenum
 true == enum.one?               # => GET myenum
 enum.value = "two"              # => SET myenum "two"
 "two" == enum.value             # => GET myenum
 enum.value = "four"
 "two" == enum.value             # => GET myenum
 enum.reset                      # => DEL myenum
-"one" == enum.value             # => GET myenum  
+"one" == enum.value             # => GET myenum
 
 slots = Kredis.slots "myslots", available: 3
 true == slots.available?        # => GET myslots
 slots.reserve                   # => INCR myslots
 true == slots.available?        # => GET myslots
-slots.reserve                   # => INCR myslots     
+slots.reserve                   # => INCR myslots
 true == slots.available?        # => GET myslots
 slots.reserve                   # => INCR myslots
 false == slots.available?       # => GET myslots
-slots.reserve                   # => INCR myslots + DECR myslots  
+slots.reserve                   # => INCR myslots + DECR myslots
 false == slots.available?       # => GET myslots
 slots.release                   # => DECR myslots
 true == slots.available?        # => GET myslots
@@ -141,7 +141,7 @@ flag = Kredis.flag "myflag"
 false == flag.marked?           # => EXISTS myflag
 flag.mark                       # => SET myflag 1
 true == flag.marked?            # => EXISTS myflag
-flag.remove                     # => DEL myflag  
+flag.remove                     # => DEL myflag
 false == flag.marked?           # => EXISTS myflag
 
 true == flag.mark(expires_in: 1.second, force: false)    #=> SET myflag 1 EX 1 NX
@@ -196,26 +196,11 @@ end
 
 1. Add the `kredis` gem to your Gemfile: `gem 'kredis'`
 2. Run `./bin/bundle install`
-3. Run `./bin/rails kredis:install` to add a default configuration under `config/redis/shared.yml`
+3. Run `./bin/rails kredis:install` to add a default configuration at [`config/redis/shared.yml`](lib/install/shared.yml)
 
-A default configuration can look like this for `config/redis/shared.yml`:
+Additional configurations can be added under `config/redis/*.yml` and referenced when a type is created. For example, `Kredis.string("mystring", config: :strings)` would lookup `config/redis/strings.yml`.
 
-```yaml
-production: &production
-  host: <%= ENV.fetch("REDIS_SHARED_HOST", "127.0.0.1") %>
-  port: <%= ENV.fetch("REDIS_SHARED_PORT", "6379") %>
-  timeout: 1
-
-development: &development
-  host: <%= ENV.fetch("REDIS_SHARED_HOST", "127.0.0.1") %>
-  port: <%= ENV.fetch("REDIS_SHARED_PORT", "6379") %>
-  timeout: 1
-
-test:
-  <<: *development
-```
-
-Additional configurations can be added under `config/redis/*.yml` and referenced when a type is created, e.g. `Kredis.string("mystring", config: :strings)` would lookup `config/redis/strings.yml`. Under the hood `Kredis.configured_for` is called which'll pass the configuration on to `Redis.new`.
+Kredis passes the configuration to `Redis.new` to establish the connection. See the [Redis documentation](https://github.com/redis/redis-rb) for other configuration options.
 
 ### Setting SSL options on Redis Connections
 
