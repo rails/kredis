@@ -1,0 +1,12 @@
+production: &production
+  host: <%= ENV.fetch("REDIS_SHARED_HOST", "127.0.0.1") %>
+  port: <%= ENV.fetch("REDIS_SHARED_PORT", "6379") %>
+  timeout: 1
+
+development: &development
+  host: <%= ENV.fetch("REDIS_SHARED_HOST", "127.0.0.1") %>
+  port: <%= ENV.fetch("REDIS_SHARED_PORT", "6379") %>
+  timeout: 1
+
+test:
+  <<: *development
