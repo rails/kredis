@@ -5,7 +5,7 @@ class Kredis::Types::UniqueList < Kredis::Types::List
   attr_accessor :typed, :limit
 
   def prepend(elements)
-    elements = Array(elements).flatten.uniq
+    elements = Array(elements).uniq
     return if elements.empty?
 
     multi do
@@ -16,7 +16,7 @@ class Kredis::Types::UniqueList < Kredis::Types::List
   end
 
   def append(elements)
-    elements = Array(elements).flatten.uniq
+    elements = Array(elements).uniq
     return if elements.empty?
 
     multi do
