@@ -5,19 +5,25 @@ class Kredis::Types::UniqueList < Kredis::Types::List
   attr_accessor :typed, :limit
 
   def prepend(elements)
+    elements = Array(elements).flatten.uniq
+    return if elements.empty?
+
     multi do
       remove elements
       super
       ltrim 0, (limit - 1) if limit
-    end if Array(elements).flatten.any?
+    end
   end
 
   def append(elements)
+    elements = Array(elements).flatten.uniq
+    return if elements.empty?
+
     multi do
       remove elements
       super
       ltrim -limit, -1 if limit
-    end if Array(elements).flatten.any?
+    end
   end
   alias << append
 end
