@@ -63,4 +63,14 @@ class UniqueListTest < ActiveSupport::TestCase
     @list.prepend(%w[ 6 7 8 ])
     assert_equal %w[ 8 7 6 5 4 ], @list.elements
   end
+
+  test "appending array with duplicates" do
+    @list.append(%w[ 1 1 1 ])
+    assert_equal %w[ 1 ], @list.elements
+  end
+
+  test "prepending array with duplicates" do
+    @list.prepend(%w[ 1 1 1 ])
+    assert_equal %w[ 1 ], @list.elements
+  end
 end
