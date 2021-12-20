@@ -70,6 +70,10 @@ module Kredis::Attributes
       kredis_connection_with __method__, name, key, typed: typed, config: config, after_change: after_change
     end
 
+    def kredis_boolean(name, key: nil, config: :shared, after_change: nil, expires_in: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change, expires_in: expires_in
+    end
+
     private
       def kredis_connection_with(method, name, key, **options)
         ivar_symbol = :"@#{name}_#{method}"
