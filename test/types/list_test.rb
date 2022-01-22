@@ -35,6 +35,12 @@ class ListTest < ActiveSupport::TestCase
     assert_equal %w[ 4 ], @list.elements
   end
 
+  test "clear" do
+    @list.append(%w[ 1 2 3 4 ])
+    @list.clear
+    assert_equal [], @list.elements
+  end
+
   test "typed as datetime" do
     @list = Kredis.list "mylist", typed: :datetime
 

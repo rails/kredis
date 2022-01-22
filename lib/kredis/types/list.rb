@@ -20,4 +20,8 @@ class Kredis::Types::List < Kredis::Types::Proxying
     rpush types_to_strings(elements, typed) if elements.flatten.any?
   end
   alias << append
+
+  def clear
+    del
+  end
 end
