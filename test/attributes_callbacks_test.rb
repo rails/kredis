@@ -18,6 +18,11 @@ class AttributesCallbacksTest < ActiveSupport::TestCase
     assert_callback_executed_for :kredis_list, :method, ->(type) { type << %w[ david kasper ] }
   end
 
+  test "unique_list with after_change callback" do
+    assert_callback_executed_for :kredis_unique_list, :proc,   ->(type) { type.append %w[ david kasper ] }
+    assert_callback_executed_for :kredis_unique_list, :method, ->(type) { type << %w[ david kasper ] }
+  end
+
   test "flag with after_change callback" do
     assert_callback_executed_for :kredis_flag, :proc,   ->(type) { type.mark }
     assert_callback_executed_for :kredis_flag, :method, ->(type) { type.mark }

@@ -72,4 +72,12 @@ class CallbacksTest < ActiveSupport::TestCase
 
     assert_equal 1, @callback_check
   end
+
+  test "unique list with after_change proc callback" do
+    @callback_check = nil
+    names = Kredis.unique_list "names", after_change: ->(list) { @callback_check = list.elements }
+    names.append %w[ david kasper ]
+
+    assert_equal %w[ david kasper ], @callback_check
+  end
 end

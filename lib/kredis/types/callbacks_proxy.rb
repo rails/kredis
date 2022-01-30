@@ -11,7 +11,8 @@ class Kredis::Types::CallbacksProxy
     Kredis::Types::List => %i[ remove prepend append << ],
     Kredis::Types::Scalar => %i[ value= clear ],
     Kredis::Types::Set => %i[ add << remove replace take clear ],
-    Kredis::Types::Slots => %i[ reserve release reset ]
+    Kredis::Types::Slots => %i[ reserve release reset ],
+    Kredis::Types::UniqueList => %i[ remove prepend append << ]
   }
 
   def initialize(type, callback)
