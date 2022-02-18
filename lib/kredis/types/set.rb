@@ -18,9 +18,9 @@ class Kredis::Types::Set < Kredis::Types::Proxying
   end
 
   def replace(*members)
-    multi do
-      del
-      add members
+    multi do |pipeline|
+      pipeline.del
+      pipeline.add members
     end
   end
 
