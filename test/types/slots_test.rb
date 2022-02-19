@@ -26,6 +26,22 @@ class SlotsTest < ActiveSupport::TestCase
     assert @slots.available?
   end
 
+  test "release when slots are reserved" do
+    assert_not @slots.release
+
+    3.times do
+      assert @slots.reserve
+    end
+
+    3.times do
+      assert @slots.release
+    end
+
+    assert_not @slots.release
+
+    assert_equal 0, @slots.taken
+  end
+
   test "reserve with block" do
     assert @slots.reserve
     assert @slots.reserve
@@ -68,6 +84,17 @@ class SlotsTest < ActiveSupport::TestCase
     slot = Kredis.slot "myslot"
     assert slot.reserve
     assert_not slot.available?
+  end
+
+  test "release single slot when reserved" do
+    slot = Kredis.slot "myslot"
+
+    assert_not slot.release
+
+    assert slot.reserve
+    assert slot.release
+
+    assert_not slot.release
   end
 
   test "failing open" do

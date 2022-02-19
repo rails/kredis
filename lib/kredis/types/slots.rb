@@ -19,10 +19,10 @@ class Kredis::Types::Slots < Kredis::Types::Proxying
           release
         end
       else
-        if incr <= available
+        if available?
+          incr
           true
         else
-          release
           false
         end
       end
@@ -30,16 +30,25 @@ class Kredis::Types::Slots < Kredis::Types::Proxying
   end
 
   def release
-    decr
+    if taken > 0
+      decr
+      true
+    else
+      false
+    end
   end
 
   def available?
     failsafe returning: false do
-      get.to_i < available
+      taken < available
     end
   end
 
   def reset
     del
+  end
+
+  def taken
+    get.to_i
   end
 end
