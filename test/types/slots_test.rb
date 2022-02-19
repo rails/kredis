@@ -26,7 +26,7 @@ class SlotsTest < ActiveSupport::TestCase
     assert @slots.available?
   end
 
-  test 'release when slots are reserved' do
+  test "release when slots are reserved" do
     assert_not @slots.release
 
     3.times do
@@ -38,6 +38,8 @@ class SlotsTest < ActiveSupport::TestCase
     end
 
     assert_not @slots.release
+
+    assert_equal 0, @slots.taken
   end
 
   test "reserve with block" do
