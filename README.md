@@ -231,7 +231,7 @@ The above code could be added to either `config/environments/production.rb` or a
 
 ### Configure how the redis client is created
 
-You can configure how the redis client is created by setting `config.connector` in your `application.rb`:
+You can configure how the redis client is created by setting `config.kredis.connector` in your `application.rb`:
 
 ```ruby
 config.kredis.connector = ->(config) { SomeRedisProxy.new(config) }
