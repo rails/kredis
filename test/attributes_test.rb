@@ -23,6 +23,7 @@ class Person
   kredis_set :vacations
   kredis_json :settings
   kredis_counter :amount
+  kredis_counter :expiring_amount, expires_in: 1.second
   kredis_string :temporary_password, expires_in: 1.second
   kredis_hash :high_scores, typed: :integer
   kredis_boolean :onboarded
@@ -210,6 +211,13 @@ class AttributesTest < ActiveSupport::TestCase
     assert_equal 1, @person.amount.value
     @person.amount.decrement
     assert_equal 0, @person.amount.value
+  end
+
+  test "counter with expires_at" do
+    @person.expiring_amount.increment
+    assert_changes "@person.expiring_amount.value", from: 1, to: 0 do
+      sleep 1.1.seconds
+    end
   end
 
   test "hash" do

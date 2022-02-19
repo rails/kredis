@@ -171,6 +171,7 @@ class Person < ApplicationRecord
   kredis_list :names_with_custom_key, key: ->(p) { "person:#{p.id}:names_customized" }
   kredis_unique_list :skills, limit: 2
   kredis_enum :morning, values: %w[ bright blue black ], default: "bright"
+  kredis_counter :steps, expires_in: 1.hour
 end
 
 person = Person.find(5)
