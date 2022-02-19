@@ -25,6 +25,7 @@ class Person
   kredis_counter :amount
   kredis_string :temporary_password, expires_in: 1.second
   kredis_hash :high_scores, typed: :integer
+  kredis_boolean :onboarded
 
   def self.name
     "Person"
@@ -216,6 +217,14 @@ class AttributesTest < ActiveSupport::TestCase
     assert_equal({ "space_invaders" => 100, "pong" => 42 }, @person.high_scores.to_h)
     assert_equal([ "space_invaders", "pong" ], @person.high_scores.keys)
     assert_equal([ 100, 42 ], @person.high_scores.values)
+  end
+
+  test "boolean" do
+    @person.onboarded.value = true
+    assert @person.onboarded.value
+
+    @person.onboarded.value = false
+    refute @person.onboarded.value
   end
 
   test "missing id to constrain key" do
