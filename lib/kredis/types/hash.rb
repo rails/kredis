@@ -28,6 +28,7 @@ class Kredis::Types::Hash < Kredis::Types::Proxying
   def remove
     del
   end
+  alias clear remove
 
   def entries
     (hgetall || {}).transform_values { |val| string_to_type(val, typed) }.with_indifferent_access

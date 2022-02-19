@@ -1,5 +1,5 @@
 class Kredis::Types::List < Kredis::Types::Proxying
-  proxying :lrange, :lrem, :lpush, :rpush, :exists?
+  proxying :lrange, :lrem, :lpush, :rpush, :exists?, :del
 
   attr_accessor :typed
 
@@ -20,4 +20,8 @@ class Kredis::Types::List < Kredis::Types::Proxying
     rpush types_to_strings(elements, typed) if elements.flatten.any?
   end
   alias << append
+
+  def clear
+    del
+  end
 end
