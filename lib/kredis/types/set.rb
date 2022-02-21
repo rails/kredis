@@ -19,8 +19,8 @@ class Kredis::Types::Set < Kredis::Types::Proxying
 
   def replace(*members)
     multi do |pipeline|
-      pipeline.del
-      pipeline.add members
+      pipeline.del key
+      pipeline.sadd key, types_to_strings(members, typed) if members.flatten.any?
     end
   end
 
