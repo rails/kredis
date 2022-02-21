@@ -1,6 +1,6 @@
 # You'd normally call this a set, but Redis already has another data type for that
 class Kredis::Types::UniqueList < Kredis::Types::List
-  proxying :multi, :exists?
+  proxying :multi, :ltrim, :exists?
 
   attr_accessor :typed, :limit
 
@@ -9,9 +9,9 @@ class Kredis::Types::UniqueList < Kredis::Types::List
     return if elements.empty?
 
     multi do |pipeline|
-      types_to_strings(elements, typed).each { |element| pipeline.lrem key, 0, element }
+      remove elements, pipeline: pipeline
       super
-      pipeline.ltrim key, 0, (limit - 1) if limit
+      pipeline.ltrim 0, (limit - 1) if limit
     end
   end
 
@@ -20,9 +20,9 @@ class Kredis::Types::UniqueList < Kredis::Types::List
     return if elements.empty?
 
     multi do |pipeline|
-      types_to_strings(elements, typed).each { |element| pipeline.lrem key, 0, element }
+      remove elements, pipeline: pipeline
       super
-      pipeline.ltrim key, -limit, -1 if limit
+      pipeline.ltrim -limit, -1 if limit
     end
   end
   alias << append
