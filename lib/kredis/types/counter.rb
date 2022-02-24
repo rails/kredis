@@ -7,14 +7,14 @@ class Kredis::Types::Counter < Kredis::Types::Proxying
     multi do
       set 0, ex: expires_in, nx: true
       incrby by
-    end
+    end[-1]
   end
 
   def decrement(by: 1)
     multi do
       set 0, ex: expires_in, nx: true
       decrby by
-    end
+    end[-1]
   end
 
   def value
