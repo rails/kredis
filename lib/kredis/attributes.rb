@@ -42,8 +42,8 @@ module Kredis::Attributes
       kredis_connection_with __method__, name, key, config: config, after_change: after_change, expires_in: expires_in
     end
 
-    def kredis_list(name, key: nil, typed: :string, config: :shared, after_change: nil)
-      kredis_connection_with __method__, name, key, typed: typed, config: config, after_change: after_change
+    def kredis_list(name, key: nil, typed: :string, config: :shared, after_change: nil, default: nil)
+      kredis_connection_with __method__, name, key, typed: typed, config: config, after_change: after_change, default: default
     end
 
     def kredis_unique_list(name, limit: nil, key: nil, typed: :string, config: :shared, after_change: nil)

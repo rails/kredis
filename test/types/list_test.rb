@@ -2,7 +2,11 @@ require "test_helper"
 require "active_support/core_ext/integer"
 
 class ListTest < ActiveSupport::TestCase
-  setup { @list = Kredis.list "mylist" }
+  setup { @list = Kredis.list "mylist", default: ->(_) { %w[ 1 2 3 ] } }
+
+  test "default" do
+    assert_equal %w[ 1 2 3 ], @list.elements
+  end
 
   test "append" do
     @list.append(%w[ 1 2 3 ])
@@ -38,7 +42,7 @@ class ListTest < ActiveSupport::TestCase
   test "clear" do
     @list.append(%w[ 1 2 3 4 ])
     @list.clear
-    assert_equal [], @list.elements
+    assert_equal %w[ 1 2 3 ], @list.elements
   end
 
   test "typed as datetime" do
