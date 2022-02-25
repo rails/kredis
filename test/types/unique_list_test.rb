@@ -73,4 +73,22 @@ class UniqueListTest < ActiveSupport::TestCase
     @list.prepend(%w[ 1 1 1 ])
     assert_equal %w[ 1 ], @list.elements
   end
+
+  class LegacyTest < ActiveSupport::TestCase
+    setup do
+      @legacy_list = Kredis.unique_list_legacy "myuniquelist", limit: 5
+      @legacy_list.append(%w[ 1 2 3 ])
+
+      @list = Kredis.unique_list "myuniquelist", limit: 5
+    end
+
+    test "reading from a legacy unique list backed by a Redis list still works" do
+      assert_equal %w[ 1 2 3 ], @list.elements
+    end
+
+    test "writing to a unique list previously backed by a Redis list automatically migrates" do
+      @list.append(%w[ 4 ])
+      assert_equal %w[ 1 2 3 4 ], @list.elements
+    end
+  end
 end

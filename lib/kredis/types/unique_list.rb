@@ -6,19 +6,30 @@ class Kredis::Types::UniqueList < Kredis::Types::Proxying
 
   def elements
     strings_to_types(zrange(0, -1) || [], typed)
+  rescue Redis::CommandError
+    fallback_to_legacy(:elements)
   end
   alias to_a elements
 
   def remove(*elements)
     zrem(types_to_strings(elements, typed))
+  rescue Redis::CommandError
+    migrate_list_to_sorted_set
+    retry
   end
 
   def prepend(elements)
     insert(elements, prepend: true)
+  rescue Redis::CommandError
+    migrate_list_to_sorted_set
+    retry
   end
 
   def append(elements)
     insert(elements)
+  rescue Redis::CommandError
+    migrate_list_to_sorted_set
+    retry
   end
   alias << append
 
@@ -49,5 +60,19 @@ class Kredis::Types::UniqueList < Kredis::Types::Proxying
       else
         zremrangebyrank(0, -(limit + 1))
       end
+    end
+
+    def fallback_to_legacy(method)
+      legacy_list.send(method)
+    end
+
+    def migrate_list_to_sorted_set
+      legacy_elements = legacy_list.elements
+      legacy_list.del
+      append(legacy_elements)
+    end
+
+    def legacy_list
+      Kredis.unique_list_legacy(key, typed: typed, limit: limit, config: config, after_change: after_change)
     end
 end

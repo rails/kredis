@@ -67,6 +67,10 @@ module Kredis::Types
     type_from(UniqueList, config, key, after_change: after_change, typed: typed, limit: limit)
   end
 
+  def unique_list_legacy(key, typed: :string, limit: nil, config: :shared, after_change: nil)
+    type_from(UniqueListLegacy, config, key, after_change: after_change, typed: typed, limit: limit)
+  end
+
   def set(key, typed: :string, config: :shared, after_change: nil)
     type_from(Set, config, key, after_change: after_change, typed: typed)
   end
@@ -81,7 +85,7 @@ module Kredis::Types
 
   private
     def type_from(type_klass, config, key, after_change: nil, **options)
-      type_klass.new(configured_for(config), namespaced_key(key), **options).then do |type|
+      type_klass.new(configured_for(config), namespaced_key(key), config: config, after_change: after_change, **options).then do |type|
         after_change ? CallbacksProxy.new(type, after_change) : type
       end
     end
@@ -98,5 +102,6 @@ require "kredis/types/enum"
 require "kredis/types/hash"
 require "kredis/types/list"
 require "kredis/types/unique_list"
+require "kredis/types/unique_list_legacy"
 require "kredis/types/set"
 require "kredis/types/slots"

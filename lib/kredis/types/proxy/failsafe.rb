@@ -6,6 +6,8 @@ module Kredis::Types::Proxy::Failsafe
 
   def failsafe
     yield
+  rescue Redis::CommandError
+    raise
   rescue Redis::BaseError
     raise if fail_safe_suppressed?
   end
