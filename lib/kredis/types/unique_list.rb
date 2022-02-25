@@ -5,46 +5,43 @@ class Kredis::Types::UniqueList < Kredis::Types::Proxying
   attr_accessor :typed, :limit
 
   def elements
-    strings_to_types(zrange(0, -1) || [], typed)
-  rescue Redis::CommandError
-    fallback_to_legacy(:elements)
+    auto_fallback(:elements) do
+      strings_to_types(zrange(0, -1) || [], typed)
+    end
   end
   alias to_a elements
 
   def remove(*elements)
-    zrem(types_to_strings(elements, typed))
-  rescue Redis::CommandError
-    migrate_list_to_sorted_set
-    retry
+    auto_migrate do
+      zrem(types_to_strings(elements, typed))
+    end
   end
 
   def prepend(elements)
-    insert(elements, prepend: true)
-  rescue Redis::CommandError
-    migrate_list_to_sorted_set
-    retry
+    auto_migrate do
+      insert(elements, prepending: true)
+    end
   end
 
   def append(elements)
-    insert(elements)
-  rescue Redis::CommandError
-    migrate_list_to_sorted_set
-    retry
+    auto_migrate do
+      insert(elements)
+    end
   end
   alias << append
 
   private
-    def insert(elements, prepend: false)
+    def insert(elements, prepending: false)
       elements = Array(elements)
       return if elements.empty?
 
       elements_with_scores = types_to_strings(elements, typed).map do |element|
-        [ current_nanoseconds(negative: prepend), element ]
+        [ current_nanoseconds(negative: prepending), element ]
       end
 
       multi do
         zadd(elements_with_scores)
-        trim(from_beginning: prepend)
+        trim(from_beginning: prepending)
       end
     end
 
@@ -62,8 +59,17 @@ class Kredis::Types::UniqueList < Kredis::Types::Proxying
       end
     end
 
-    def fallback_to_legacy(method)
+    def auto_fallback(method)
+      yield
+    rescue Redis::CommandError
       legacy_list.send(method)
+    end
+
+    def auto_migrate
+      yield
+    rescue Redis::CommandError
+      migrate_list_to_sorted_set
+      retry
     end
 
     def migrate_list_to_sorted_set
