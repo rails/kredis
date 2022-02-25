@@ -1,6 +1,6 @@
 # You'd normally call this a set, but Redis already has another data type for that
 class Kredis::Types::UniqueList < Kredis::Types::Proxying
-  proxying :zrange, :zrem, :zadd, :zremrangebyrank, :exists?, :del
+  proxying :multi, :zrange, :zrem, :zadd, :zremrangebyrank, :exists?, :del
 
   attr_accessor :typed, :limit
 
@@ -31,9 +31,10 @@ class Kredis::Types::UniqueList < Kredis::Types::Proxying
         [ current_nanoseconds(negative: prepend), element ]
       end
 
-      zadd(elements_with_scores)
-
-      trim(from_beginning: prepend)
+      multi do
+        zadd(elements_with_scores)
+        trim(from_beginning: prepend)
+      end
     end
 
     def current_nanoseconds(negative:)
@@ -41,12 +42,12 @@ class Kredis::Types::UniqueList < Kredis::Types::Proxying
     end
 
     def trim(from_beginning:)
-      if limit&.positive?
-        if from_beginning
-          zremrangebyrank(limit, -1)
-        else
-          zremrangebyrank(0, -(limit + 1))
-        end
+      return unless limit&.positive?
+
+      if from_beginning
+        zremrangebyrank(limit, -1)
+      else
+        zremrangebyrank(0, -(limit + 1))
       end
     end
 end
