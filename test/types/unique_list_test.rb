@@ -12,6 +12,23 @@ class UniqueListTest < ActiveSupport::TestCase
     assert_equal %w[ 1 2 3 4 5 ], @list.elements
   end
 
+  test "appending the same element re-appends it" do
+    @list.append(%w[ 1 2 3 ])
+    @list.append(%w[ 2 ])
+    assert_equal %w[ 1 3 2 ], @list.elements
+  end
+
+  test "mass append maintains ordering" do
+    @list = Kredis.unique_list "myuniquelist" # no limit
+
+    thousand_elements = 1000.times.map { [*"A".."Z"].sample(10).join }
+    @list.append(thousand_elements)
+    assert_equal thousand_elements, @list.elements
+
+    thousand_elements.each { |element| @list.append(element) }
+    assert_equal thousand_elements, @list.elements
+  end
+
   test "prepend" do
     @list.prepend(%w[ 1 2 3 ])
     @list.prepend(%w[ 1 2 3 4 ])

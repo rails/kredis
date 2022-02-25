@@ -1,6 +1,6 @@
 # You'd normally call this a set, but Redis already has another data type for that
 class Kredis::Types::UniqueList < Kredis::Types::Proxying
-  proxying :multi, :zrange, :zrem, :zadd, :zremrangebyrank, :exists?, :del
+  proxying :multi, :zrange, :zrem, :zadd, :zremrangebyrank, :zcard, :exists?, :del
 
   attr_accessor :typed, :limit
 
@@ -35,8 +35,10 @@ class Kredis::Types::UniqueList < Kredis::Types::Proxying
       elements = Array(elements)
       return if elements.empty?
 
-      elements_with_scores = types_to_strings(elements, typed).map do |element|
-        [ current_nanoseconds(negative: prepending), element ]
+      elements_with_scores = types_to_strings(elements, typed).map.with_index do |element, index|
+        score = generate_base_score(negative: prepending) + index / 100000
+
+        [ score , element ]
       end
 
       multi do
@@ -45,8 +47,18 @@ class Kredis::Types::UniqueList < Kredis::Types::Proxying
       end
     end
 
-    def current_nanoseconds(negative:)
-      "%10.9f" % (negative ? -Time.now.to_f : Time.now.to_f)
+    def generate_base_score(negative:)
+      current_time = process_start_time + process_uptime
+
+      negative ? -current_time : current_time
+    end
+
+    def process_start_time
+      @process_start_time ||= redis.time.join(".").to_f - process_uptime
+    end
+
+    def process_uptime
+      Process.clock_gettime(Process::CLOCK_MONOTONIC)
     end
 
     def trim(from_beginning:)
@@ -74,7 +86,7 @@ class Kredis::Types::UniqueList < Kredis::Types::Proxying
 
     def migrate_list_to_sorted_set
       legacy_elements = legacy_list.elements
-      legacy_list.del
+      legacy_list.rename([ legacy_list.key, "_backup" ].join)
       append(legacy_elements)
     end
 

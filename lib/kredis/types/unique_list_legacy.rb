@@ -1,6 +1,6 @@
 # You'd normally call this a set, but Redis already has another data type for that
 class Kredis::Types::UniqueListLegacy < Kredis::Types::List
-  proxying :multi, :ltrim, :exists?
+  proxying :multi, :ltrim, :exists?, :rename
 
   attr_accessor :typed, :limit
 
