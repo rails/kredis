@@ -5,6 +5,7 @@ class Kredis::Migration
 
   def initialize(config = :shared)
     @redis = Kredis.configured_for config
+    @pipeline = nil
     # TODO: Replace script loading with `copy` command once Redis 6.2+ is the minimum supported version.
     @copy_sha = @redis.script "load", "redis.call('SETNX', KEYS[2], redis.call('GET', KEYS[1])); return 1;"
   end
@@ -23,7 +24,7 @@ class Kredis::Migration
 
     if to.present? && from != namespaced_to
       log_migration "Migrating key #{from} to #{namespaced_to}" do
-        @redis.evalsha @copy_sha, keys: [ from, namespaced_to ]
+        connection.evalsha @copy_sha, keys: [ from, namespaced_to ]
       end
     else
       log_migration "Skipping blank/unaltered migration key #{from} → #{to}"
@@ -32,18 +33,26 @@ class Kredis::Migration
 
   def delete_all(key_pattern)
     each_key_batch_matching(key_pattern) do |keys|
-      @redis.del *keys
+      connection.del *keys
     end
   end
 
   private
     SCAN_BATCH_SIZE = 1_000
 
+    def connection
+      @pipeline || @redis
+    end
+
     def each_key_batch_matching(key_pattern, &block)
       cursor = "0"
       begin
         cursor, keys = @redis.scan(cursor, match: key_pattern, count: SCAN_BATCH_SIZE)
-        @redis.pipelined { yield keys }
+        @redis.pipelined do |pipeline|
+          @pipeline = pipeline
+          yield keys
+          @pipeline = nil
+        end
       end until cursor == "0"
     end
 

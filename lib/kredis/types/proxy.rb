@@ -2,21 +2,25 @@ class Kredis::Types::Proxy
   require_relative "proxy/failsafe"
   include Failsafe
 
-  attr_accessor :redis, :key
+  attr_accessor :redis, :key, :pipeline
 
   def initialize(redis, key, **options)
     @redis, @key = redis, key
     options.each { |key, value| send("#{key}=", value) }
   end
 
-  def multi(...)
-    redis.multi(...)
+  def multi(*args, **kwargs, &block)
+    redis.multi(*args, **kwargs) do |pipeline|
+      self.pipeline = pipeline
+      block.call
+      self.pipeline = nil
+    end
   end
 
   def method_missing(method, *args, **kwargs)
     Kredis.instrument :proxy, **log_message(method, *args, **kwargs) do
       failsafe do
-        redis.public_send method, key, *args, **kwargs
+        (pipeline || redis).public_send method, key, *args, **kwargs
       end
     end
   end
