@@ -55,10 +55,10 @@ integer_list << 4                       # => RPUSH myintegerlist "4"
 [ 1, 2, 3, 4 ] == integer_list.elements # => LRANGE myintegerlist 0 -1
 
 unique_list = Kredis.unique_list "myuniquelist"
-unique_list.append(%w[ 2 3 4 ])                # => ZADD myuniquelist 32916524346353520000 2 32916524346353650001 3 32916524346353730002 4
-unique_list.prepend(%w[ 1 2 3 4 ])             # => ZADD myuniquelist -32916524346358610000 1 -32916524346358700001 2 -32916524346358770002 3 -32916524346358840003 4
+unique_list.append(%w[ 2 3 4 ])                # => ZADD myuniquelist 1646131025.4953232 2 1646131025.495326 3 1646131025.4953272 4
+unique_list.prepend(%w[ 1 2 3 4 ])             # => ZADD myuniquelist -1646131025.4957051 1 -1646131025.495707 2 -1646131025.4957082 3 -1646131025.4957092 4
 unique_list.append([])
-unique_list << "5"                             # => ZADD myuniquelist 32916524346362540000 5
+unique_list << "5"                             # => ZADD myuniquelist 1646131025.4960442 5
 unique_list.remove(3)                          # => ZREM myuniquelist 3
 [ "4", "2", "1", "5" ] == unique_list.elements # => ZRANGE myuniquelist 0 -1
 
