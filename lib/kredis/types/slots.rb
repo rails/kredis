@@ -1,7 +1,7 @@
 class Kredis::Types::Slots < Kredis::Types::Proxying
   class NotAvailable < StandardError; end
 
-  proxying :incr, :decr, :get, :del, :exists?
+  proxying :incr, :decr, :get, :del, :exists?, :eval
 
   attr_accessor :available
 
@@ -19,23 +19,13 @@ class Kredis::Types::Slots < Kredis::Types::Proxying
           release
         end
       else
-        if available?
-          incr
-          true
-        else
-          false
-        end
+        eval RESERVE_SCRIPT, available
       end
     end
   end
 
   def release
-    if taken > 0
-      decr
-      true
-    else
-      false
-    end
+    eval RELEASE_SCRIPT
   end
 
   def available?
@@ -51,4 +41,26 @@ class Kredis::Types::Slots < Kredis::Types::Proxying
   def taken
     get.to_i
   end
+
+  private
+
+  RESERVE_SCRIPT = <<~LUA.freeze
+    local current_value = (tonumber(redis.call("get", KEYS[1])) or 0)
+    if current_value < tonumber(ARGV[1]) then
+      redis.call("incr", KEYS[1])
+      return true
+    else
+      return false
+    end
+  LUA
+
+  RELEASE_SCRIPT = <<~LUA.freeze
+    local current_value = (tonumber(redis.call("get", KEYS[1])) or 0)
+    if current_value > 0 then
+      redis.call("decr", KEYS[1])
+      return true
+    else
+      return false
+    end
+  LUA
 end
