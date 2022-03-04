@@ -13,6 +13,10 @@ class Kredis::Types::Proxy
     redis.multi(...)
   end
 
+  def eval(script, *args)
+    Kredis::ScriptEvaluator.eval(redis, script, keys: [key], argv: args)
+  end
+
   def method_missing(method, *args, **kwargs)
     Kredis.instrument :proxy, **log_message(method, *args, **kwargs) do
       failsafe do
