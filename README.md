@@ -195,9 +195,8 @@ end
 
 ## Installation
 
-1. Add the `kredis` gem to your Gemfile: `gem 'kredis'`
-2. Run `./bin/bundle install`
-3. Run `./bin/rails kredis:install` to add a default configuration at [`config/redis/shared.yml`](lib/install/shared.yml)
+1. Run `./bin/bundle add kredis`
+2. Run `./bin/rails kredis:install` to add a default configuration at [`config/redis/shared.yml`](lib/install/shared.yml)
 
 Additional configurations can be added under `config/redis/*.yml` and referenced when a type is created. For example, `Kredis.string("mystring", config: :strings)` would lookup `config/redis/strings.yml`.
 
