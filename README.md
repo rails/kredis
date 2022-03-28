@@ -109,7 +109,7 @@ enum = Kredis.enum "myenum", values: %w[ one two three ], default: "one"
 true == enum.one?               # => GET myenum
 enum.value = "two"              # => SET myenum "two"
 "two" == enum.value             # => GET myenum
-enum.value.four!                # => SET myenum "four"
+enum.four!                      # => SET myenum "four"
 "four" == enum.value            # => GET myenum
 enum.reset                      # => DEL myenum
 "one" == enum.value             # => GET myenum
