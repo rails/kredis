@@ -168,10 +168,16 @@ You can use all these structures in models:
 ```ruby
 class Person < ApplicationRecord
   kredis_list :names
-  kredis_list :names_with_custom_key, key: ->(p) { "person:#{p.id}:names_customized" }
+  kredis_list :names_with_custom_key_via_lambda, key: ->(p) { "person:#{p.id}:names_customized" }
+  kredis_list :names_with_custom_key_via_method, key: :generate_names_key
   kredis_unique_list :skills, limit: 2
   kredis_enum :morning, values: %w[ bright blue black ], default: "bright"
   kredis_counter :steps, expires_in: 1.hour
+
+  private
+    def generate_names_key
+      "key-generated-from-private-method"
+    end
 end
 
 person = Person.find(5)
