@@ -28,6 +28,7 @@ class Kredis::Types::Enum < Kredis::Types::Proxying
     def define_predicates_for_values
       values.each do |defined_value|
         define_singleton_method("#{defined_value}?") { value == defined_value }
+        define_singleton_method("#{defined_value}!") { self.value = defined_value }
       end
     end
 end
