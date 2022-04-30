@@ -10,7 +10,7 @@ class Kredis::Types::UniqueList < Kredis::Types::List
 
     multi do |pipeline|
       remove elements, pipeline: pipeline
-      super
+      super(elements, pipeline: pipeline)
       pipeline.ltrim 0, (limit - 1) if limit
     end
   end
@@ -21,7 +21,7 @@ class Kredis::Types::UniqueList < Kredis::Types::List
 
     multi do |pipeline|
       remove elements, pipeline: pipeline
-      super
+      super(elements, pipeline: pipeline)
       pipeline.ltrim -limit, -1 if limit
     end
   end
