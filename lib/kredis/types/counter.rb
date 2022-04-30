@@ -7,14 +7,14 @@ class Kredis::Types::Counter < Kredis::Types::Proxying
     multi do |pipeline|
       pipeline.set 0, ex: expires_in, nx: true
       pipeline.incrby by
-    end
+    end[-1]
   end
 
   def decrement(by: 1)
     multi do |pipeline|
       pipeline.set 0, ex: expires_in, nx: true
       pipeline.decrby by
-    end
+    end[-1]
   end
 
   def value

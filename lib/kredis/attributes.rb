@@ -62,12 +62,16 @@ module Kredis::Attributes
       kredis_connection_with __method__, name, key, available: available, config: config, after_change: after_change
     end
 
-    def kredis_counter(name, key: nil, config: :shared, after_change: nil)
-      kredis_connection_with __method__, name, key, config: config, after_change: after_change
+    def kredis_counter(name, key: nil, config: :shared, after_change: nil, expires_in: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change, expires_in: expires_in
     end
 
     def kredis_hash(name, key: nil, typed: :string, config: :shared, after_change: nil)
       kredis_connection_with __method__, name, key, typed: typed, config: config, after_change: after_change
+    end
+
+    def kredis_boolean(name, key: nil, config: :shared, after_change: nil, expires_in: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change, expires_in: expires_in
     end
 
     private
@@ -93,6 +97,7 @@ module Kredis::Attributes
       case key
       when String then key
       when Proc   then key.call(self)
+      when Symbol then send(key)
       end
     end
 

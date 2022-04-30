@@ -4,7 +4,7 @@ class Kredis::Types::CallbacksProxy
 
   AFTER_CHANGE_OPERATIONS = {
     Kredis::Types::Counter => %i[ increment decrement reset ],
-    Kredis::Types::Cycle => %i[ next ],
+    Kredis::Types::Cycle => %i[ next reset ],
     Kredis::Types::Enum => %i[ value= reset ],
     Kredis::Types::Flag => %i[ mark remove ],
     Kredis::Types::Hash => %i[ update delete []= remove ],

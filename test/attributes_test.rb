@@ -8,7 +8,8 @@ class Person
   kredis_proxy :nothing, key: "something:else"
   kredis_proxy :something, key: ->(p) { "person:#{p.id}:something" }
   kredis_list :names
-  kredis_list :names_with_custom_key, key: ->(p) { "person:#{p.id}:names_customized" }
+  kredis_list :names_with_custom_key_via_lambda, key: ->(p) { "person:#{p.id}:names_customized" }
+  kredis_list :names_with_custom_key_via_method, key: :generate_key
   kredis_unique_list :skills, limit: 2
   kredis_flag :special
   kredis_flag :temporary_special, expires_in: 1.second
@@ -23,8 +24,10 @@ class Person
   kredis_set :vacations
   kredis_json :settings
   kredis_counter :amount
+  kredis_counter :expiring_amount, expires_in: 1.second
   kredis_string :temporary_password, expires_in: 1.second
   kredis_hash :high_scores, typed: :integer
+  kredis_boolean :onboarded
 
   def self.name
     "Person"
@@ -33,6 +36,11 @@ class Person
   def id
     8
   end
+
+  private
+    def generate_key
+      "some-generated-key"
+    end
 end
 
 class MissingIdPerson
@@ -66,8 +74,13 @@ class AttributesTest < ActiveSupport::TestCase
   end
 
   test "list with custom proc key" do
-    @person.names_with_custom_key.append(%w[ david kasper ])
+    @person.names_with_custom_key_via_lambda.append(%w[ david kasper ])
     assert_equal %w[ david kasper ], Kredis.redis.lrange("person:8:names_customized", 0, -1)
+  end
+
+  test "list with custom method key" do
+    @person.names_with_custom_key_via_method.append(%w[ david kasper ])
+    assert_equal %w[ david kasper ], Kredis.redis.lrange("some-generated-key", 0, -1)
   end
 
   test "unique list" do
@@ -211,11 +224,26 @@ class AttributesTest < ActiveSupport::TestCase
     assert_equal 0, @person.amount.value
   end
 
+  test "counter with expires_at" do
+    @person.expiring_amount.increment
+    assert_changes "@person.expiring_amount.value", from: 1, to: 0 do
+      sleep 1.1.seconds
+    end
+  end
+
   test "hash" do
     @person.high_scores.update(space_invaders: 100, pong: 42)
     assert_equal({ "space_invaders" => 100, "pong" => 42 }, @person.high_scores.to_h)
     assert_equal([ "space_invaders", "pong" ], @person.high_scores.keys)
     assert_equal([ 100, 42 ], @person.high_scores.values)
+  end
+
+  test "boolean" do
+    @person.onboarded.value = true
+    assert @person.onboarded.value
+
+    @person.onboarded.value = false
+    refute @person.onboarded.value
   end
 
   test "missing id to constrain key" do

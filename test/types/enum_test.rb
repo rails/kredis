@@ -14,6 +14,11 @@ class EnumTest < ActiveSupport::TestCase
     assert @enum.two?
 
     assert_not @enum.three?
+
+    @enum.three!
+    assert @enum.three?
+
+    assert_not @enum.two?
   end
 
   test "validated value" do

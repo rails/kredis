@@ -77,6 +77,13 @@ class HashTest < ActiveSupport::TestCase
     assert_equal({}, @hash.to_h)
   end
 
+  test "clear" do
+    @hash.update("key2" => "value2")
+    assert_equal "value2", @hash["key2"]
+    @hash.clear
+    assert_equal({}, @hash.to_h)
+  end
+
   test "exists?" do
     assert_not @hash.exists?
 
