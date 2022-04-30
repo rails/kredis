@@ -9,8 +9,13 @@ class Kredis::Types::Proxy
     options.each { |key, value| send("#{key}=", value) }
   end
 
-  def multi(...)
-    redis.multi(...)
+  def multi(&block)
+    # NOTE: to be removed when Redis 4 compatibility gets dropped
+    return redis.multi unless block
+
+    redis.multi do |pipeline|
+      block.call(Kredis::Types::Proxy.new(pipeline, key))
+    end
   end
 
   def method_missing(method, *args, **kwargs)

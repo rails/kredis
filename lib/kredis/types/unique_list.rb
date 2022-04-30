@@ -8,10 +8,10 @@ class Kredis::Types::UniqueList < Kredis::Types::List
     elements = Array(elements).uniq
     return if elements.empty?
 
-    multi do
-      remove elements
+    multi do |pipeline|
+      remove elements, pipeline: pipeline
       super
-      ltrim 0, (limit - 1) if limit
+      pipeline.ltrim 0, (limit - 1) if limit
     end
   end
 
@@ -19,10 +19,10 @@ class Kredis::Types::UniqueList < Kredis::Types::List
     elements = Array(elements).uniq
     return if elements.empty?
 
-    multi do
-      remove elements
+    multi do |pipeline|
+      remove elements, pipeline: pipeline
       super
-      ltrim -limit, -1 if limit
+      pipeline.ltrim -limit, -1 if limit
     end
   end
   alias << append
