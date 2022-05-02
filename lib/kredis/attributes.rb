@@ -97,6 +97,7 @@ module Kredis::Attributes
       case key
       when String then key
       when Proc   then key.call(self)
+      when Symbol then send(key)
       end
     end
 

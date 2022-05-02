@@ -73,6 +73,17 @@ class CallbacksTest < ActiveSupport::TestCase
     assert_equal 1, @callback_check
   end
 
+  test "cycle with after_change proc callback" do
+    @callback_check = nil
+    amount = Kredis.cycle "semaphore_light", after_change: ->(cycle) { @callback_check = cycle.value }, values: %w[ green yellow red ]
+
+    amount.next
+    assert_equal "yellow", @callback_check
+
+    amount.reset
+    assert_equal "green", @callback_check
+  end
+
   test "unique list with after_change proc callback" do
     @callback_check = nil
     names = Kredis.unique_list "names", after_change: ->(list) { @callback_check = list.elements }

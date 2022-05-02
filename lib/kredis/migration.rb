@@ -11,20 +11,20 @@ class Kredis::Migration
   end
 
   def migrate_all(key_pattern)
-    each_key_batch_matching(key_pattern) do |keys|
+    each_key_batch_matching(key_pattern) do |keys, pipeline|
       keys.each do |key|
         ids = key.scan(/\d+/).map(&:to_i)
-        migrate from: key, to: yield(key, *ids)
+        migrate from: key, to: yield(key, *ids), pipeline: pipeline
       end
     end
   end
 
-  def migrate(from:, to:)
+  def migrate(from:, to:, pipeline: nil)
     namespaced_to = Kredis.namespaced_key(to)
 
     if to.present? && from != namespaced_to
       log_migration "Migrating key #{from} to #{namespaced_to}" do
-        connection.evalsha @copy_sha, keys: [ from, namespaced_to ]
+        (pipeline || @redis).evalsha @copy_sha, keys: [ from, namespaced_to ]
       end
     else
       log_migration "Skipping blank/unaltered migration key #{from} → #{to}"
@@ -32,8 +32,8 @@ class Kredis::Migration
   end
 
   def delete_all(key_pattern)
-    each_key_batch_matching(key_pattern) do |keys|
-      connection.del *keys
+    each_key_batch_matching(key_pattern) do |keys, pipeline|
+      pipeline.del *keys
     end
   end
 
@@ -48,11 +48,7 @@ class Kredis::Migration
       cursor = "0"
       begin
         cursor, keys = @redis.scan(cursor, match: key_pattern, count: SCAN_BATCH_SIZE)
-        @redis.pipelined do |pipeline|
-          @pipeline = pipeline
-          yield keys
-          @pipeline = nil
-        end
+        @redis.multi { |pipeline| yield keys, pipeline }
       end until cursor == "0"
     end
 
