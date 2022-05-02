@@ -8,19 +8,19 @@ class Kredis::Types::Set < Kredis::Types::Proxying
   end
   alias to_a members
 
-  def add(*members, pipeline: nil)
-    (pipeline || proxy).sadd types_to_strings(members, typed) if members.flatten.any?
+  def add(*members)
+    sadd types_to_strings(members, typed) if members.flatten.any?
   end
   alias << add
 
-  def remove(*members, pipeline: nil)
-    (pipeline || proxy).srem types_to_strings(members, typed) if members.flatten.any?
+  def remove(*members)
+    srem types_to_strings(members, typed) if members.flatten.any?
   end
 
   def replace(*members)
-    multi do |pipeline|
-      pipeline.del
-      add members, pipeline: pipeline
+    multi do
+      del
+      add members
     end
   end
 
