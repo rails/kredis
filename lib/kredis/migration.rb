@@ -5,7 +5,6 @@ class Kredis::Migration
 
   def initialize(config = :shared)
     @redis = Kredis.configured_for config
-    @pipeline = nil
     # TODO: Replace script loading with `copy` command once Redis 6.2+ is the minimum supported version.
     @copy_sha = @redis.script "load", "redis.call('SETNX', KEYS[2], redis.call('GET', KEYS[1])); return 1;"
   end
@@ -39,10 +38,6 @@ class Kredis::Migration
 
   private
     SCAN_BATCH_SIZE = 1_000
-
-    def connection
-      @pipeline || @redis
-    end
 
     def each_key_batch_matching(key_pattern, &block)
       cursor = "0"
