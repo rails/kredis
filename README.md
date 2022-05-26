@@ -109,8 +109,10 @@ enum = Kredis.enum "myenum", values: %w[ one two three ], default: "one"
 true == enum.one?               # => GET myenum
 enum.value = "two"              # => SET myenum "two"
 "two" == enum.value             # => GET myenum
+enum.three!                     # => SET myenum "three"
+"three" == enum.value           # => GET myenum
 enum.value = "four"
-"two" == enum.value             # => GET myenum
+"three" == enum.value           # => GET myenum
 enum.reset                      # => DEL myenum
 "one" == enum.value             # => GET myenum
 
@@ -168,10 +170,16 @@ You can use all these structures in models:
 ```ruby
 class Person < ApplicationRecord
   kredis_list :names
-  kredis_list :names_with_custom_key, key: ->(p) { "person:#{p.id}:names_customized" }
+  kredis_list :names_with_custom_key_via_lambda, key: ->(p) { "person:#{p.id}:names_customized" }
+  kredis_list :names_with_custom_key_via_method, key: :generate_names_key
   kredis_unique_list :skills, limit: 2
   kredis_enum :morning, values: %w[ bright blue black ], default: "bright"
   kredis_counter :steps, expires_in: 1.hour
+
+  private
+    def generate_names_key
+      "key-generated-from-private-method"
+    end
 end
 
 person = Person.find(5)
@@ -195,13 +203,16 @@ end
 
 ## Installation
 
-1. Add the `kredis` gem to your Gemfile: `gem 'kredis'`
-2. Run `./bin/bundle install`
-3. Run `./bin/rails kredis:install` to add a default configuration at [`config/redis/shared.yml`](lib/install/shared.yml)
+1. Run `./bin/bundle add kredis`
+2. Run `./bin/rails kredis:install` to add a default configuration at [`config/redis/shared.yml`](lib/install/shared.yml)
 
 Additional configurations can be added under `config/redis/*.yml` and referenced when a type is created. For example, `Kredis.string("mystring", config: :strings)` would lookup `config/redis/strings.yml`.
 
 Kredis passes the configuration to `Redis.new` to establish the connection. See the [Redis documentation](https://github.com/redis/redis-rb) for other configuration options.
+
+### Redis support
+
+Kredis works with Redis server 4.0+, with the [Redis Ruby](https://github.com/redis/redis-rb) client version 4.2+.
 
 ### Setting SSL options on Redis Connections
 

@@ -8,7 +8,8 @@ class Person
   kredis_proxy :nothing, key: "something:else"
   kredis_proxy :something, key: ->(p) { "person:#{p.id}:something" }
   kredis_list :names
-  kredis_list :names_with_custom_key, key: ->(p) { "person:#{p.id}:names_customized" }
+  kredis_list :names_with_custom_key_via_lambda, key: ->(p) { "person:#{p.id}:names_customized" }
+  kredis_list :names_with_custom_key_via_method, key: :generate_key
   kredis_unique_list :skills, limit: 2
   kredis_flag :special
   kredis_flag :temporary_special, expires_in: 1.second
@@ -35,6 +36,11 @@ class Person
   def id
     8
   end
+
+  private
+    def generate_key
+      "some-generated-key"
+    end
 end
 
 class MissingIdPerson
@@ -68,8 +74,13 @@ class AttributesTest < ActiveSupport::TestCase
   end
 
   test "list with custom proc key" do
-    @person.names_with_custom_key.append(%w[ david kasper ])
+    @person.names_with_custom_key_via_lambda.append(%w[ david kasper ])
     assert_equal %w[ david kasper ], Kredis.redis.lrange("person:8:names_customized", 0, -1)
+  end
+
+  test "list with custom method key" do
+    @person.names_with_custom_key_via_method.append(%w[ david kasper ])
+    assert_equal %w[ david kasper ], Kredis.redis.lrange("some-generated-key", 0, -1)
   end
 
   test "unique list" do

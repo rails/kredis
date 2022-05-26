@@ -12,6 +12,8 @@ class CounterTest < ActiveSupport::TestCase
 
     @counter.increment
     assert_equal 2, @counter.value
+
+    assert_equal 3, @counter.increment
   end
 
   test "increment by 2" do
@@ -19,6 +21,8 @@ class CounterTest < ActiveSupport::TestCase
 
     @counter.increment by: 2
     assert_equal 2, @counter.value
+
+    assert_equal 4, @counter.increment(by: 2)
   end
 
   test "decrement" do
@@ -26,6 +30,8 @@ class CounterTest < ActiveSupport::TestCase
 
     @counter.decrement
     assert_equal (-1), @counter.value
+
+    assert_equal (-2), @counter.decrement
   end
 
   test "decrement by 2" do
@@ -33,6 +39,8 @@ class CounterTest < ActiveSupport::TestCase
 
     @counter.decrement by: 2
     assert_equal (-2), @counter.value
+
+    assert_equal (-4), @counter.decrement(by: 2)
   end
 
   test "expiring counter" do

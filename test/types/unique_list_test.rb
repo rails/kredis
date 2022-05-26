@@ -12,23 +12,6 @@ class UniqueListTest < ActiveSupport::TestCase
     assert_equal %w[ 1 2 3 4 5 ], @list.elements
   end
 
-  test "appending the same element re-appends it" do
-    @list.append(%w[ 1 2 3 ])
-    @list.append(%w[ 2 ])
-    assert_equal %w[ 1 3 2 ], @list.elements
-  end
-
-  test "mass append maintains ordering" do
-    @list = Kredis.unique_list "myuniquelist" # no limit
-
-    thousand_elements = 1000.times.map { [*"A".."Z"].sample(10).join }
-    @list.append(thousand_elements)
-    assert_equal thousand_elements, @list.elements
-
-    thousand_elements.each { |element| @list.append(element) }
-    assert_equal thousand_elements, @list.elements
-  end
-
   test "prepend" do
     @list.prepend(%w[ 1 2 3 ])
     @list.prepend(%w[ 1 2 3 4 ])
@@ -89,33 +72,5 @@ class UniqueListTest < ActiveSupport::TestCase
   test "prepending array with duplicates" do
     @list.prepend(%w[ 1 1 1 ])
     assert_equal %w[ 1 ], @list.elements
-  end
-
-  class LegacyTest < ActiveSupport::TestCase
-    setup do
-      @legacy_list = Kredis.unique_list_legacy "myuniquelist", limit: 5
-      @legacy_list.append(%w[ 1 2 3 ])
-
-      @list = Kredis.unique_list "myuniquelist", limit: 5
-    end
-
-    test "reading from a legacy UniqueList backed by a Redis list still works" do
-      assert_equal %w[ 1 2 3 ], @list.elements
-    end
-
-    test "writing to a UniqueList previously backed by a Redis list automatically migrates" do
-      @list.append(%w[ 4 ])
-      assert_equal %w[ 1 2 3 4 ], @list.elements
-    end
-
-    test "prepending to a UniqueList previously backed by a Redis list automatically migrates" do
-      @list.prepend(%w[ 9 ])
-      assert_equal %w[ 9 1 2 3 ], @list.elements
-    end
-
-    test "removing an element from a UniqueList previously backed by a Redis list automatically migrates" do
-      @list.remove(%w[ 3 ])
-      assert_equal %w[ 1 2 ], @list.elements
-    end
   end
 end
