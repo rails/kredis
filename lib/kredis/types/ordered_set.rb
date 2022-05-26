@@ -1,7 +1,8 @@
 class Kredis::Types::OrderedSet < Kredis::Types::Proxying
   proxying :multi, :zrange, :zrem, :zadd, :zremrangebyrank, :zcard, :exists?, :del
 
-  attr_accessor :typed, :limit
+  attr_accessor :typed
+  attr_reader :limit
 
   def elements
     strings_to_types(zrange(0, -1) || [], typed)
@@ -20,6 +21,12 @@ class Kredis::Types::OrderedSet < Kredis::Types::Proxying
     insert(elements)
   end
   alias << append
+
+  def limit=(limit)
+    raise "Limit must be greater than 0" if limit && limit <= 0
+
+    @limit = limit
+  end
 
   private
     def insert(elements, prepending: false)
@@ -53,7 +60,7 @@ class Kredis::Types::OrderedSet < Kredis::Types::Proxying
     end
 
     def trim(from_beginning:, pipeline:)
-      return unless limit&.positive?
+      return unless limit
 
       if from_beginning
         pipeline.zremrangebyrank(limit, -1)

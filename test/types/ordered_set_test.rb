@@ -90,4 +90,10 @@ class OrderedSetTest < ActiveSupport::TestCase
     @set.prepend(%w[ 1 1 1 ])
     assert_equal %w[ 1 ], @set.elements
   end
+
+  test "limit can't be 0 or less" do
+    assert_raises do
+      Kredis.ordered_set "ordered-set", limit: -1
+    end
+  end
 end
