@@ -6,8 +6,6 @@ module Kredis::Types::Proxy::Failsafe
 
   def failsafe
     yield
-  rescue Redis::CommandError => e
-    raise if e.message.include? "WRONGTYPE" || fail_safe_suppressed?
   rescue Redis::BaseError
     raise if fail_safe_suppressed?
   end
