@@ -55,12 +55,20 @@ integer_list << 4                       # => RPUSH myintegerlist "4"
 [ 1, 2, 3, 4 ] == integer_list.elements # => LRANGE myintegerlist 0 -1
 
 unique_list = Kredis.unique_list "myuniquelist"
-unique_list.append(%w[ 2 3 4 ])                # => ZADD myuniquelist 1646131025.4953232 2 1646131025.495326 3 1646131025.4953272 4
-unique_list.prepend(%w[ 1 2 3 4 ])             # => ZADD myuniquelist -1646131025.4957051 1 -1646131025.495707 2 -1646131025.4957082 3 -1646131025.4957092 4
+unique_list.append(%w[ 2 3 4 ])                # => LREM myuniquelist 0, "2" + LREM myuniquelist 0, "3" + LREM myuniquelist 0, "4"  + RPUSH myuniquelist "2", "3", "4"
+unique_list.prepend(%w[ 1 2 3 4 ])             # => LREM myuniquelist 0, "1"  + LREM myuniquelist 0, "2" + LREM myuniquelist 0, "3" + LREM myuniquelist 0, "4"  + LPUSH myuniquelist "1", "2", "3", "4"
 unique_list.append([])
-unique_list << "5"                             # => ZADD myuniquelist 1646131025.4960442 5
-unique_list.remove(3)                          # => ZREM myuniquelist 3
-[ "4", "2", "1", "5" ] == unique_list.elements # => ZRANGE myuniquelist 0 -1
+unique_list << "5"                             # => LREM myuniquelist 0, "5" + RPUSH myuniquelist "5"
+unique_list.remove(3)                          # => LREM myuniquelist 0, "3"
+[ "4", "2", "1", "5" ] == unique_list.elements # => LRANGE myuniquelist 0, -1
+
+ordered_set = Kredis.ordered_set "myorderedset"
+ordered_set.append(%w[ 2 3 4 ])                # => ZADD myorderedset 1646131025.4953232 2 1646131025.495326 3 1646131025.4953272 4
+ordered_set.prepend(%w[ 1 2 3 4 ])             # => ZADD myorderedset -1646131025.4957051 1 -1646131025.495707 2 -1646131025.4957082 3 -1646131025.4957092 4
+ordered_set.append([])
+ordered_set << "5"                             # => ZADD myorderedset 1646131025.4960442 5
+ordered_set.remove(3)                          # => ZREM myorderedset 3
+[ "4", "2", "1", "5" ] == ordered_set.elements # => ZRANGE myorderedset 0 -1
 
 set = Kredis.set "myset", typed: :datetime
 set.add(DateTime.tomorrow, DateTime.yesterday)           # => SADD myset "2021-02-03 00:00:00 +0100" "2021-02-01 00:00:00 +0100"
