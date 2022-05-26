@@ -85,7 +85,7 @@ module Kredis::Types
 
   private
     def type_from(type_klass, config, key, after_change: nil, **options)
-      type_klass.new(configured_for(config), namespaced_key(key), config: config, after_change: after_change, **options).then do |type|
+      type_klass.new(configured_for(config), namespaced_key(key), **options).then do |type|
         after_change ? CallbacksProxy.new(type, after_change) : type
       end
     end
