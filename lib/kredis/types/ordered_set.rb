@@ -4,28 +4,20 @@ class Kredis::Types::OrderedSet < Kredis::Types::Proxying
   attr_accessor :typed, :limit
 
   def elements
-    auto_fallback(:elements) do
-      strings_to_types(zrange(0, -1) || [], typed)
-    end
+    strings_to_types(zrange(0, -1) || [], typed)
   end
   alias to_a elements
 
   def remove(*elements)
-    auto_migrate do
-      zrem(types_to_strings(elements, typed))
-    end
+    zrem(types_to_strings(elements, typed))
   end
 
   def prepend(elements)
-    auto_migrate do
-      insert(elements, prepending: true)
-    end
+    insert(elements, prepending: true)
   end
 
   def append(elements)
-    auto_migrate do
-      insert(elements)
-    end
+    insert(elements)
   end
   alias << append
 
@@ -40,9 +32,9 @@ class Kredis::Types::OrderedSet < Kredis::Types::Proxying
         [ score , element ]
       end
 
-      multi do
-        zadd(elements_with_scores)
-        trim(from_beginning: prepending)
+      multi do |pipeline|
+        pipeline.zadd(elements_with_scores)
+        trim(from_beginning: prepending, pipeline: pipeline)
       end
     end
 
@@ -60,36 +52,13 @@ class Kredis::Types::OrderedSet < Kredis::Types::Proxying
       Process.clock_gettime(Process::CLOCK_MONOTONIC)
     end
 
-    def trim(from_beginning:)
+    def trim(from_beginning:, pipeline:)
       return unless limit&.positive?
 
       if from_beginning
-        zremrangebyrank(limit, -1)
+        pipeline.zremrangebyrank(limit, -1)
       else
-        zremrangebyrank(0, -(limit + 1))
+        pipeline.zremrangebyrank(0, -(limit + 1))
       end
-    end
-
-    def auto_fallback(method)
-      yield
-    rescue Redis::CommandError
-      legacy_list.send(method)
-    end
-
-    def auto_migrate
-      yield
-    rescue Redis::CommandError
-      migrate_list_to_sorted_set
-      retry
-    end
-
-    def migrate_list_to_sorted_set
-      legacy_elements = legacy_list.elements
-      legacy_list.rename([ legacy_list.key, "_backup" ].join)
-      append(legacy_elements)
-    end
-
-    def legacy_list
-      Kredis.unique_list_legacy(key, typed: typed, limit: limit, config: config, after_change: after_change)
     end
 end
