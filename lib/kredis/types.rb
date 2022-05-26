@@ -67,10 +67,6 @@ module Kredis::Types
     type_from(UniqueList, config, key, after_change: after_change, typed: typed, limit: limit)
   end
 
-  def unique_list_legacy(key, typed: :string, limit: nil, config: :shared, after_change: nil)
-    type_from(UniqueListLegacy, config, key, after_change: after_change, typed: typed, limit: limit)
-  end
-
   def set(key, typed: :string, config: :shared, after_change: nil)
     type_from(Set, config, key, after_change: after_change, typed: typed)
   end
@@ -106,7 +102,6 @@ require "kredis/types/enum"
 require "kredis/types/hash"
 require "kredis/types/list"
 require "kredis/types/unique_list"
-require "kredis/types/unique_list_legacy"
 require "kredis/types/set"
 require "kredis/types/ordered_set"
 require "kredis/types/slots"
