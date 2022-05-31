@@ -41,6 +41,26 @@ class ListTest < ActiveSupport::TestCase
     assert_equal [], @list.elements
   end
 
+  test "expiring lists" do
+    @list = Kredis.list "mylist", expires_in: 1.second
+    @list.append(%w[ 1 2 3 ])
+
+    assert_equal %w[ 1 2 3 ], @list.elements
+
+    sleep 1.1.seconds
+
+    assert_equal [], @list.elements
+
+    @list.prepend(4)
+
+    sleep 0.6.seconds
+
+    assert_equal %w[ 4 ], @list.elements
+
+    sleep 0.5.seconds
+    assert_equal [], @list.elements
+  end
+
   test "typed as datetime" do
     @list = Kredis.list "mylist", typed: :datetime
 
