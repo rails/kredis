@@ -1,4 +1,5 @@
 require "test_helper"
+require "active_support/core_ext/integer"
 
 class UniqueListTest < ActiveSupport::TestCase
   setup { @list = Kredis.unique_list "myuniquelist", limit: 5 }
@@ -72,5 +73,25 @@ class UniqueListTest < ActiveSupport::TestCase
   test "prepending array with duplicates" do
     @list.prepend(%w[ 1 1 1 ])
     assert_equal %w[ 1 ], @list.elements
+  end
+
+  test "expiring lists" do
+    @list = Kredis.unique_list "myuniquelist", expires_in: 1.second
+    @list.append(%w[ 1 2 3 ])
+
+    assert_equal %w[ 1 2 3 ], @list.elements
+
+    sleep 1.1.seconds
+
+    assert_equal [], @list.elements
+
+    @list.prepend(4)
+
+    sleep 0.6.seconds
+
+    assert_equal %w[ 4 ], @list.elements
+
+    sleep 0.5.seconds
+    assert_equal [], @list.elements
   end
 end

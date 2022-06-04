@@ -10,17 +10,17 @@ class Kredis::Types::List < Kredis::Types::Proxying
 
   def remove(*elements, pipeline: nil)
     types_to_strings(elements, typed).each { |element| (pipeline || proxy).lrem 0, element }
-    expire expires_in.to_i if expires_in
+    (pipeline || proxy).expire expires_in.to_i if expires_in
   end
 
   def prepend(*elements, pipeline: nil)
     (pipeline || proxy).lpush types_to_strings(elements, typed) if elements.flatten.any?
-    expire expires_in.to_i if expires_in
+    (pipeline || proxy).expire expires_in.to_i if expires_in
   end
 
   def append(*elements, pipeline: nil)
     (pipeline || proxy).rpush types_to_strings(elements, typed) if elements.flatten.any?
-    expire expires_in.to_i if expires_in
+    (pipeline || proxy).expire expires_in.to_i if expires_in
   end
   alias << append
 
