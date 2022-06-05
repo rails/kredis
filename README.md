@@ -201,6 +201,24 @@ class Person < ApplicationRecord
 end
 ```
 
+There is an easy way to search for keys:
+
+```ruby
+# Returns the search results in batches of *approximately* 1.000 keys
+Kredis.search('user_names:*') do |key_batch|
+  key_batch == [ 'user_names:1', 'user_names:2', ... ]
+end
+
+# Optionally you can change the batch size hint. Since it's a hint,
+# there is no guarantee the size of each batch matches the hint.
+#
+# Returns the search results in batches of *approximately* 750 keys 
+Kredis.search('user_names:*', batch_size: 750) { ... }
+
+# Using a different than the default `shared` redis instance, relying on `config/redis/secondary.yml`:
+Kredis.search('user_names:*', config: :secondary) { ... }
+```
+
 ## Installation
 
 1. Run `./bin/bundle add kredis`

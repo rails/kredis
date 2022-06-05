@@ -6,6 +6,7 @@ require "kredis/version"
 require "kredis/connections"
 require "kredis/log_subscriber"
 require "kredis/namespace"
+require "kredis/queries"
 require "kredis/type_casting"
 require "kredis/types"
 require "kredis/attributes"
@@ -13,7 +14,7 @@ require "kredis/attributes"
 require "kredis/railtie" if defined?(Rails::Railtie)
 
 module Kredis
-  include Connections, Namespace, TypeCasting, Types
+  include Connections, Namespace, Queries, TypeCasting, Types
   extend self
 
   autoload :Migration, "kredis/migration"
