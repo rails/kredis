@@ -75,7 +75,7 @@ class UniqueListTest < ActiveSupport::TestCase
     assert_equal %w[ 1 ], @list.elements
   end
 
-  test "expiring lists" do
+  test "expiring" do
     @list = Kredis.unique_list "myuniquelist", expires_in: 1.second
     @list.append(%w[ 1 2 3 ])
 

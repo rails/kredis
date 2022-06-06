@@ -41,7 +41,7 @@ class ListTest < ActiveSupport::TestCase
     assert_equal [], @list.elements
   end
 
-  test "expiring lists" do
+  test "expiring" do
     @list = Kredis.list "mylist", expires_in: 1.second
     @list.append(%w[ 1 2 3 ])
 
