@@ -12,6 +12,7 @@ class Person
   kredis_list :names_with_custom_key_via_method, key: :generate_key
   kredis_list :expiring_list, expires_in: 1.second
   kredis_unique_list :skills, limit: 2
+  kredis_unique_list :expiring_skills, expires_in: 1.second
   kredis_flag :special
   kredis_flag :temporary_special, expires_in: 1.second
   kredis_string :address
@@ -99,6 +100,14 @@ class AttributesTest < ActiveSupport::TestCase
     @person.skills.prepend("racing")
     @person.skills.prepend("racing")
     assert_equal %w[ racing photography ], @person.skills.elements
+  end
+
+  test "expiring unique list" do
+    @person.expiring_skills.prepend("racing")
+    @person.expiring_skills.prepend("racing")
+    assert_changes "@person.expiring_skills.elements", from: %w[ racing ], to: %w[] do
+      sleep 1.1.seconds
+    end
   end
 
   test "flag" do
