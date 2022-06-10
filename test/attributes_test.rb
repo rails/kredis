@@ -20,10 +20,11 @@ class Person
   kredis_string :address
   kredis_string :address_with_default_via_lambda, default: ->(p) { p.name }
   kredis_integer :age
-  kredis_integer :age_with_default_via_lambda, default: ->(p) { Time.now.year - p.birthdate.year }
+  kredis_integer :age_with_default_via_lambda, default: ->(p) { Date.today.year - p.birthdate.year }
   kredis_decimal :salary
   kredis_decimal :salary_with_default_via_lambda, default: ->(p) { p.hourly_wage * 40 * 52 }
   kredis_datetime :last_seen_at
+  kredis_datetime :last_seen_at_with_default_via_lambda, default: ->(p) { p.last_login }
   kredis_float :height
   kredis_enum :morning, values: %w[ bright blue black ], default: "bright"
   kredis_slot :attention
@@ -49,11 +50,15 @@ class Person
   end
 
   def birthdate
-    Time.now - 25.years
+    Date.today - 25.years
   end
   
   def hourly_wage
     15.26
+  end
+
+  def last_login
+    Time.new(2002, 10, 31, 2, 2, 2, "+02:00")
   end
 
   private
@@ -186,10 +191,14 @@ class AttributesTest < ActiveSupport::TestCase
     assert_equal "1.85", @person.height.to_s
   end
 
-  test "datetime" do
+  test "datetime with default proc value" do
     freeze_time
     @person.last_seen_at.value = Time.now
     assert_equal Time.now, @person.last_seen_at.value
+  end
+
+  test "datetime" do
+    assert_equal Time.new(2002, 10, 31, 2, 2, 2, "+02:00"), @person.last_seen_at_with_default_via_lambda.value
   end
 
   test "slot" do
