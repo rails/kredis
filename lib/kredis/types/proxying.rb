@@ -1,7 +1,7 @@
 require "active_support/core_ext/module/delegation"
 
 class Kredis::Types::Proxying
-  attr_accessor :proxy, :redis, :key
+  attr_accessor :proxy, :redis, :key, :default
 
   def self.proxying(*commands)
     delegate *commands, to: :proxy
@@ -19,4 +19,11 @@ class Kredis::Types::Proxying
 
   private
     delegate :type_to_string, :string_to_type, :types_to_strings, :strings_to_types, to: :Kredis
+
+    def default_value(method: :set)
+      case default
+      when Proc then default.call.tap { |value| send(method, value) }
+      else default
+      end
+    end
 end

@@ -11,6 +11,7 @@ class Person
   kredis_list :names
   kredis_list :names_with_custom_key_via_lambda, key: ->(p) { "person:#{p.id}:names_customized" }
   kredis_list :names_with_custom_key_via_method, key: :generate_key
+  kredis_list :names_with_default_via_lambda, default: ->(p) { ["Random", p.name] }
   kredis_unique_list :skills, limit: 2
   kredis_flag :special
   kredis_flag :temporary_special, expires_in: 1.second
@@ -93,6 +94,11 @@ class AttributesTest < ActiveSupport::TestCase
   test "list with custom method key" do
     @person.names_with_custom_key_via_method.append(%w[ david kasper ])
     assert_equal %w[ david kasper ], Kredis.redis.lrange("some-generated-key", 0, -1)
+  end
+
+  test "list with default proc value" do
+    assert_equal %w[ Random Jason ], @person.names_with_default_via_lambda.elements
+    assert_equal %w[ Random Jason ], Kredis.redis.lrange("people:8:names_with_default_via_lambda", 0, -1)
   end
 
   test "unique list" do

@@ -4,7 +4,7 @@ class Kredis::Types::List < Kredis::Types::Proxying
   attr_accessor :typed
 
   def elements
-    strings_to_types(lrange(0, -1) || [], typed)
+    strings_to_types(exists? ? lrange(0, -1) : default_value(method: :append) || [], typed)
   end
   alias to_a elements
 

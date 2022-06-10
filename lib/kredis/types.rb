@@ -59,8 +59,8 @@ module Kredis::Types
     type_from(Hash, config, key, after_change: after_change, typed: typed)
   end
 
-  def list(key, typed: :string, config: :shared, after_change: nil)
-    type_from(List, config, key, after_change: after_change, typed: typed)
+  def list(key, default: nil, typed: :string, config: :shared, after_change: nil)
+    type_from(List, config, key, after_change: after_change, default: default, typed: typed)
   end
 
   def unique_list(key, typed: :string, limit: nil, config: :shared, after_change: nil)
