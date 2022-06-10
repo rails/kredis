@@ -8,17 +8,11 @@ class Kredis::Types::Scalar < Kredis::Types::Proxying
   end
 
   def value
-    value_after_casting = string_to_type(get, typed)
-
-    if value_after_casting.nil?
-      string_to_type(default_value, typed)
-    else
-      value_after_casting
-    end
+    string_to_type(get, typed)
   end
 
   def to_s
-    get || default_value&.to_s
+    value&.to_s
   end
 
   def assigned?
@@ -36,4 +30,12 @@ class Kredis::Types::Scalar < Kredis::Types::Proxying
   def expire_at(datetime)
     expireat datetime.to_i
   end
+
+  private
+
+    def default
+      return @default unless @default.is_a? Proc
+
+      @default.call.tap { |default_value| self.value = default_value }
+    end
 end

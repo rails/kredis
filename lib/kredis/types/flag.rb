@@ -8,7 +8,7 @@ class Kredis::Types::Flag < Kredis::Types::Proxying
   end
 
   def marked?
-    exists? || default_value || false
+    exists? || default?
   end
 
   def remove
@@ -17,10 +17,9 @@ class Kredis::Types::Flag < Kredis::Types::Proxying
 
   private
 
-    def set_and_get(value)
-      return false unless value
+    def default?
+      return false unless @default && @default.is_a?(Proc) && @default.call
 
-      mark
-      true
+      mark && true
     end
 end

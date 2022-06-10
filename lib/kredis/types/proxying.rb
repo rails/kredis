@@ -1,7 +1,7 @@
 require "active_support/core_ext/module/delegation"
 
 class Kredis::Types::Proxying
-  attr_accessor :proxy, :redis, :key, :default
+  attr_accessor :proxy, :redis, :key
 
   def self.proxying(*commands)
     delegate *commands, to: :proxy
@@ -9,7 +9,8 @@ class Kredis::Types::Proxying
 
   def initialize(redis, key, **options)
     @redis, @key = redis, key
-    @proxy = Kredis::Types::Proxy.new(redis, key)
+    @default = options.delete(:default)
+    @proxy = Kredis::Types::Proxy.new(redis, key, default: @default)
     options.each { |key, value| send("#{key}=", value) }
   end
 
@@ -19,15 +20,4 @@ class Kredis::Types::Proxying
 
   private
     delegate :type_to_string, :string_to_type, :types_to_strings, :strings_to_types, to: :Kredis
-
-    def default_value
-      return default unless default.is_a? Proc
-
-      set_and_get(default.call)
-    end
-
-  def set_and_get(value)
-    set value
-    get
-  end
 end

@@ -192,7 +192,7 @@ class AttributesTest < ActiveSupport::TestCase
 
   test "decimal with default proc value" do
     assert_equal 31_740.80.to_d, @person.salary_with_default_via_lambda.value
-    assert_equal "31740.8", @person.salary_with_default_via_lambda.to_s
+    assert_equal "0.317408e5", @person.salary_with_default_via_lambda.to_s
   end
 
   test "float" do

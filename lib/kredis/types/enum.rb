@@ -1,9 +1,9 @@
 require "active_support/core_ext/object/inclusion"
 
 class Kredis::Types::Enum < Kredis::Types::Proxying
-  proxying :set, :get, :del, :exists?
+  proxying :set, :get, :del, :exists?, :default
 
-  attr_accessor :values, :default
+  attr_accessor :values
 
   def initialize(...)
     super
@@ -17,7 +17,7 @@ class Kredis::Types::Enum < Kredis::Types::Proxying
   end
 
   def value
-    get || default_value
+    get
   end
 
   def reset

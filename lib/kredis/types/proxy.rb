@@ -2,10 +2,11 @@ class Kredis::Types::Proxy
   require_relative "proxy/failsafe"
   include Failsafe
 
-  attr_accessor :redis, :key, :default
+  attr_accessor :redis, :key
 
   def initialize(redis, key, **options)
     @redis, @key = redis, key
+    @default = options.delete(:default)
     options.each { |key, value| send("#{key}=", value) }
   end
 
@@ -19,7 +20,13 @@ class Kredis::Types::Proxy
   end
 
   def get
-    super || default_value
+    super || default
+  end
+
+  def default
+    return @default unless @default.is_a? Proc
+
+    @default.call.tap { |value| set(value) }
   end
 
   def method_missing(method, *args, **kwargs)
@@ -37,11 +44,4 @@ class Kredis::Types::Proxy
 
       { message: "#{method.upcase} #{key} #{args&.inspect} #{kwargs&.inspect}".chomp }
     end
-
-  def default_value
-    case default
-    when Proc then default.call.tap { |value| set(value) }
-    else default
-    end
-  end
 end
