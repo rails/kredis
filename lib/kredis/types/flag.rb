@@ -18,7 +18,7 @@ class Kredis::Types::Flag < Kredis::Types::Proxying
   private
 
     def default?
-      return false unless @default && @default.is_a?(Proc) && @default.call
+      return !!@default unless @default.is_a?(Proc) && @default.call
 
       mark && true
     end

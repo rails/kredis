@@ -57,4 +57,16 @@ class ListTest < ActiveSupport::TestCase
     @list.append(%w[ 1 2 3 ])
     assert @list.exists?
   end
+
+  test "default" do
+    @list = Kredis.list "mylist", default: %w[ 1 2 3 ]
+
+    assert_equal %w[ 1 2 3 ], @list.elements
+  end
+
+  test "default via proc" do
+    @list = Kredis.list "mylist", default: ->() { %w[ 1 2 3 ] }
+
+    assert_equal %w[ 1 2 3 ], @list.elements
+  end
 end

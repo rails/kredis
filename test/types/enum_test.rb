@@ -7,6 +7,11 @@ class EnumTest < ActiveSupport::TestCase
     assert_equal "one", @enum.value
   end
 
+  test "default via proc" do
+    @enum = Kredis.enum "myenum", values: %w[ one two three ], default: ->() { "two" }
+    assert_equal "two", @enum.value
+  end
+
   test "predicates" do
     assert @enum.one?
 

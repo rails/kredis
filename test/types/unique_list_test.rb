@@ -73,4 +73,16 @@ class UniqueListTest < ActiveSupport::TestCase
     @list.prepend(%w[ 1 1 1 ])
     assert_equal %w[ 1 ], @list.elements
   end
+
+  test "default" do
+    @list = Kredis.unique_list "myuniquelist", default: %w[ 1 2 3 ]
+
+    assert_equal %w[ 1 2 3 ], @list.elements
+  end
+
+  test "default via proc" do
+    @list = Kredis.unique_list "myuniquelist", default: ->() { %w[ 1 2 3 3  ] }
+
+    assert_equal %w[ 1 2 3 ], @list.elements
+  end
 end

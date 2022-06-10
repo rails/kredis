@@ -26,7 +26,7 @@ class Person
   kredis_datetime :last_seen_at
   kredis_datetime :last_seen_at_with_default_via_lambda, default: ->(p) { p.last_login }
   kredis_float :height
-  kredis_float :height_with_default_via_lambda, default: ->(p) { JSON.parse(p.anthropometry)[:height] }
+  kredis_float :height_with_default_via_lambda, default: ->(p) { JSON.parse(p.anthropometry)['height'] }
   kredis_enum :morning, values: %w[ bright blue black ], default: "bright"
   kredis_enum :eye_color_with_default_via_lambda, values: %w[ hazel blue brown ], default: ->(p) { { ha: 'hazel', bl: 'blue', br: 'brown' }[p.eye_color.to_sym] }
   kredis_slot :attention
@@ -210,6 +210,7 @@ class AttributesTest < ActiveSupport::TestCase
   end
 
   test "float with default proc value" do
+    assert_not_equal 73.2, Kredis.redis.get("people:8:height_with_default_via_lambda")
     assert_equal 73.2, @person.height_with_default_via_lambda.value
     assert_equal "73.2", @person.height_with_default_via_lambda.to_s
   end

@@ -100,6 +100,22 @@ class ScalarTest < ActiveSupport::TestCase
     assert_equal({ "one" => 1, "string" => "hello" }, json.value)
   end
 
+  test "default via proc" do
+    integer = Kredis.scalar "myscalar", typed: :integer, default: ->() { 8 }
+    assert_equal 8, integer.value
+
+    integer.value = 5
+    assert_equal 5, integer.value
+
+    integer.clear
+    assert_equal 8, integer.value
+
+    integer.clear
+
+    json = Kredis.json "myscalar", default: ->() { { one: 1, string: "hello" } }
+    assert_equal({ "one" => 1, "string" => "hello" }, json.value)
+  end
+
   test "returns default when failing open" do
     integer = Kredis.scalar "myscalar", typed: :integer, default: 8
     integer.value = 42
