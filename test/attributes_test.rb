@@ -26,6 +26,7 @@ class Person
   kredis_datetime :last_seen_at
   kredis_datetime :last_seen_at_with_default_via_lambda, default: ->(p) { p.last_login }
   kredis_float :height
+  kredis_float :height_with_default_via_lambda, default: ->(p) { p.anthropometry[:height] }
   kredis_enum :morning, values: %w[ bright blue black ], default: "bright"
   kredis_slot :attention
   kredis_slots :meetings, available: 3
@@ -51,6 +52,10 @@ class Person
 
   def birthdate
     Date.today - 25.years
+  end
+
+  def anthropometry
+    { height: 73.2, weight: 182.4 }
   end
   
   def hourly_wage
@@ -189,6 +194,11 @@ class AttributesTest < ActiveSupport::TestCase
     @person.height.value = 1.85
     assert_equal 1.85, @person.height.value
     assert_equal "1.85", @person.height.to_s
+  end
+
+  test "float with default proc value" do
+    assert_equal 73.2, @person.height_with_default_via_lambda.value
+    assert_equal "73.2", @person.height_with_default_via_lambda.to_s
   end
 
   test "datetime with default proc value" do
