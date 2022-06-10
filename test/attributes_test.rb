@@ -18,6 +18,7 @@ class Person
   kredis_flag :temporary_special, expires_in: 1.second
   kredis_flag :special_with_default_via_lambda, default: ->(p) { p.id == 8 }
   kredis_string :address
+  kredis_string :address_with_default_via_lambda, default: ->(p) { p.name }
   kredis_integer :age
   kredis_decimal :salary
   kredis_datetime :last_seen_at
@@ -135,6 +136,13 @@ class AttributesTest < ActiveSupport::TestCase
     @person.address.value = "Copenhagen"
     assert @person.address.assigned?
     assert_equal "Copenhagen", @person.address.to_s
+
+    @person.address.clear
+    assert_not @person.address.assigned?
+  end
+
+  test "string with default proc value" do
+    assert_equal "Jason", @person.address_with_default_via_lambda.to_s
 
     @person.address.clear
     assert_not @person.address.assigned?

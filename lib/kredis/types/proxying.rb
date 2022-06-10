@@ -25,4 +25,9 @@ class Kredis::Types::Proxying
 
       set_and_get(default.call)
     end
+
+  def set_and_get(value)
+    set value
+    get
+  end
 end
