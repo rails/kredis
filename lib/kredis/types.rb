@@ -47,8 +47,8 @@ module Kredis::Types
     type_from(Cycle, config, key, after_change: after_change, values: values, expires_in: expires_in)
   end
 
-  def flag(key, config: :shared, after_change: nil, expires_in: nil)
-    type_from(Flag, config, key, after_change: after_change, expires_in: expires_in)
+  def flag(key, default: nil, config: :shared, after_change: nil, expires_in: nil)
+    type_from(Flag, config, key, after_change: after_change, default: default, expires_in: expires_in)
   end
 
   def enum(key, values:, default:, config: :shared, after_change: nil)

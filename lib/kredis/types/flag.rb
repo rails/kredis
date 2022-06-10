@@ -8,10 +8,19 @@ class Kredis::Types::Flag < Kredis::Types::Proxying
   end
 
   def marked?
-    exists?
+    exists? || default_value || false
   end
 
   def remove
     del
   end
+
+  private
+
+    def set_and_get(value)
+      return false unless value
+
+      mark
+      true
+    end
 end
