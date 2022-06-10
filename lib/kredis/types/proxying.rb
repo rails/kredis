@@ -20,10 +20,9 @@ class Kredis::Types::Proxying
   private
     delegate :type_to_string, :string_to_type, :types_to_strings, :strings_to_types, to: :Kredis
 
-    def default_value(method: :set)
-      case default
-      when Proc then default.call.tap { |value| send(method, value) }
-      else default
-      end
+    def default_value
+      return default unless default.is_a? Proc
+
+      set_and_get(default.call)
     end
 end

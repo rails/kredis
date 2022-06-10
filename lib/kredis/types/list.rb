@@ -4,7 +4,8 @@ class Kredis::Types::List < Kredis::Types::Proxying
   attr_accessor :typed
 
   def elements
-    strings_to_types(exists? ? lrange(0, -1) : default_value(method: :append) || [], typed)
+    value = exists? ? lrange(0, -1) : default_value || []
+    strings_to_types(value, typed)
   end
   alias to_a elements
 
@@ -23,5 +24,10 @@ class Kredis::Types::List < Kredis::Types::Proxying
 
   def clear
     del
+  end
+
+  def set_and_get(value)
+    append(value)
+    elements
   end
 end
