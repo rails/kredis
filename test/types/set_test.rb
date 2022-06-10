@@ -88,4 +88,14 @@ class SetTest < ActiveSupport::TestCase
     @set.add(%w[ 1 2 3 ])
     assert @set.exists?
   end
+
+  test "default" do
+    @set = Kredis.set "mylist", default: %w[ 1 2 3 ]
+    assert_equal %w[ 1 2 3 ], @set.members
+  end
+
+  test "default via proc" do
+    @set = Kredis.set "mylist", default: -> () { %w[ 3 3 1 2 ] }
+    assert_equal %w[ 1 2 3 ], @set.members
+  end
 end

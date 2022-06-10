@@ -26,10 +26,12 @@ class Kredis::Types::List < Kredis::Types::Proxying
     del
   end
 
-  def default
-    return @default unless @default.is_a? Proc
+  private
 
-    append(@default.call)
-    elements
-  end
+    def default
+      return @default unless @default.is_a? Proc
+
+      append(@default.call)
+      elements
+    end
 end

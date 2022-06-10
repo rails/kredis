@@ -67,8 +67,8 @@ module Kredis::Types
     type_from(UniqueList, config, key, after_change: after_change, default: default, typed: typed, limit: limit)
   end
 
-  def set(key, typed: :string, config: :shared, after_change: nil)
-    type_from(Set, config, key, after_change: after_change, typed: typed)
+  def set(key, default: nil, typed: :string, config: :shared, after_change: nil)
+    type_from(Set, config, key, after_change: after_change, default: default, typed: typed)
   end
 
   def slot(key, config: :shared, after_change: nil)

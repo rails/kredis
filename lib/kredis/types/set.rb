@@ -4,7 +4,8 @@ class Kredis::Types::Set < Kredis::Types::Proxying
   attr_accessor :typed
 
   def members
-    strings_to_types(smembers || [], typed).sort
+    value = exists? ? smembers : default || []
+    strings_to_types(value, typed).sort
   end
   alias to_a members
 
@@ -39,4 +40,13 @@ class Kredis::Types::Set < Kredis::Types::Proxying
   def clear
     del
   end
+
+  private
+
+    def default
+      return @default unless @default.is_a? Proc
+
+      add(@default.call)
+      members
+    end
 end

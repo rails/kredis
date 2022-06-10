@@ -26,12 +26,13 @@ class Person
   kredis_datetime :last_seen_at
   kredis_datetime :last_seen_at_with_default_via_lambda, default: ->(p) { p.last_login }
   kredis_float :height
-  kredis_float :height_with_default_via_lambda, default: ->(p) { p.anthropometry[:height] }
+  kredis_float :height_with_default_via_lambda, default: ->(p) { JSON.parse(p.anthropometry)[:height] }
   kredis_enum :morning, values: %w[ bright blue black ], default: "bright"
   kredis_enum :eye_color_with_default_via_lambda, values: %w[ hazel blue brown ], default: ->(p) { { ha: 'hazel', bl: 'blue', br: 'brown' }[p.eye_color.to_sym] }
   kredis_slot :attention
   kredis_slots :meetings, available: 3
   kredis_set :vacations
+  kredis_set :vacations_with_default_via_lambda, default: ->(p) { JSON.parse(p.vacation_destinations).map{ |location| location['city'] } }
   kredis_json :settings
   kredis_counter :amount
   kredis_counter :expiring_amount, expires_in: 1.second
@@ -56,19 +57,26 @@ class Person
   end
 
   def anthropometry
-    { height: 73.2, weight: 182.4 }
+    { height: 73.2, weight: 182.4 }.to_json
   end
 
   def eye_color
     'ha'
   end
-  
+
   def hourly_wage
     15.26
   end
 
   def last_login
     Time.new(2002, 10, 31, 2, 2, 2, "+02:00")
+  end
+
+  def vacation_destinations
+    [
+      { city: 'Paris', region: 'Île-de-France', country: 'FR' },
+      { city: 'Paris', region: 'Texas', country: 'US' }
+    ].to_json
   end
 
   private
@@ -296,6 +304,11 @@ class AttributesTest < ActiveSupport::TestCase
 
     @person.vacations.remove("berlin")
     assert_equal "paris", @person.vacations.take
+  end
+
+  test "set with default proc value" do
+    assert_equal [ "Paris" ], @person.vacations_with_default_via_lambda.members
+    assert_equal [ "Paris" ], Kredis.redis.smembers("people:8:vacations_with_default_via_lambda")
   end
 
   test "json" do
