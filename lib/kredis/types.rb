@@ -1,8 +1,8 @@
 module Kredis::Types
   autoload :CallbacksProxy, "kredis/types/callbacks_proxy"
 
-  def proxy(key, config: :shared, after_change: nil)
-    type_from(Proxy, config, key, after_change: after_change)
+  def proxy(key, default: nil, config: :shared, after_change: nil)
+    type_from(Proxy, config, key, after_change: after_change, default: default)
   end
 
 

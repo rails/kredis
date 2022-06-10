@@ -2,8 +2,8 @@ module Kredis::Attributes
   extend ActiveSupport::Concern
 
   class_methods do
-    def kredis_proxy(name, key: nil, config: :shared, after_change: nil)
-      kredis_connection_with __method__, name, key, config: config, after_change: after_change
+    def kredis_proxy(name, key: nil, default: nil, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, default: default, config: config, after_change: after_change
     end
 
     def kredis_string(name, key: nil, config: :shared, after_change: nil, expires_in: nil)
@@ -84,6 +84,7 @@ module Kredis::Attributes
           if instance_variable_defined?(ivar_symbol)
             instance_variable_get(ivar_symbol)
           else
+            options.merge!(default: kredis_default_value_evaluated(options[:default])) if options[:default]
             new_type = Kredis.send(type, kredis_key_evaluated(key) || kredis_key_for_attribute(name), **options)
             instance_variable_set ivar_symbol,
               after_change ? enrich_after_change_with_record_access(new_type, after_change) : new_type
@@ -115,4 +116,12 @@ module Kredis::Attributes
       when Symbol then Kredis::Types::CallbacksProxy.new(type, ->(_) { send(original_after_change) })
       end
     end
+
+  def kredis_default_value_evaluated(default)
+    case default
+    when Proc   then Proc.new { default.call(self) }
+    when Symbol then send(default)
+    else default
+    end
+  end
 end

@@ -4,9 +4,10 @@ require "active_support/core_ext/integer"
 class Person
   include Kredis::Attributes
 
-  kredis_proxy :anything
+  kredis_proxy :anything, default: "default"
   kredis_proxy :nothing, key: "something:else"
-  kredis_proxy :something, key: ->(p) { "person:#{p.id}:something" }
+  kredis_proxy :something, key: ->(p) { "person:#{p.id}:something" }, default: :name
+  kredis_proxy :something_with_default_via_lambda, default: ->(p) { p.name.downcase }
   kredis_list :names
   kredis_list :names_with_custom_key_via_lambda, key: ->(p) { "person:#{p.id}:names_customized" }
   kredis_list :names_with_custom_key_via_method, key: :generate_key
@@ -37,6 +38,10 @@ class Person
     8
   end
 
+  def name
+    "Jason"
+  end
+
   private
     def generate_key
       "some-generated-key"
@@ -54,6 +59,7 @@ class AttributesTest < ActiveSupport::TestCase
   setup { @person = Person.new }
 
   test "proxy" do
+    assert_equal "default", @person.anything.get
     @person.anything.set "something"
     assert_equal "something", @person.anything.get
   end
@@ -64,8 +70,14 @@ class AttributesTest < ActiveSupport::TestCase
   end
 
   test "proxy with custom proc key" do
+    assert_equal "Jason", @person.something.get
     @person.something.set "everything"
     assert_equal "everything", Kredis.redis.get("person:8:something")
+  end
+
+  test "proxy with default value" do
+    assert_equal "jason", @person.something_with_default_via_lambda.get
+    assert_equal "jason", Kredis.redis.get("people:8:something_with_default_via_lambda")
   end
 
   test "list" do
