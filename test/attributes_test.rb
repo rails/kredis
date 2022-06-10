@@ -20,6 +20,7 @@ class Person
   kredis_string :address
   kredis_string :address_with_default_via_lambda, default: ->(p) { p.name }
   kredis_integer :age
+  kredis_integer :age_with_default_via_lambda, default: ->(p) { Time.now.year - p.birthdate.year }
   kredis_decimal :salary
   kredis_datetime :last_seen_at
   kredis_float :height
@@ -44,6 +45,10 @@ class Person
 
   def name
     "Jason"
+  end
+
+  def birthdate
+    Time.now - 25.years
   end
 
   private
@@ -152,6 +157,11 @@ class AttributesTest < ActiveSupport::TestCase
     @person.age.value = 41
     assert_equal 41, @person.age.value
     assert_equal "41", @person.age.to_s
+  end
+
+  test "integer with default proc value" do
+    assert_equal 25, @person.age_with_default_via_lambda.value
+    assert_equal "25", @person.age_with_default_via_lambda.to_s
   end
 
   test "decimal" do

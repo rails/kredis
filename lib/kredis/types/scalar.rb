@@ -11,7 +11,7 @@ class Kredis::Types::Scalar < Kredis::Types::Proxying
     value_after_casting = string_to_type(get, typed)
 
     if value_after_casting.nil?
-      default_value
+      string_to_type(default_value, typed)
     else
       value_after_casting
     end
