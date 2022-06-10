@@ -95,12 +95,13 @@ class ScalarTest < ActiveSupport::TestCase
     assert_equal 8, integer.value
 
     assert_equal "8", integer.value.to_s
-
+    integer.clear
+    
     json = Kredis.json "myscalar", default: { one: 1, string: "hello" }
     assert_equal({ "one" => 1, "string" => "hello" }, json.value)
   end
 
-  test "default via proc" do
+  test "default via proc for nil" do
     integer = Kredis.scalar "myscalar", typed: :integer, default: ->() { 8 }
     assert_equal 8, integer.value
 

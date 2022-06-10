@@ -34,7 +34,9 @@ class Person
   kredis_set :vacations
   kredis_set :vacations_with_default_via_lambda, default: ->(p) { JSON.parse(p.vacation_destinations).map{ |location| location['city'] } }
   kredis_json :settings
+  kredis_json :settings_with_default_via_lambda, default: ->(p) { JSON.parse(p.anthropometry).merge(eye_color: p.eye_color) }
   kredis_counter :amount
+  kredis_counter :amount_with_default_via_lambda, default: ->(p) { Date.today.year - p.birthdate.year }
   kredis_counter :expiring_amount, expires_in: 1.second
   kredis_string :temporary_password, expires_in: 1.second
   kredis_hash :high_scores, typed: :integer
@@ -317,6 +319,13 @@ class AttributesTest < ActiveSupport::TestCase
     assert_equal({ "color" => "red", "count" => 2 }, @person.settings.value)
   end
 
+  test "json with default proc value" do
+    expect = {"height"=>73.2, "weight"=>182.4, "eye_color"=>"ha"}
+    assert_equal expect, @person.settings_with_default_via_lambda.value
+    assert_equal expect.to_s, Kredis.redis.get("people:8:settings_with_default_via_lambda")
+  end
+
+
   test "counter" do
     @person.amount.increment
     assert_equal 1, @person.amount.value
@@ -330,6 +339,15 @@ class AttributesTest < ActiveSupport::TestCase
       sleep 1.1.seconds
     end
   end
+
+  test "counter with default proc value" do
+    @person.amount_with_default_via_lambda.increment
+    assert_equal 26, @person.amount_with_default_via_lambda.value
+    @person.amount_with_default_via_lambda.decrement
+    assert_equal 25, @person.amount_with_default_via_lambda.value
+  end
+
+
 
   test "hash" do
     @person.high_scores.update(space_invaders: 100, pong: 42)

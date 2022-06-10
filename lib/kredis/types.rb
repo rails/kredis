@@ -39,8 +39,8 @@ module Kredis::Types
   end
 
 
-  def counter(key, expires_in: nil, config: :shared, after_change: nil)
-    type_from(Counter, config, key, after_change: after_change, expires_in: expires_in)
+  def counter(key, expires_in: nil, default: nil, config: :shared, after_change: nil)
+    type_from(Counter, config, key, after_change: after_change, default: default, expires_in: expires_in)
   end
 
   def cycle(key, values:, expires_in: nil, config: :shared, after_change: nil)

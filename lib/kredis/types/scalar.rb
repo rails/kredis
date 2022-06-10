@@ -36,6 +36,6 @@ class Kredis::Types::Scalar < Kredis::Types::Proxying
     def default
       return @default unless @default.is_a? Proc
 
-      @default.call.tap { |default_value| self.value = default_value }
+      string_to_type(@default.call, typed).tap { |default_value| self.value = default_value }
     end
 end

@@ -26,7 +26,7 @@ class Kredis::Types::Proxy
   def default
     return @default unless @default.is_a? Proc
 
-    @default.call.tap { |value| set(value) }
+    @default.call.tap { |value| set(value) unless value.nil? }
   end
 
   def method_missing(method, *args, **kwargs)
