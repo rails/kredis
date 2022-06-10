@@ -28,6 +28,7 @@ class Person
   kredis_float :height
   kredis_float :height_with_default_via_lambda, default: ->(p) { p.anthropometry[:height] }
   kredis_enum :morning, values: %w[ bright blue black ], default: "bright"
+  kredis_enum :eye_color_with_default_via_lambda, values: %w[ hazel blue brown ], default: ->(p) { { ha: 'hazel', bl: 'blue', br: 'brown' }[p.eye_color.to_sym] }
   kredis_slot :attention
   kredis_slots :meetings, available: 3
   kredis_set :vacations
@@ -56,6 +57,10 @@ class Person
 
   def anthropometry
     { height: 73.2, weight: 182.4 }
+  end
+
+  def eye_color
+    'ha'
   end
   
   def hourly_wage
@@ -272,6 +277,11 @@ class AttributesTest < ActiveSupport::TestCase
     @person.morning.reset
     assert @person.morning.bright?
   end
+
+  test "enum with default proc value" do
+    assert @person.eye_color_with_default_via_lambda.hazel?
+  end
+
 
   test "set" do
     @person.vacations.add "paris"

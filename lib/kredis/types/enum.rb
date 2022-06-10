@@ -17,7 +17,7 @@ class Kredis::Types::Enum < Kredis::Types::Proxying
   end
 
   def value
-    get || default
+    get || default_value
   end
 
   def reset
