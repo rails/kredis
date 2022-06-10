@@ -22,6 +22,7 @@ class Person
   kredis_integer :age
   kredis_integer :age_with_default_via_lambda, default: ->(p) { Time.now.year - p.birthdate.year }
   kredis_decimal :salary
+  kredis_decimal :salary_with_default_via_lambda, default: ->(p) { p.hourly_wage * 40 * 52 }
   kredis_datetime :last_seen_at
   kredis_float :height
   kredis_enum :morning, values: %w[ bright blue black ], default: "bright"
@@ -49,6 +50,10 @@ class Person
 
   def birthdate
     Time.now - 25.years
+  end
+  
+  def hourly_wage
+    15.26
   end
 
   private
@@ -168,6 +173,11 @@ class AttributesTest < ActiveSupport::TestCase
     @person.salary.value = 10000.07
     assert_equal 10000.07, @person.salary.value
     assert_equal "0.1000007e5", @person.salary.to_s
+  end
+
+  test "decimal with default proc value" do
+    assert_equal 31_740.80.to_d, @person.salary_with_default_via_lambda.value
+    assert_equal "31740.8", @person.salary_with_default_via_lambda.to_s
   end
 
   test "float" do

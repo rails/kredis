@@ -14,8 +14,8 @@ module Kredis::Attributes
       kredis_connection_with __method__, name, key, default: default, config: config, after_change: after_change, expires_in: expires_in
     end
 
-    def kredis_decimal(name, key: nil, config: :shared, after_change: nil, expires_in: nil)
-      kredis_connection_with __method__, name, key, config: config, after_change: after_change, expires_in: expires_in
+    def kredis_decimal(name, key: nil, default: nil, config: :shared, after_change: nil, expires_in: nil)
+      kredis_connection_with __method__, name, key, default: default, config: config, after_change: after_change, expires_in: expires_in
     end
 
     def kredis_datetime(name, key: nil, config: :shared, after_change: nil, expires_in: nil)
