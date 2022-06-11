@@ -3,6 +3,8 @@ require "active_support/core_ext/hash"
 class Kredis::Types::Hash < Kredis::Types::Proxying
   proxying :hget, :hset, :hmget, :hdel, :hgetall, :hkeys, :hvals, :del, :exists?
 
+  before_method :set_default, :[], :[]=, :entries, :keys, :values, :values_at, :delete
+
   attr_accessor :typed
 
   def [](key)
@@ -42,4 +44,13 @@ class Kredis::Types::Hash < Kredis::Types::Proxying
   def values
     strings_to_types(hvals || [], typed)
   end
+
+  private
+
+    def set_default
+      return if exists?
+      
+      value = @default.is_a?(Proc) ? @default.call : @default
+      update(value) unless value.nil?
+    end
 end

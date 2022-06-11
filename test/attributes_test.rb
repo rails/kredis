@@ -40,7 +40,9 @@ class Person
   kredis_counter :expiring_amount, expires_in: 1.second
   kredis_string :temporary_password, expires_in: 1.second
   kredis_hash :high_scores, typed: :integer
+  kredis_hash :high_scores_with_default_via_lambda, typed: :integer, default: ->(p) { { high_score: JSON.parse(p.scores).max } }
   kredis_boolean :onboarded
+  kredis_boolean :adult_with_default_via_lambda, default: ->(p) { Date.today.year - p.birthdate.year >= 18 }
 
   def self.name
     "Person"
@@ -64,6 +66,10 @@ class Person
 
   def eye_color
     'ha'
+  end
+
+  def scores
+    [10, 28, 2, 7].to_json
   end
 
   def hourly_wage
@@ -347,13 +353,15 @@ class AttributesTest < ActiveSupport::TestCase
     assert_equal 25, @person.amount_with_default_via_lambda.value
   end
 
-
-
   test "hash" do
     @person.high_scores.update(space_invaders: 100, pong: 42)
     assert_equal({ "space_invaders" => 100, "pong" => 42 }, @person.high_scores.to_h)
     assert_equal([ "space_invaders", "pong" ], @person.high_scores.keys)
     assert_equal([ 100, 42 ], @person.high_scores.values)
+  end
+
+  test "hash with default proc value" do
+    assert_equal({ "high_score" => 28 }, @person.high_scores_with_default_via_lambda.to_h)
   end
 
   test "boolean" do
@@ -362,6 +370,10 @@ class AttributesTest < ActiveSupport::TestCase
 
     @person.onboarded.value = false
     refute @person.onboarded.value
+  end
+
+  test "boolean with default proc value" do
+    assert @person.adult_with_default_via_lambda.value
   end
 
   test "missing id to constrain key" do

@@ -90,4 +90,15 @@ class HashTest < ActiveSupport::TestCase
     @hash[:key]  = :value
     assert @hash.exists?
   end
+
+  test "default value" do
+    @hash = Kredis.hash "myhash", typed: :integer, default: { space_invaders: "100", pong: "42" }
+    assert_equal(%w[ space_invaders pong ], @hash.keys)
+    assert_equal({ "space_invaders" => 100, "pong" => 42 }, @hash.to_h)
+  end
+
+  test "default via proc" do
+    @hash = Kredis.hash "myhash", typed: :integer, default: ->() { { space_invaders: "100", pong: "42" } }
+    assert_equal({ "space_invaders" => 100, "pong" => 42 }, @hash.to_h)
+  end
 end

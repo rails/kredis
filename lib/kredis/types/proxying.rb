@@ -1,6 +1,9 @@
 require "active_support/core_ext/module/delegation"
+require "kredis/types/before_method_hook"
 
 class Kredis::Types::Proxying
+  extend Kredis::Types::BeforeMethodHook
+  
   attr_accessor :proxy, :redis, :key
 
   def self.proxying(*commands)
