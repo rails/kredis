@@ -51,6 +51,6 @@ class Kredis::Types::Hash < Kredis::Types::Proxying
       return if exists?
       
       value = @default.is_a?(Proc) ? @default.call : @default
-      update(value) unless value.nil?
+      update(**value) unless value.nil?
     end
 end
