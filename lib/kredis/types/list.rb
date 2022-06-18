@@ -1,4 +1,6 @@
 class Kredis::Types::List < Kredis::Types::Proxying
+  include Kredis::Types::Expirable.on(:append, :prepend, :remove)
+
   proxying :lrange, :lrem, :lpush, :rpush, :exists?, :del
 
   attr_accessor :typed

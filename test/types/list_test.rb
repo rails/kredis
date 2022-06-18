@@ -8,6 +8,13 @@ class ListTest < ActiveSupport::TestCase
     @list.append(%w[ 1 2 3 ])
     @list << 4
     assert_equal %w[ 1 2 3 4 ], @list.elements
+    assert_equal -1, @list.ttl
+  end
+
+  test "append with expires_in" do
+    @list.expires_in = 25
+    @list.append(%w[ 1 2 3 ])
+    assert @list.ttl.between?(20, 25)
   end
 
   test "append nothing" do
@@ -22,6 +29,12 @@ class ListTest < ActiveSupport::TestCase
     assert_equal %w[ 4 3 2 1 ], @list.elements
   end
 
+  test "prepend with expires_in" do
+    @list.expires_in = 25
+    @list.prepend(%w[ 1 2 3 ])
+    assert @list.ttl.between?(20, 25)
+  end
+
   test "prepend nothing" do
     @list.prepend("1", "2", "3")
     @list.prepend([])
@@ -33,6 +46,15 @@ class ListTest < ActiveSupport::TestCase
     @list.remove(%w[ 1 2 ])
     @list.remove(3)
     assert_equal %w[ 4 ], @list.elements
+  end
+
+  test "remove with expires_in" do
+    @list.append(%w[ 1 2 3 4 ])
+    assert_equal -1, @list.ttl
+
+    @list.expires_in = 25
+    @list.remove(%w[ 1 2 ])
+    assert @list.ttl.between?(20, 25)
   end
 
   test "clear" do
