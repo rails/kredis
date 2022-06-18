@@ -90,6 +90,7 @@ end
 require "kredis/types/proxy"
 require "kredis/types/proxying"
 
+require "kredis/types/expirable"
 require "kredis/types/scalar"
 require "kredis/types/counter"
 require "kredis/types/cycle"

@@ -1,6 +1,8 @@
 require "active_support/core_ext/hash"
 
 class Kredis::Types::Hash < Kredis::Types::Proxying
+  include Kredis::Types::Expirable.on(:[]=, :update, :delete)
+
   proxying :hget, :hset, :hmget, :hdel, :hgetall, :hkeys, :hvals, :del, :exists?
 
   attr_accessor :typed
@@ -13,7 +15,7 @@ class Kredis::Types::Hash < Kredis::Types::Proxying
     update key => value
   end
 
-  def update(**entries)
+  def update(entries)
     hset entries.transform_values{ |val| type_to_string(val, typed) } if entries.flatten.any?
   end
 

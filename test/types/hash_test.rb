@@ -15,12 +15,37 @@ class HashTest < ActiveSupport::TestCase
     @hash[:key]  = :value
     @hash[:key2] = "value2"
     assert_equal({ "key" => "value", "key2" => "value2" }, @hash.to_h)
+    assert_equal(-1, @hash.ttl)
+  end
+
+  test "[]= assigment with expires_in" do
+    @hash.expires_in = 25
+    @hash[:key] = :value
+    assert(@hash.ttl.between?(20, 25))
+  end
+
+  test "[]= assigment with expires_at" do
+    @hash.expires_at = Time.current + 25.seconds
+    @hash[:key] = :value
+    assert(@hash.ttl.between?(20, 25))
   end
 
   test "update" do
     @hash.update(key: :value)
     @hash.update("key2" => "value2", "key3" => "value3")
     assert_equal({ "key" => "value", "key2" => "value2", "key3" => "value3" }, @hash.to_h)
+  end
+
+  test "update with expires_in" do
+    @hash.expires_in = 25
+    @hash.update("key2" => "value2")
+    assert(@hash.ttl.between?(20, 25))
+  end
+
+  test "update with expires_at" do
+    @hash.expires_at = Time.current + 25.seconds
+    @hash.update("key2" => "value2")
+    assert(@hash.ttl.between?(20, 25))
   end
 
   test "values_at" do
@@ -38,6 +63,24 @@ class HashTest < ActiveSupport::TestCase
 
     @hash.delete("key2", "key3")
     assert_equal({}, @hash.to_h)
+  end
+
+  test "delete with expires_in" do
+    @hash.update("key2" => "value2", "key3" => "value3")
+    assert_equal(-1, @hash.ttl)
+
+    @hash.expires_in = 25
+    @hash.delete("key2")
+    assert(@hash.ttl.between?(20, 25))
+  end
+
+  test "delete with expires_at" do
+    @hash.update("key2" => "value2", "key3" => "value3")
+    assert_equal(-1, @hash.ttl)
+
+    @hash.expires_at = Time.current + 25.seconds
+    @hash.delete("key2")
+    assert(@hash.ttl.between?(20, 25))
   end
 
   test "entries" do
