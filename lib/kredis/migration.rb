@@ -30,9 +30,15 @@ class Kredis::Migration
     end
   end
 
-  def delete_all(key_pattern)
-    each_key_batch_matching(key_pattern) do |keys, pipeline|
-      pipeline.del *keys
+  def delete_all(*key_patterns)
+    log_migration "DELETE ALL #{key_patterns.inspect}" do
+      if key_patterns.length > 1
+        @redis.del *key_patterns
+      else
+        each_key_batch_matching(key_patterns.first) do |keys, pipeline|
+          pipeline.del *keys
+        end
+      end
     end
   end
 
