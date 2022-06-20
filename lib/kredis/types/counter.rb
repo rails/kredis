@@ -1,7 +1,7 @@
 class Kredis::Types::Counter < Kredis::Types::Proxying
   proxying :multi, :set, :incrby, :decrby, :get, :del, :exists?
 
-  before_method :set_default, :value, :increment, :decrement
+  before_methods :value, :increment, :decrement, invoke: :set_default
 
   attr_accessor :expires_in
 

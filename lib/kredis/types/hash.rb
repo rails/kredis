@@ -3,7 +3,7 @@ require "active_support/core_ext/hash"
 class Kredis::Types::Hash < Kredis::Types::Proxying
   proxying :hget, :hset, :hmget, :hdel, :hgetall, :hkeys, :hvals, :del, :exists?
 
-  before_method :set_default, :[], :[]=, :entries, :keys, :values, :values_at, :delete
+  before_methods :[], :[]=, :entries, :keys, :values, :values_at, :delete, invoke: :set_default
 
   attr_accessor :typed
 
