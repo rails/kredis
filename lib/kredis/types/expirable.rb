@@ -13,6 +13,11 @@ module Kredis::Types::Expirable
     def expire_at(datetime)
       expireat datetime.to_i
     end
+
+    def refresh_expiration
+      expire_in(@expires_in) if expires_in
+      expire_at(@expires_at) if expires_at && !expires_in
+    end
   end
 
   def self.on(*on_methods)
@@ -25,8 +30,7 @@ module Kredis::Types::Expirable
             define_method method do |*args|
               super(*args)
 
-              expire_in(@expires_in) if expires_in
-              expire_at(@expires_at) if expires_at && !expires_in
+              refresh_expiration
             end
           end
         end)
