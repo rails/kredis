@@ -8,9 +8,11 @@ module Kredis
       end
 
       def cast_value(value)
-        return value.stringify_keys if value.is_a? Hash
-
-        JSON.load(value)
+        if value.is_a? Hash
+          value.stringify_keys
+        else
+          JSON.load(value)
+        end
       end
 
       def serialize(value)

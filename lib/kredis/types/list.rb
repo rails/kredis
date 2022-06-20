@@ -1,10 +1,10 @@
 class Kredis::Types::List < Kredis::Types::Proxying
-  proxying :lrange, :lrem, :lpush, :rpush, :exists?, :del, :default
+  proxying :lrange, :lrem, :lpush, :rpush, :exists?, :del
 
   attr_accessor :typed
 
   def elements
-    value = exists? ? lrange(0, -1) : default || []
+    value = exists? ? lrange(0, -1) : initialize_with_default || []
     strings_to_types(value, typed)
   end
   alias to_a elements
@@ -27,11 +27,10 @@ class Kredis::Types::List < Kredis::Types::Proxying
   end
 
   private
-
-    def default
-      return @default unless @default.is_a? Proc
-
-      append(@default.call)
-      elements
+    def initialize_with_default
+      default do |default_value|
+        append(default_value)
+        elements
+      end
     end
 end

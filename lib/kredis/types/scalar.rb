@@ -1,14 +1,14 @@
 class Kredis::Types::Scalar < Kredis::Types::Proxying
   proxying :set, :get, :exists?, :del, :expire, :expireat
 
-  attr_accessor :typed, :default, :expires_in
+  attr_accessor :typed, :expires_in
 
   def value=(value)
     set type_to_string(value, typed), ex: expires_in
   end
 
   def value
-    string_to_type(get, typed)
+    string_to_type(get || initialize_with_default, typed)
   end
 
   def to_s
@@ -32,10 +32,7 @@ class Kredis::Types::Scalar < Kredis::Types::Proxying
   end
 
   private
-
-    def default
-      return @default unless @default.is_a? Proc
-
-      string_to_type(@default.call, typed).tap { |default_value| self.value = default_value }
+    def initialize_with_default
+      default { |default_value| self.value = default_value }
     end
 end

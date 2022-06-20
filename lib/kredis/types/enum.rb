@@ -17,7 +17,7 @@ class Kredis::Types::Enum < Kredis::Types::Proxying
   end
 
   def value
-    get
+    get || initialize_with_default
   end
 
   def reset
@@ -30,5 +30,9 @@ class Kredis::Types::Enum < Kredis::Types::Proxying
         define_singleton_method("#{defined_value}?") { value == defined_value }
         define_singleton_method("#{defined_value}!") { self.value = defined_value }
       end
+    end
+
+    def initialize_with_default
+      default { |default_value| self.value = default_value }
     end
 end

@@ -1,4 +1,5 @@
 require "test_helper"
+require "active_support/core_ext/numeric/time"
 
 class FlagTest < ActiveSupport::TestCase
   setup { @flag = Kredis.flag "myflag" }
@@ -39,15 +40,27 @@ class FlagTest < ActiveSupport::TestCase
     assert_not @flag.marked?
   end
 
-  test "default" do
+  test "default true" do
     @flag = Kredis.flag "myflag", default: true
 
     assert @flag.marked?
   end
 
-  test "default via proc" do
+  test "default false" do
+    @flag = Kredis.flag "myflag", default: false
+
+    assert_not @flag.marked?
+  end
+
+  test "default true via proc" do
     @flag = Kredis.flag "myflag", default: ->() { true }
 
     assert @flag.marked?
+  end
+
+  test "default false via proc" do
+    @flag = Kredis.flag "myflag", default: ->() { false }
+
+    assert_not @flag.marked?
   end
 end

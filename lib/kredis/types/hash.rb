@@ -46,11 +46,7 @@ class Kredis::Types::Hash < Kredis::Types::Proxying
   end
 
   private
-
     def set_default
-      return if exists?
-      
-      value = @default.is_a?(Proc) ? @default.call : @default
-      update(**value) unless value.nil?
+      update(**default) unless exists? || default.nil?
     end
 end

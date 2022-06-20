@@ -13,7 +13,7 @@ class Kredis::Types::Proxying
   def initialize(redis, key, **options)
     @redis, @key = redis, key
     @default = options.delete(:default)
-    @proxy = Kredis::Types::Proxy.new(redis, key, default: ->() { default })
+    @proxy = Kredis::Types::Proxy.new(redis, key)
     options.each { |key, value| send("#{key}=", value) }
   end
 
@@ -25,8 +25,12 @@ class Kredis::Types::Proxying
     delegate :type_to_string, :string_to_type, :types_to_strings, :strings_to_types, to: :Kredis
 
     def default
-      return @default unless @default.is_a? Proc
-
-      @default.call.tap { |value| set(value) unless value.nil? }
+      if @default.is_a?(Proc) && block_given?
+        yield(@default.call)
+      elsif @default.is_a?(Proc)
+        @default.call
+      else
+        @default
+      end
     end
 end

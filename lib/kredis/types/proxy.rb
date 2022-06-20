@@ -6,7 +6,6 @@ class Kredis::Types::Proxy
 
   def initialize(redis, key, **options)
     @redis, @key = redis, key
-    @default = options.delete(:default)
     options.each { |key, value| send("#{key}=", value) }
   end
 
@@ -17,16 +16,6 @@ class Kredis::Types::Proxy
     redis.multi do |pipeline|
       block.call(Kredis::Types::Proxy.new(pipeline, key))
     end
-  end
-
-  def get
-    super || default
-  end
-
-  def default
-    return @default unless @default.is_a? Proc
-
-    @default.call.tap { |value| set(value) unless value.nil? }
   end
 
   def method_missing(method, *args, **kwargs)

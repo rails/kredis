@@ -22,15 +22,7 @@ class Kredis::Types::Counter < Kredis::Types::Proxying
   end
 
   private
-
-    def value=(new_value)
-      set(new_value.to_i, ex: expires_in, nx: true)
-    end
-
     def set_default
-      return if exists?
-
-      value = @default.is_a?(Proc) ? @default.call : @default
-      self.value = value
+      set(default.to_i, ex: expires_in, nx: true) unless exists?
     end
 end
