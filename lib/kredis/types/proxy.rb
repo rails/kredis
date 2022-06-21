@@ -4,6 +4,8 @@ class Kredis::Types::Proxy
 
   attr_accessor :redis, :key
 
+  thread_mattr_accessor :pipeline
+
   def initialize(redis, key, **options)
     @redis, @key = redis, key
     options.each { |key, value| send("#{key}=", value) }
@@ -11,17 +13,17 @@ class Kredis::Types::Proxy
 
   def multi(*args, **kwargs, &block)
     redis.multi(*args, **kwargs) do |pipeline|
-      Thread.current[:pipeline] = pipeline
+      self.pipeline = pipeline
       block.call
     ensure
-      Thread.current[:pipeline] = nil
+      self.pipeline = nil
     end
   end
 
   def method_missing(method, *args, **kwargs)
     Kredis.instrument :proxy, **log_message(method, *args, **kwargs) do
       failsafe do
-        (Thread.current[:pipeline] || redis).public_send method, key, *args, **kwargs
+        (pipeline || redis).public_send method, key, *args, **kwargs
       end
     end
   end
