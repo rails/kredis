@@ -28,9 +28,11 @@ module Kredis::Types::Expirable
         type_klass.prepend(Module.new do
           on_methods.each do |method|
             define_method method do |*args, **kargs, &block|
-              super(*args, **kargs, &block)
+              operation_result = super(*args, **kargs, &block)
 
               refresh_expiration
+
+              operation_result
             end
           end
         end)
