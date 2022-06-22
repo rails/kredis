@@ -43,20 +43,18 @@ class CounterTest < ActiveSupport::TestCase
     assert_equal (-4), @counter.decrement(by: 2)
   end
 
-  test "expiring counter" do
-    @counter = Kredis.counter "mycounter", expires_in: 1.second
+  test "with expires in" do
+    @counter = Kredis.counter "mycounter", expires_in: 25.second
 
     @counter.increment
-    assert_equal 1, @counter.value
+    assert @counter.ttl.between?(20, 25)
+  end
 
-    sleep 0.5.seconds
+  test "with expires at" do
+    @counter = Kredis.counter "mycounter", expires_at: Time.current + 25.second
 
     @counter.increment
-    assert_equal 2, @counter.value
-
-    sleep 0.6.seconds
-
-    assert_equal 0, @counter.value
+    assert @counter.ttl.between?(20, 25)
   end
 
   test "reset" do
