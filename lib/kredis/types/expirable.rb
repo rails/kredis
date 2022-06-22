@@ -14,9 +14,13 @@ module Kredis::Types::Expirable
       expireat datetime.to_i
     end
 
+    def expire?
+      expires_in || expires_at
+    end
+
     def refresh_expiration
-      expire_in(@expires_in) if expires_in
-      expire_at(@expires_at) if expires_at && !expires_in
+      expire_in(expires_in) if expires_in
+      expire_at(expires_at) if expires_at && !expires_in
     end
   end
 
@@ -28,11 +32,14 @@ module Kredis::Types::Expirable
         type_klass.prepend(Module.new do
           on_methods.each do |method|
             define_method method do |*args, **kargs, &block|
-              operation_result = super(*args, **kargs, &block)
+              unless expire?
+                super(*args, **kargs, &block)
+              else
+                operation_result = super(*args, **kargs, &block)
+                refresh_expiration
 
-              refresh_expiration
-
-              operation_result
+                operation_result
+              end
             end
           end
         end)
