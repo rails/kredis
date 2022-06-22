@@ -1,4 +1,6 @@
 class Kredis::Types::Cycle < Kredis::Types::Counter
+  include Kredis::Types::Expirable.on(:next)
+
   attr_accessor :values
 
   alias index value

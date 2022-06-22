@@ -42,8 +42,8 @@ module Kredis::Types
     type_from(Counter, config, key, after_change: after_change, expires_in: expires_in, expires_at: expires_at)
   end
 
-  def cycle(key, values:, expires_in: nil, config: :shared, after_change: nil)
-    type_from(Cycle, config, key, after_change: after_change, values: values, expires_in: expires_in)
+  def cycle(key, values:, expires_at: nil, expires_in: nil, config: :shared, after_change: nil)
+    type_from(Cycle, config, key, after_change: after_change, values: values, expires_in: expires_in, expires_at: expires_at)
   end
 
   def flag(key, config: :shared, after_change: nil, expires_in: nil)
