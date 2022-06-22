@@ -50,8 +50,8 @@ module Kredis::Types
     type_from(Flag, config, key, after_change: after_change, expires_in: expires_in)
   end
 
-  def enum(key, values:, default:, config: :shared, after_change: nil)
-    type_from(Enum, config, key, after_change: after_change, values: values, default: default)
+  def enum(key, values:, default:, config: :shared, after_change: nil, expires_at: nil, expires_in: nil)
+    type_from(Enum, config, key, after_change: after_change, values: values, default: default, expires_at: expires_at, expires_in: expires_in)
   end
 
   def hash(key, typed: :string, config: :shared, after_change: nil)

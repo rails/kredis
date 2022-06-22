@@ -1,4 +1,5 @@
 require "test_helper"
+require "active_support/core_ext/integer"
 
 class EnumTest < ActiveSupport::TestCase
   setup { @enum = Kredis.enum "myenum", values: %w[ one two three ], default: "one" }
@@ -26,6 +27,20 @@ class EnumTest < ActiveSupport::TestCase
 
     @enum.value = "nonesense"
     assert @enum.one?
+  end
+
+  test "with expires_in" do
+    @enum = Kredis.enum "myenum", values: %w[ one ], default: "one", expires_in: 25.seconds
+    @enum.value = "one"
+
+    assert @enum.ttl.between?(20, 25)
+  end
+
+  test "with expires_at" do
+    @enum = Kredis.enum "myenum", values: %w[ one ], default: "one", expires_at: Time.current + 25.seconds
+    @enum.value = "one"
+
+    assert @enum.ttl.between?(20, 25)
   end
 
   test "reset" do

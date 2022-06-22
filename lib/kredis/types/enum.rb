@@ -1,6 +1,8 @@
 require "active_support/core_ext/object/inclusion"
 
 class Kredis::Types::Enum < Kredis::Types::Proxying
+  include Kredis::Types::Expirable.on(:value=)
+
   proxying :set, :get, :del, :exists?
 
   attr_accessor :values, :default
