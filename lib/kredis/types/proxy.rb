@@ -2,7 +2,7 @@ class Kredis::Types::Proxy
   require_relative "proxy/failsafe"
   include Failsafe
 
-  attr_accessor :redis, :key
+  attr_accessor :key
 
   thread_mattr_accessor :pipeline
 
@@ -23,12 +23,16 @@ class Kredis::Types::Proxy
   def method_missing(method, *args, **kwargs)
     Kredis.instrument :proxy, **log_message(method, *args, **kwargs) do
       failsafe do
-        (pipeline || redis).public_send method, key, *args, **kwargs
+        redis.public_send method, key, *args, **kwargs
       end
     end
   end
 
   private
+    def redis
+      pipeline || @redis
+    end
+
     def log_message(method, *args, **kwargs)
       args      = args.flatten.reject(&:blank?).presence
       kwargs    = kwargs.reject { |_k, v| v.blank? }.presence
