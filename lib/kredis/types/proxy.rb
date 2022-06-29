@@ -2,19 +2,21 @@ class Kredis::Types::Proxy
   require_relative "proxy/failsafe"
   include Failsafe
 
-  attr_accessor :redis, :key
+  attr_accessor :key
+
+  thread_mattr_accessor :pipeline
 
   def initialize(redis, key, **options)
     @redis, @key = redis, key
     options.each { |key, value| send("#{key}=", value) }
   end
 
-  def multi(&block)
-    # NOTE: to be removed when Redis 4 compatibility gets dropped
-    return redis.multi unless block
-
-    redis.multi do |pipeline|
-      block.call(Kredis::Types::Proxy.new(pipeline, key))
+  def multi(*args, **kwargs, &block)
+    redis.multi(*args, **kwargs) do |pipeline|
+      self.pipeline = pipeline
+      block.call
+    ensure
+      self.pipeline = nil
     end
   end
 
@@ -27,6 +29,10 @@ class Kredis::Types::Proxy
   end
 
   private
+    def redis
+      pipeline || @redis
+    end
+
     def log_message(method, *args, **kwargs)
       args      = args.flatten.reject(&:blank?).presence
       kwargs    = kwargs.reject { |_k, v| v.blank? }.presence
