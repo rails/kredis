@@ -241,12 +241,18 @@ Kredis::Connections.connections[:shared] = Redis.new(
 
 The above code could be added to either `config/environments/production.rb` or an initializer. Please ensure that your client private key, if used, is stored your credentials file or another secure location.
 
-### Configure how the redis client is created
+### Configuration
 
 You can configure how the redis client is created by setting `config.kredis.connector` in your `application.rb`:
 
 ```ruby
 config.kredis.connector = ->(config) { SomeRedisProxy.new(config) }
+```
+
+The fail safe mechanism supports silently rescuing or returning a default value in the event that the Redis client returns an error (e.g. Redis is down). You can disable the default fail safe mechanism:
+
+```ruby
+config.kredis.fail_safe = false
 ```
 
 By default Kredis will use `Redis.new(config)`.
