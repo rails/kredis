@@ -20,7 +20,7 @@ class ProxyTest < ActiveSupport::TestCase
     stub_redis_down(@proxy) { assert_nil @proxy.set("two") }
   end
 
-  test "nested failing open" do
+  test "with fail safe disabled an error is raised" do
     @proxy.fail_safe_enabled = false
 
     stub_redis_down(@proxy) do
@@ -29,15 +29,4 @@ class ProxyTest < ActiveSupport::TestCase
 
     @proxy.fail_safe_enabled = true
   end
-
-  test "failsafe disabled raises errors" do
-    @proxy.fail_safe_enabled = false
-
-    stub_redis_down(@proxy) do
-      assert_raises(Redis::BaseError) { @proxy.get }
-    end
-
-    @proxy.fail_safe_enabled = true
-  end
-
 end
