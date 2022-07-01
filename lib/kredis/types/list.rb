@@ -8,16 +8,16 @@ class Kredis::Types::List < Kredis::Types::Proxying
   end
   alias to_a elements
 
-  def remove(*elements, pipeline: nil)
-    types_to_strings(elements, typed).each { |element| (pipeline || proxy).lrem 0, element }
+  def remove(*elements)
+    types_to_strings(elements, typed).each { |element| lrem 0, element }
   end
 
-  def prepend(*elements, pipeline: nil)
-    (pipeline || proxy).lpush types_to_strings(elements, typed) if elements.flatten.any?
+  def prepend(*elements)
+    lpush types_to_strings(elements, typed) if elements.flatten.any?
   end
 
-  def append(*elements, pipeline: nil)
-    (pipeline || proxy).rpush types_to_strings(elements, typed) if elements.flatten.any?
+  def append(*elements)
+    rpush types_to_strings(elements, typed) if elements.flatten.any?
   end
   alias << append
 
