@@ -14,7 +14,7 @@ class Kredis::Types::Proxying
   end
 
   def failsafe(returning: nil, &block)
-    proxy.suppress_failsafe_with(returning: returning, &block)
+    proxy.failsafe(returning: returning, &block)
   end
 
   private

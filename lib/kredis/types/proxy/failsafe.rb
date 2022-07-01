@@ -1,16 +1,21 @@
 module Kredis::Types::Proxy::Failsafe
-  def initialize(*)
-    super
-    @fail_safe_suppressed = false
+  extend ActiveSupport::Concern
+
+  included do
+    mattr_accessor :fail_safe_enabled, default: true
   end
 
-  def failsafe
-    yield
+  def failsafe(returning: nil, &block)
+    if fail_safe_enabled?
+      suppress_fail_safe_with(returning: returning, &block)
+    else
+      yield
+    end
   rescue Redis::BaseError
-    raise if fail_safe_suppressed?
+    raise if fail_safe_disabled? || fail_safe_suppressed?
   end
 
-  def suppress_failsafe_with(returning: nil)
+  def suppress_fail_safe_with(returning: nil)
     old_fail_safe_suppressed, @fail_safe_suppressed = @fail_safe_suppressed, true
     yield
   rescue Redis::BaseError
@@ -20,6 +25,14 @@ module Kredis::Types::Proxy::Failsafe
   end
 
   private
+    def fail_safe_enabled?
+      fail_safe_enabled
+    end
+
+    def fail_safe_disabled?
+      !fail_safe_enabled
+    end
+
     def fail_safe_suppressed?
       @fail_safe_suppressed
     end
