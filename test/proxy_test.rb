@@ -2,6 +2,7 @@ require "test_helper"
 
 class ProxyTest < ActiveSupport::TestCase
   setup { @proxy = Kredis.proxy "something" }
+  teardown { @proxy.fail_safe_enabled = true }
 
   test "proxy set and get and del" do
     @proxy.set "one"
@@ -26,7 +27,5 @@ class ProxyTest < ActiveSupport::TestCase
     stub_redis_down(@proxy) do
       assert_raises(Redis::BaseError) { @proxy.get }
     end
-
-    @proxy.fail_safe_enabled = true
   end
 end
