@@ -15,8 +15,8 @@ class Kredis::Railtie < ::Rails::Railtie
   initializer "kredis.configuration" do
     Kredis::Connections.connector = config.kredis.connector || ->(config) { Redis.new(config) }
 
-    if config.kredis.failsafe.present?
-      Kredis::Types::Proxy::Failsafe.failsafe_enabled = !!config.kredis.failsafe
+    unless config.kredis.failsafe.nil? do
+      Kredis::Types::Proxy::Failsafe.failsafe_enabled = config.kredis.failsafe
     end
   end
 
