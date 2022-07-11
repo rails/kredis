@@ -6,13 +6,11 @@ module Kredis::Types::Proxy::Failsafe
   end
 
   def failsafe(returning: nil, &block)
-    if fail_safe_enabled?
+    if fail_safe_enabled? && !fail_safe_suppressed?
       suppress_fail_safe_with(returning: returning, &block)
     else
       yield
     end
-  rescue Redis::BaseError
-    raise if fail_safe_disabled? || fail_safe_suppressed?
   end
 
   def suppress_fail_safe_with(returning: nil)
@@ -27,10 +25,6 @@ module Kredis::Types::Proxy::Failsafe
   private
     def fail_safe_enabled?
       fail_safe_enabled
-    end
-
-    def fail_safe_disabled?
-      !fail_safe_enabled
     end
 
     def fail_safe_suppressed?
