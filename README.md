@@ -249,7 +249,7 @@ You can configure how the redis client is created by setting `config.kredis.conn
 config.kredis.connector = ->(config) { SomeRedisProxy.new(config) }
 ```
 
-The fail safe mechanism supports silently rescuing or returning a default value in the event that the Redis client returns an error (e.g. Redis is down). You can disable the default fail safe mechanism:
+The fail-safe mechanism supports silently rescuing or returning a default value in the event that the Redis client returns an error (e.g. Redis is down). You can disable the default fail-safe mechanism:
 
 ```ruby
 config.kredis.fail_safe = false
