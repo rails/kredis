@@ -23,6 +23,6 @@ class Kredis::Types::Counter < Kredis::Types::Proxying
 
   private
     def set_default
-      set(default.to_i, ex: expires_in, nx: true) unless exists?
+      set(default.to_i, ex: expires_in, nx: true)
     end
 end

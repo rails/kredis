@@ -17,9 +17,8 @@ class Kredis::Types::Flag < Kredis::Types::Proxying
 
   private
     def exists_after_default_value?
-      !!default do |default_value|
-        mark if default_value
-        !!default_value
-      end
+      default_boolean = !!default
+      mark if default_boolean
+      default_boolean
     end
 end
