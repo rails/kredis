@@ -117,11 +117,11 @@ module Kredis::Attributes
       end
     end
 
-  def kredis_default_evaluated(default)
-    case default
-    when Proc   then Proc.new { default.call(self) }
-    when Symbol then send(default)
-    else default
+    def kredis_default_evaluated(default)
+      case default
+      when Proc   then Proc.new { default.call(self) }
+      when Symbol then send(default)
+      else default
+      end
     end
-  end
 end
