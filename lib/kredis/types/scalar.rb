@@ -1,5 +1,5 @@
 class Kredis::Types::Scalar < Kredis::Types::Proxying
-  proxying :set, :get, :exists?, :del, :expire, :expireat
+  proxying :set, :get, :exists?, :del, :expire, :expireat, :multi
 
   attr_accessor :typed, :expires_in
 
@@ -8,11 +8,15 @@ class Kredis::Types::Scalar < Kredis::Types::Proxying
   end
 
   def value
-    string_to_type(get || initialize_with_default, typed)
+    get_value = multi do
+      initialize_with_default
+      get
+    end[-1]
+    string_to_type(get_value, typed)
   end
 
   def to_s
-    value&.to_s
+    value.to_s
   end
 
   def assigned?
@@ -32,7 +36,7 @@ class Kredis::Types::Scalar < Kredis::Types::Proxying
   end
 
   private
-    def initialize_with_default
-      default { |default_value| self.value = default_value }
+    def set_default(value)
+      set type_to_string(value, typed), ex: expires_in, nx: true
     end
 end

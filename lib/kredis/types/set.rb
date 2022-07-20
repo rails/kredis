@@ -1,21 +1,30 @@
 class Kredis::Types::Set < Kredis::Types::Proxying
-  proxying :smembers, :sadd, :srem, :multi, :del, :sismember, :scard, :spop, :exists?
+  proxying :smembers, :sadd, :srem, :multi, :del, :sismember, :scard, :spop, :exists?, :callnx
 
   attr_accessor :typed
 
   def members
-    value = exists? ? smembers : initialize_with_default || []
-    strings_to_types(value, typed).sort
+    values = multi do
+      initialize_with_default
+      smembers
+    end[-1]
+    strings_to_types(values || [], typed).sort
   end
   alias to_a members
 
   def add(*members)
-    sadd types_to_strings(members, typed) if members.flatten.any?
+    multi do
+      initialize_with_default
+      sadd types_to_strings(members, typed) if members.flatten.any?
+    end
   end
   alias << add
 
   def remove(*members)
-    srem types_to_strings(members, typed) if members.flatten.any?
+    multi do
+      initialize_with_default
+      srem types_to_strings(members, typed) if members.flatten.any?
+    end
   end
 
   def replace(*members)
@@ -42,10 +51,7 @@ class Kredis::Types::Set < Kredis::Types::Proxying
   end
 
   private
-    def initialize_with_default
-      default do |default_value|
-        add(default_value)
-        members
-      end
+    def set_default(members)
+      callnx(:sadd, types_to_strings(Array(members), typed))
     end
 end

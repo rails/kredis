@@ -1,24 +1,42 @@
 class Kredis::Types::List < Kredis::Types::Proxying
-  proxying :lrange, :lrem, :lpush, :rpush, :exists?, :del
+  proxying :lrange, :lrem, :lpush, :rpush, :exists?, :del, :multi, :callnx
 
   attr_accessor :typed
 
   def elements
-    value = exists? ? lrange(0, -1) : initialize_with_default || []
-    strings_to_types(value, typed)
+    values = multi do
+      initialize_with_default
+      lrange(0, -1)
+    end[-1]
+    strings_to_types(values || [], typed)
   end
   alias to_a elements
 
   def remove(*elements)
-    types_to_strings(elements, typed).each { |element| lrem 0, element }
+    return if elements.empty?
+
+    multi do
+      initialize_with_default
+      types_to_strings(elements, typed).each { |element| lrem 0, element }
+    end
   end
 
   def prepend(*elements)
-    lpush types_to_strings(elements, typed) if elements.flatten.any?
+    return if elements.empty?
+
+    multi do
+      initialize_with_default
+      lpush types_to_strings(elements, typed) if elements.flatten.any?
+    end
   end
 
   def append(*elements)
-    rpush types_to_strings(elements, typed) if elements.flatten.any?
+    return if elements.empty?
+
+    multi do
+      initialize_with_default
+      rpush types_to_strings(elements, typed) if elements.flatten.any?
+    end
   end
   alias << append
 
@@ -27,10 +45,7 @@ class Kredis::Types::List < Kredis::Types::Proxying
   end
 
   private
-    def initialize_with_default
-      default do |default_value|
-        append(default_value)
-        elements
-      end
+    def set_default(elements)
+      callnx(:rpush, types_to_strings(Array(elements), typed))
     end
 end

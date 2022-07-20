@@ -12,6 +12,11 @@ class EnumTest < ActiveSupport::TestCase
     assert_equal "two", @enum.value
   end
 
+  test "does not set default for invalid option" do
+    @enum = Kredis.enum "myenum", values: %w[ one two three ], default: ->() { "four" }
+    assert_nil @enum.value
+  end
+
   test "predicates" do
     assert @enum.one?
 

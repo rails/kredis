@@ -64,9 +64,42 @@ class ListTest < ActiveSupport::TestCase
     assert_equal %w[ 1 2 3 ], @list.elements
   end
 
+  test "default empty array" do
+    @list = Kredis.list "mylist", default: []
+
+    assert_equal [], @list.elements
+  end
+
+  test "default with nil" do
+    @list = Kredis.list "mylist", default: nil
+
+    assert_equal [], @list.elements
+  end
+
   test "default via proc" do
     @list = Kredis.list "mylist", default: ->() { %w[ 1 2 3 ] }
 
     assert_equal %w[ 1 2 3 ], @list.elements
+  end
+
+  test "append with default" do
+    @list = Kredis.list "mylist", default: ->() { %w[ 1 ] }
+    @list.append(%w[ 2 3 ])
+    @list.append(4)
+    assert_equal %w[ 1 2 3 4 ], @list.elements
+  end
+
+  test "prepend with default" do
+    @list = Kredis.list "mylist", default: ->() { %w[ 1 ] }
+    @list.prepend(%w[ 2 3 ])
+    @list.prepend(4)
+    assert_equal %w[ 4 3 2 1 ], @list.elements
+  end
+
+  test "remove with default" do
+    @list = Kredis.list "mylist", default: ->() { %w[ 1 2 3 4 ] }
+    @list.remove(%w[ 1 2 ])
+    @list.remove(3)
+    assert_equal %w[ 4 ], @list.elements
   end
 end

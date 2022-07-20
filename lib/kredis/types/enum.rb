@@ -1,7 +1,7 @@
 require "active_support/core_ext/object/inclusion"
 
 class Kredis::Types::Enum < Kredis::Types::Proxying
-  proxying :set, :get, :del, :exists?
+  proxying :multi, :set, :get, :del, :exists?
 
   attr_accessor :values
 
@@ -17,7 +17,10 @@ class Kredis::Types::Enum < Kredis::Types::Proxying
   end
 
   def value
-    get || initialize_with_default
+    multi do
+      initialize_with_default
+      get
+    end.last
   end
 
   def reset
@@ -32,7 +35,9 @@ class Kredis::Types::Enum < Kredis::Types::Proxying
       end
     end
 
-    def initialize_with_default
-      default { |default_value| self.value = default_value }
+    def set_default(value)
+      if validated_choice = value.presence_in(values)
+        set validated_choice, nx: true
+      end
     end
 end

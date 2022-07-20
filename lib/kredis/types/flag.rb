@@ -8,17 +8,10 @@ class Kredis::Types::Flag < Kredis::Types::Proxying
   end
 
   def marked?
-    exists? || exists_after_default_value?
+    exists?
   end
 
   def remove
     del
   end
-
-  private
-    def exists_after_default_value?
-      default_boolean = !!default
-      mark if default_boolean
-      default_boolean
-    end
 end

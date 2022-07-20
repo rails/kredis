@@ -15,7 +15,6 @@ class Person
   kredis_unique_list :skills_with_default_via_lambda, default: ->(p) { ["Random", "Random", p.name] }
   kredis_flag :special
   kredis_flag :temporary_special, expires_in: 1.second
-  kredis_flag :special_with_default_via_lambda, default: ->(p) { p.id == 8 }
   kredis_string :address
   kredis_string :address_with_default_via_lambda, default: ->(p) { p.name }
   kredis_integer :age
@@ -157,10 +156,6 @@ class AttributesTest < ActiveSupport::TestCase
 
     @person.special.remove
     assert_not @person.special?
-  end
-
-  test "flag with default proc value" do
-    assert @person.special_with_default_via_lambda?
   end
 
   test "string" do

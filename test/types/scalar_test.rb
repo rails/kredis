@@ -117,6 +117,14 @@ class ScalarTest < ActiveSupport::TestCase
     assert_equal({ "one" => 1, "string" => "hello" }, json.value)
   end
 
+  test "does not cache proc results after clear" do
+    hex = Kredis.scalar "myscalar", default: ->() { SecureRandom.hex }
+    original_default_value = hex.value
+    assert_equal original_default_value, hex.value
+    hex.clear
+    assert_not_equal original_default_value, hex.value
+  end
+
   test "returns default when failing open" do
     integer = Kredis.scalar "myscalar", typed: :integer, default: 8
     integer.value = 42
