@@ -35,15 +35,24 @@ class Kredis::Types::Set < Kredis::Types::Proxying
   end
 
   def include?(member)
-    sismember type_to_string(member, typed)
+    multi do
+      initialize_with_default
+      sismember type_to_string(member, typed)
+    end[-1]
   end
 
   def size
-    scard.to_i
+    multi do
+      initialize_with_default
+      scard
+    end[-1].to_i
   end
 
   def take
-    spop
+    multi do
+      initialize_with_default
+      spop
+    end[-1]
   end
 
   def clear
