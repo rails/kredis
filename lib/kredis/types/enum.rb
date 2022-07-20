@@ -1,7 +1,7 @@
 require "active_support/core_ext/object/inclusion"
 
 class Kredis::Types::Enum < Kredis::Types::Proxying
-  proxying :multi, :set, :get, :del, :exists?
+  proxying :set, :get, :del, :exists?
 
   attr_accessor :values
 
@@ -17,10 +17,7 @@ class Kredis::Types::Enum < Kredis::Types::Proxying
   end
 
   def value
-    multi do
-      initialize_with_default
-      get
-    end[-1]
+    get || default.presence_in(values)
   end
 
   def reset
@@ -32,12 +29,6 @@ class Kredis::Types::Enum < Kredis::Types::Proxying
       values.each do |defined_value|
         define_singleton_method("#{defined_value}?") { value == defined_value }
         define_singleton_method("#{defined_value}!") { self.value = defined_value }
-      end
-    end
-
-    def set_default(value)
-      if validated_choice = value.presence_in(values)
-        set validated_choice, nx: true
       end
     end
 end

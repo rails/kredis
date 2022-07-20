@@ -29,12 +29,19 @@ class Kredis::Types::Proxying
       end
     end
 
-    def initialize_with_default
-      default_value = default
-      set_default(default_value) if default_value.present?
+    def init_default_in_multi(&block)
+      if (default_value = default).blank?
+        block.call
+      else
+        multi_results = multi do
+          set_default(default_value)
+          block.call
+        end
+        Array(multi_results)[-1] # convert to array in case in the middle of nested multi
+      end
     end
 
     def set_default(value)
-      set type_to_string(value, typed), ex: expires_in, nx: true
+      raise NotImplementedError, "kredis type needs to define #set_default"
     end
 end

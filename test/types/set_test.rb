@@ -12,8 +12,10 @@ class SetTest < ActiveSupport::TestCase
   end
 
   test "add nothing" do
-    @set.add(%w[ 1 2 3 ])
-    @set.add([])
+    set_size = @set.add(%w[ 1 2 3 ])
+    assert_equal 3, set_size
+    set_size = @set.add([])
+    assert_equal 3, set_size
     assert_equal %w[ 1 2 3 ], @set.to_a
   end
 
@@ -25,14 +27,25 @@ class SetTest < ActiveSupport::TestCase
   end
 
   test "remove nothing" do
-    @set.add(%w[ 1 2 3 4 ])
-    @set.remove([])
+    set_size = @set.add(%w[ 1 2 3 4 ])
+    assert_equal 4, set_size
+    set_size = @set.remove([])
+    assert_equal 4, set_size
     assert_equal %w[ 1 2 3 4 ], @set.members
   end
 
   test "replace" do
     @set.add(%w[ 1 2 3 4 ])
     @set.replace(%w[ 5 6 ])
+    assert_equal %w[ 5 6 ], @set.members
+  end
+
+  test "replace nothing" do
+    @set.add(%w[ 1 2 3 4 ])
+    set_size = @set.replace(%w[ 5 6 ])
+    assert_equal 2, set_size
+    set_size = @set.replace
+    assert_equal 2, set_size
     assert_equal %w[ 5 6 ], @set.members
   end
 

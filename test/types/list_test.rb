@@ -11,8 +11,10 @@ class ListTest < ActiveSupport::TestCase
   end
 
   test "append nothing" do
-    @list.append(%w[ 1 2 3 ])
-    @list.append([])
+    list_length = @list.append(%w[ 1 2 3 ])
+    assert_equal 3, list_length
+    list_length = @list.append([])
+    assert_equal 3, list_length
     assert_equal %w[ 1 2 3 ], @list.to_a
   end
 
@@ -23,8 +25,10 @@ class ListTest < ActiveSupport::TestCase
   end
 
   test "prepend nothing" do
-    @list.prepend("1", "2", "3")
-    @list.prepend([])
+    list_length = @list.prepend("1", "2", "3")
+    assert_equal 3, list_length
+    list_length = @list.prepend([])
+    assert_equal 3, list_length
     assert_equal %w[ 3 2 1 ], @list.elements
   end
 
@@ -32,6 +36,16 @@ class ListTest < ActiveSupport::TestCase
     @list.append(%w[ 1 2 3 4 ])
     @list.remove(%w[ 1 2 ])
     @list.remove(3)
+    assert_equal %w[ 4 ], @list.elements
+  end
+
+  test "remove nothing" do
+    @list.append(%w[ 1 2 3 4 ])
+    @list.remove(%w[ 1 2 ])
+    removed_items = @list.remove(3)
+    assert_equal %w[ 3 ], removed_items
+    removed_items = @list.remove
+    assert_equal [], removed_items
     assert_equal %w[ 4 ], @list.elements
   end
 

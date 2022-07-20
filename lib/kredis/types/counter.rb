@@ -4,17 +4,11 @@ class Kredis::Types::Counter < Kredis::Types::Proxying
   attr_accessor :expires_in
 
   def increment(by: 1)
-    multi do
-      initialize_with_default
-      incrby by
-    end[-1]
+    init_default_in_multi { incrby by }
   end
 
   def decrement(by: 1)
-    multi do
-      initialize_with_default
-      decrby by
-    end[-1]
+    init_default_in_multi { decrby by }
   end
 
   def value
@@ -26,7 +20,11 @@ class Kredis::Types::Counter < Kredis::Types::Proxying
   end
 
   private
-    def initialize_with_default
-      set default.to_i, ex: expires_in, nx: true
+    def set_default(value)
+      set value.to_i, ex: expires_in, nx: true
+    end
+
+    def default
+      super.to_i
     end
 end

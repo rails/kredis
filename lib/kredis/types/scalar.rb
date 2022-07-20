@@ -8,11 +8,7 @@ class Kredis::Types::Scalar < Kredis::Types::Proxying
   end
 
   def value
-    get_value = multi do
-      initialize_with_default
-      get
-    end[-1]
-    string_to_type(get_value, typed)
+    string_to_type(init_default_in_multi{ get }, typed)
   end
 
   def to_s
@@ -34,4 +30,9 @@ class Kredis::Types::Scalar < Kredis::Types::Proxying
   def expire_at(datetime)
     expireat datetime.to_i
   end
+
+  private
+    def set_default(value)
+      set type_to_string(value, typed), ex: expires_in, nx: true
+    end
 end

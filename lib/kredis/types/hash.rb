@@ -1,6 +1,8 @@
 require "active_support/core_ext/hash"
 
 class Kredis::Types::Hash < Kredis::Types::Proxying
+  ZERO_FIELDS_ADDED = 0
+
   proxying :hset, :hdel, :hgetall, :del, :exists?, :multi, :callnx
 
   attr_accessor :typed
@@ -15,9 +17,10 @@ class Kredis::Types::Hash < Kredis::Types::Proxying
 
 
   def update(**entries)
-    multi do
-      initialize_with_default
-      hset entries.transform_values{ |val| type_to_string(val, typed) } if entries.flatten.any?
+    return ZERO_FIELDS_ADDED if entries.flatten.blank?
+
+    init_default_in_multi do
+      hset entries.transform_values{ |val| type_to_string(val, typed) }
     end
   end
 
@@ -26,10 +29,9 @@ class Kredis::Types::Hash < Kredis::Types::Proxying
   end
 
   def delete(*keys)
-    multi do
-      initialize_with_default
-      hdel keys if keys.flatten.any?
-    end
+    return ZERO_FIELDS_ADDED if keys.flatten.blank?
+
+    init_default_in_multi { hdel keys }
   end
 
   def remove

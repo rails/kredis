@@ -4,38 +4,32 @@ class Kredis::Types::List < Kredis::Types::Proxying
   attr_accessor :typed
 
   def elements
-    values = multi do
-      initialize_with_default
-      lrange(0, -1)
-    end[-1]
+    values = init_default_in_multi { lrange(0, -1) }
     strings_to_types(values || [], typed)
   end
   alias to_a elements
 
   def remove(*elements)
-    return if elements.empty?
+    return [] if elements.flatten.blank?
 
-    multi do
-      initialize_with_default
+    init_default_in_multi do
       types_to_strings(elements, typed).each { |element| lrem 0, element }
     end
   end
 
   def prepend(*elements)
-    return if elements.empty?
+    return self.elements.count if elements.flatten.blank?
 
-    multi do
-      initialize_with_default
-      lpush types_to_strings(elements, typed) if elements.flatten.any?
+    init_default_in_multi do
+      lpush types_to_strings(elements, typed)
     end
   end
 
   def append(*elements)
-    return if elements.empty?
+    return self.elements.count if elements.flatten.blank?
 
-    multi do
-      initialize_with_default
-      rpush types_to_strings(elements, typed) if elements.flatten.any?
+    init_default_in_multi do
+      rpush types_to_strings(elements, typed)
     end
   end
   alias << append

@@ -18,7 +18,15 @@ class HashTest < ActiveSupport::TestCase
   end
 
   test "update" do
-    @hash.update(key: :value)
+    update_count = @hash.update(key: :value)
+    assert_equal(1, update_count)
+
+    update_count = @hash.update(key: :value)
+    assert_equal(0, update_count)
+
+    update_count = @hash.update
+    assert_equal(0, update_count)
+
     @hash.update("key2" => "value2", "key3" => "value3")
     assert_equal({ "key" => "value", "key2" => "value2", "key3" => "value3" }, @hash.to_h)
   end
@@ -33,11 +41,16 @@ class HashTest < ActiveSupport::TestCase
     @hash.update("key2" => "value2", "key3" => "value3")
     assert_equal({ "key" => "value", "key2" => "value2", "key3" => "value3" }, @hash.to_h)
 
-    @hash.delete("key")
+    delete_count = @hash.delete("key")
+    assert_equal(1, delete_count)
     assert_equal({ "key2" => "value2", "key3" => "value3" }, @hash.to_h)
 
-    @hash.delete("bogus")
+    delete_count = @hash.delete("bogus")
+    assert_equal(0, delete_count)
     assert_equal({ "key2" => "value2", "key3" => "value3" }, @hash.to_h)
+
+    delete_count = @hash.delete
+    assert_equal(0, delete_count)
 
     @hash.delete("key2", "key3")
     assert_equal({}, @hash.to_h)
