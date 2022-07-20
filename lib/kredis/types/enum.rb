@@ -20,7 +20,7 @@ class Kredis::Types::Enum < Kredis::Types::Proxying
     multi do
       initialize_with_default
       get
-    end.last
+    end[-1]
   end
 
   def reset
