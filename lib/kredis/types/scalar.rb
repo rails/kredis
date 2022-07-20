@@ -34,9 +34,4 @@ class Kredis::Types::Scalar < Kredis::Types::Proxying
   def expire_at(datetime)
     expireat datetime.to_i
   end
-
-  private
-    def set_default(value)
-      set type_to_string(value, typed), ex: expires_in, nx: true
-    end
 end

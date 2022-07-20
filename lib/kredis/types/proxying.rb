@@ -33,4 +33,8 @@ class Kredis::Types::Proxying
       default_value = default
       set_default(default_value) if default_value.present?
     end
+
+    def set_default(value)
+      set type_to_string(value, typed), ex: expires_in, nx: true
+    end
 end
