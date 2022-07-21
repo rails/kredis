@@ -33,11 +33,11 @@ class Kredis::Types::Proxying
       if (default_value = default).blank?
         block.call
       else
-        multi_results = multi do
+        multi_results = proxy.multi do
           set_default(default_value)
           block.call
         end
-        Array(multi_results)[-1] # convert to array in case in the middle of nested multi
+        Array(multi_results)[-1]
       end
     end
 

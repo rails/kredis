@@ -1,5 +1,5 @@
 class Kredis::Types::Scalar < Kredis::Types::Proxying
-  proxying :set, :get, :exists?, :del, :expire, :expireat, :multi
+  proxying :set, :get, :exists?, :del, :expire, :expireat
 
   attr_accessor :typed, :expires_in
 
