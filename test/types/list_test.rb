@@ -41,6 +41,18 @@ class ListTest < ActiveSupport::TestCase
     assert_equal [], @list.elements
   end
 
+  test "last" do
+    @list.append(%w[ 1 2 3 ])
+    assert_equal "3", @list.last
+  end
+
+  test "last(n)" do
+    @list.append(%w[ 1 2 3 ])
+    assert_equal %w[ 2 3 ], @list.last(2)
+    assert_equal [], @list.last(0)
+    assert_raises(ArgumentError) { @list.last(-2) }
+  end
+
   test "typed as datetime" do
     @list = Kredis.list "mylist", typed: :datetime
 
