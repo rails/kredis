@@ -57,4 +57,10 @@ class ListTest < ActiveSupport::TestCase
     @list.append(%w[ 1 2 3 ])
     assert @list.exists?
   end
+
+  test "ltrim" do
+    @list.append(%w[ 1 2 3 4 ])
+    @list.ltrim(-3, -2)
+    assert_equal %w[ 2 3 ], @list.elements
+  end
 end
