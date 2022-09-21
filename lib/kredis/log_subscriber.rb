@@ -15,7 +15,7 @@ class Kredis::LogSubscriber < ActiveSupport::LogSubscriber
 
   private
     def formatted_in(color, event, type: nil)
-      color "  Kredis #{type} (#{event.duration.round(1)}ms)  #{event.payload[:message]}", color, true
+      color "  Kredis #{type} (#{event.duration.round(1)}ms)  #{event.payload[:message]}", color, bold: true
     end
 end
 
