@@ -1,5 +1,5 @@
 class Kredis::Types::Set < Kredis::Types::Proxying
-  proxying :smembers, :sadd, :srem, :multi, :del, :sismember, :scard, :spop, :exists?
+  proxying :smembers, :sadd, :srem, :multi, :del, :sismember, :scard, :spop, :exists?, :srandmember
 
   attr_accessor :typed
 
@@ -38,5 +38,13 @@ class Kredis::Types::Set < Kredis::Types::Proxying
 
   def clear
     del
+  end
+
+  def sample(count = nil)
+    if count.nil?
+      string_to_type(srandmember(count), typed)
+    else
+      strings_to_types(srandmember(count), typed)
+    end
   end
 end
