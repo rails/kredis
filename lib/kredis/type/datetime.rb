@@ -4,7 +4,7 @@ module Kredis
   module Type
     class DateTime < ActiveModel::Type::DateTime
       def serialize(value)
-        super&.iso8601(9)
+        super&.utc&.iso8601(9)
       end
 
       def cast_value(value)
