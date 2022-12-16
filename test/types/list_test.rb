@@ -44,7 +44,7 @@ class ListTest < ActiveSupport::TestCase
   test "typed as datetime" do
     @list = Kredis.list "mylist", typed: :datetime
 
-    @list.append [ 1.day.from_now.midnight, 2.days.from_now.midnight ]
+    @list.append [ 1.day.from_now.midnight.in_time_zone("Pacific Time (US & Canada)"), 2.days.from_now.midnight.in_time_zone("UTC") ]
     assert_equal [ 1.day.from_now.midnight, 2.days.from_now.midnight ], @list.elements
 
     @list.remove(2.days.from_now.midnight)
