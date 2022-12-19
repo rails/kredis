@@ -72,6 +72,8 @@ class SetTest < ActiveSupport::TestCase
 
     @set.remove(2.7)
     assert_equal [ 1.5 ], @set.members
+
+    assert_equal 1.5, @set.take
   end
 
   test "failing open" do
