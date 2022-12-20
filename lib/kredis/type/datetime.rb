@@ -8,7 +8,7 @@ module Kredis
       end
 
       def cast_value(value)
-        super&.to_datetime
+        super&.to_time
       end
     end
   end
