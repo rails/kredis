@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     kredis (1.3.0)
+      activemodel (>= 6.0.0)
       activesupport (>= 6.0.0)
       redis (>= 4.2, < 6)
 
