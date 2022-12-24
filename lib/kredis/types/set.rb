@@ -33,7 +33,7 @@ class Kredis::Types::Set < Kredis::Types::Proxying
   end
 
   def take
-    spop
+    string_to_type(spop, typed)
   end
 
   def clear
