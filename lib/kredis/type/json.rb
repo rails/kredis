@@ -8,7 +8,7 @@ module Kredis
       end
 
       def cast_value(value)
-        JSON.load(value)
+        JSON.parse(value)
       end
 
       def serialize(value)
