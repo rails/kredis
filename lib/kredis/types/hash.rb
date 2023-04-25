@@ -1,7 +1,17 @@
 require "active_support/core_ext/hash"
 
 class Kredis::Types::Hash < Kredis::Types::Proxying
-  proxying :hget, :hset, :hmget, :hdel, :hgetall, :hkeys, :hvals, :del, :exists?
+  proxying :hget,
+           :hset,
+           :hmget,
+           :hdel,
+           :hgetall,
+           :hkeys,
+           :hvals,
+           :del,
+           :exists?,
+           :hincrby,
+           :hincrbyfloat
 
   attr_accessor :typed
 
@@ -14,7 +24,9 @@ class Kredis::Types::Hash < Kredis::Types::Proxying
   end
 
   def update(**entries)
-    hset entries.transform_values{ |val| type_to_string(val, typed) } if entries.flatten.any?
+    if entries.flatten.any?
+      hset entries.transform_values { |val| type_to_string(val, typed) }
+    end
   end
 
   def values_at(*keys)
@@ -31,7 +43,9 @@ class Kredis::Types::Hash < Kredis::Types::Proxying
   alias clear remove
 
   def entries
-    (hgetall || {}).transform_values { |val| string_to_type(val, typed) }.with_indifferent_access
+    (hgetall || {})
+      .transform_values { |val| string_to_type(val, typed) }
+      .with_indifferent_access
   end
   alias to_h entries
 
@@ -41,5 +55,13 @@ class Kredis::Types::Hash < Kredis::Types::Proxying
 
   def values
     strings_to_types(hvals || [], typed)
+  end
+
+  def hincr_by(key, increment)
+    hincrby key, increment
+  end
+
+  def hincr_by_float(key, increment)
+    hincrbyfloat key, increment
   end
 end
