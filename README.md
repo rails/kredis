@@ -82,6 +82,16 @@ high_scores.update(space_invaders: 100, pong: 42)             # HSET high_scores
 [ 100, 42 ] == high_scores.values                             # HVALS high_scores
 { "space_invaders" => 100, "pong" => 42 } == high_scores.to_h # HGETALL high_scores
 
+head_count = Kredis.hash "headcount", typed: :integer
+head_count.hincrby("guests", 2)                           # HINCRBY "headcount" "guests", "2"
+[ 2 ] == head_count.values                                # HVALS head_count
+{ "guests" => 2 } == head_count.to_h                      # HGETALL head_count
+
+percentages = Kredis.hash "percentages", typed: :integer
+percentages.hincrbyfloat("progress", 50.5)                # HINCRBY "headcount" "progress", "50.5"
+[ 50.5 ] == percentages.values                            # HVALS percentages
+{ "progress" => 50.5 } == percentages.to_h                # HGETALL percentages
+
 head_count = Kredis.counter "headcount"
 0 == head_count.value              # => GET "headcount"
 head_count.increment               # => SET headcount 0 NX + INCRBY headcount 1

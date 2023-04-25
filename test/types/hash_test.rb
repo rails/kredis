@@ -90,4 +90,20 @@ class HashTest < ActiveSupport::TestCase
     @hash[:key]  = :value
     assert @hash.exists?
   end
+
+  test "hincrby" do
+    @hash = Kredis.hash "myhash", typed: :integer
+    @hash.hincrby("key", 2)
+    assert_equal 2, @hash[:key]
+    @hash.hincrby("key", -2)
+    assert_equal 0, @hash[:key]
+  end
+
+  test "hincrbyfloat" do
+    @hash = Kredis.hash "myhash", typed: :integer
+    @hash.hincrbyfloat("key", 2.5)
+    assert_equal 2, @hash[:key]
+    @hash.hincrbyfloat("key", -2.5)
+    assert_equal 0, @hash[:key]
+  end  
 end
