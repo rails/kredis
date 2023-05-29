@@ -53,7 +53,7 @@ class ScalarTest < ActiveSupport::TestCase
   test "datetime casting Dates" do
     datetime = Kredis.datetime "myscalar"
     datetime.value = Date.current
-    assert_equal Date.current.to_datetime, datetime.value
+    assert_equal Date.current.to_time, datetime.value
   end
 
   test "json" do
