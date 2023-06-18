@@ -26,16 +26,6 @@ class Kredis::Types::List < Kredis::Types::Proxying
   end
 
   def last(n = nil)
-    if n
-      if n == 0
-        []
-      elsif n < 0
-        raise ArgumentError, "negative array size"
-      else
-        lrange(-n, -1)
-      end
-    else
-      lrange(-1, -1).first
-    end
+    n ? lrange(-n, -1) : lrange(-1, -1).first
   end
 end
