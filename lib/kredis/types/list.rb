@@ -24,4 +24,8 @@ class Kredis::Types::List < Kredis::Types::Proxying
   def clear
     del
   end
+
+  def last(n = nil)
+    n ? lrange(-n, -1) : lrange(-1, -1).first
+  end
 end
