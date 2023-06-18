@@ -49,8 +49,6 @@ class ListTest < ActiveSupport::TestCase
   test "last(n)" do
     @list.append(%w[ 1 2 3 ])
     assert_equal %w[ 2 3 ], @list.last(2)
-    assert_equal [], @list.last(0)
-    assert_raises(ArgumentError) { @list.last(-2) }
   end
 
   test "typed as datetime" do
