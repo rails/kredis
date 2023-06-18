@@ -22,7 +22,7 @@ class Kredis::Types::UniqueList < Kredis::Types::List
     multi do
       remove elements
       super
-      ltrim -limit, -1 if limit
+      ltrim(-limit, -1) if limit
     end
   end
   alias << append
