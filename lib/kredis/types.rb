@@ -71,6 +71,10 @@ module Kredis::Types
     type_from(Set, config, key, after_change: after_change, typed: typed)
   end
 
+  def ordered_set(key, typed: :string, limit: nil, config: :shared, after_change: nil)
+    type_from(OrderedSet, config, key, after_change: after_change, typed: typed, limit: limit)
+  end
+
   def slot(key, config: :shared, after_change: nil)
     type_from(Slots, config, key, after_change: after_change, available: 1)
   end
@@ -99,4 +103,5 @@ require "kredis/types/hash"
 require "kredis/types/list"
 require "kredis/types/unique_list"
 require "kredis/types/set"
+require "kredis/types/ordered_set"
 require "kredis/types/slots"

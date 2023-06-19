@@ -8,6 +8,7 @@ class Kredis::Types::Proxying
   end
 
   def initialize(redis, key, **options)
+    @redis = redis
     @key = key
     @proxy = Kredis::Types::Proxy.new(redis, key)
     options.each { |key, value| send("#{key}=", value) }
@@ -15,6 +16,12 @@ class Kredis::Types::Proxying
 
   def failsafe(returning: nil, &block)
     proxy.suppress_failsafe_with(returning: returning, &block)
+  end
+
+  def unproxied_redis
+    # Generally, this should not be used. It's only here for the rare case where we need to
+    # call Redis commands that don't reference a key and don't want to be pipelined.
+    @redis
   end
 
   private
