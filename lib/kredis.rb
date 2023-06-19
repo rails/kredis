@@ -1,5 +1,6 @@
 require "active_support"
 require "active_support/core_ext/module/attribute_accessors"
+require "active_support/core_ext/module/attribute_accessors_per_thread"
 
 require "kredis/version"
 
