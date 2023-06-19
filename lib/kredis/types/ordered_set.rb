@@ -39,9 +39,9 @@ class Kredis::Types::OrderedSet < Kredis::Types::Proxying
         [ score , element ]
       end
 
-      multi do |pipeline|
-        pipeline.zadd(elements_with_scores)
-        trim(from_beginning: prepending, pipeline: pipeline)
+      multi do
+        zadd(elements_with_scores)
+        trim(from_beginning: prepending)
       end
     end
 
@@ -52,20 +52,20 @@ class Kredis::Types::OrderedSet < Kredis::Types::Proxying
     end
 
     def process_start_time
-      @process_start_time ||= redis.time.join(".").to_f - process_uptime
+      @process_start_time ||= unproxied_redis.time.join(".").to_f - process_uptime
     end
 
     def process_uptime
       Process.clock_gettime(Process::CLOCK_MONOTONIC)
     end
 
-    def trim(from_beginning:, pipeline:)
+    def trim(from_beginning:)
       return unless limit
 
       if from_beginning
-        pipeline.zremrangebyrank(limit, -1)
+        zremrangebyrank(limit, -1)
       else
-        pipeline.zremrangebyrank(0, -(limit + 1))
+        zremrangebyrank(0, -(limit + 1))
       end
     end
 end
