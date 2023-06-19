@@ -4,7 +4,7 @@ class Kredis::Types::Proxying
   attr_accessor :proxy, :key
 
   def self.proxying(*commands)
-    delegate *commands, to: :proxy
+    delegate(*commands, to: :proxy)
   end
 
   def initialize(redis, key, **options)
