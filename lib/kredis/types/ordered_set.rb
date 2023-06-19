@@ -34,7 +34,13 @@ class Kredis::Types::OrderedSet < Kredis::Types::Proxying
       return if elements.empty?
 
       elements_with_scores = types_to_strings(elements, typed).map.with_index do |element, index|
-        score = generate_base_score(negative: prepending) + (index / 100000)
+        incremental_score = index * 0.000001
+
+        score = if prepending
+          -base_score - incremental_score
+        else
+          base_score + incremental_score
+        end
 
         [ score , element ]
       end
@@ -45,10 +51,8 @@ class Kredis::Types::OrderedSet < Kredis::Types::Proxying
       end
     end
 
-    def generate_base_score(negative:)
-      current_time = process_start_time + process_uptime
-
-      negative ? -current_time : current_time
+    def base_score
+      process_start_time + process_uptime
     end
 
     def process_start_time
