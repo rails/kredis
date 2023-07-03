@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+
+require "irb"
+require "bundler/inline"
+
+gemfile do
+  source "https://rubygems.org"
+  gem "kredis", path: "../"
+end
+
+
+Kredis.configurator = Class.new { def config_for(name) { db: "2" } end }.new
+ActiveSupport::LogSubscriber.logger = ActiveSupport::Logger.new(STDOUT)
+
+IRB.start
