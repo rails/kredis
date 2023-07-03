@@ -11,6 +11,7 @@ class Person
   kredis_list :names_with_custom_key_via_lambda, key: ->(p) { "person:#{p.id}:names_customized" }
   kredis_list :names_with_custom_key_via_method, key: :generate_key
   kredis_unique_list :skills, limit: 2
+  kredis_ordered_set :reading_list, limit: 2
   kredis_flag :special
   kredis_flag :temporary_special, expires_in: 1.second
   kredis_string :address
@@ -88,6 +89,11 @@ class AttributesTest < ActiveSupport::TestCase
     @person.skills.prepend("racing")
     @person.skills.prepend("racing")
     assert_equal %w[ racing photography ], @person.skills.elements
+  end
+
+  test "ordered set" do
+    @person.reading_list.prepend(%w[ rework shapeup remote ])
+    assert_equal %w[ remote shapeup ], @person.reading_list.elements
   end
 
   test "flag" do
