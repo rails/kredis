@@ -2,7 +2,7 @@ require "bundler/setup"
 require "active_support/test_case"
 require "active_support/testing/autorun"
 require "minitest/mock"
-require "byebug"
+require "debug"
 
 require "kredis"
 
