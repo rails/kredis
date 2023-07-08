@@ -259,6 +259,29 @@ config.kredis.connector = ->(config) { SomeRedisProxy.new(config) }
 
 By default Kredis will use `Redis.new(config)`.
 
+## Development
+
+A development console is available by running `bin/console`.
+
+From there, you can experiment with Kredis. e.g.
+
+```rb
+>> str = Kredis.string "mystring"
+  Kredis  (0.1ms)  Connected to shared
+=>
+#<Kredis::Types::Scalar:0x0000000134c7d938
+...
+>> str.value = "hello, world"
+  Kredis Proxy (2.4ms)  SET mystring ["hello, world"]
+=> "hello, world"
+>> str.value
+```
+
+Run tests with `bin/test`.
+
+[`debug`](https://github.com/ruby/debug) can be used in the development console and in the test suite by inserting a
+breakpoint, e.g. `debugger`.
+
 ## License
 
 Kredis is released under the [MIT License](https://opensource.org/licenses/MIT).
