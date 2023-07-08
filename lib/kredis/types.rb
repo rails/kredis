@@ -1,8 +1,8 @@
 module Kredis::Types
   autoload :CallbacksProxy, "kredis/types/callbacks_proxy"
 
-  def proxy(key, default: nil, config: :shared, after_change: nil)
-    type_from(Proxy, config, key, after_change: after_change, default: default)
+  def proxy(key, config: :shared, after_change: nil)
+    type_from(Proxy, config, key, after_change: after_change)
   end
 
 
@@ -71,8 +71,8 @@ module Kredis::Types
     type_from(Set, config, key, after_change: after_change, default: default, typed: typed)
   end
 
-  def ordered_set(key, typed: :string, limit: nil, config: :shared, after_change: nil)
-    type_from(OrderedSet, config, key, after_change: after_change, typed: typed, limit: limit)
+  def ordered_set(key, default: nil, typed: :string, limit: nil, config: :shared, after_change: nil)
+    type_from(OrderedSet, config, key, after_change: after_change, default: default, typed: typed, limit: limit)
   end
 
   def slot(key, config: :shared, after_change: nil)

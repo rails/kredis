@@ -8,14 +8,14 @@ class EnumTest < ActiveSupport::TestCase
   end
 
   test "default via proc" do
-    @enum = Kredis.enum "myenum", values: %w[ one two three ], default: ->() { "two" }
+    @enum = Kredis.enum "myenum2", values: %w[ one two three ], default: ->() { "two" }
     assert_equal "two", @enum.value
   end
 
   test "does not set default for invalid option" do
-    enum = Kredis.enum "myenum1", values: [ 1, 2, 3 ], default: ->() { nil }
+    enum = Kredis.enum "myenum3", values: [ 1, 2, 3 ], default: ->() { nil }
     assert_nil enum.value
-    enum = Kredis.enum "myenum2", values: [ 1, 2, 3 ], default: ->() { 4 }
+    enum = Kredis.enum "myenum4", values: [ 1, 2, 3 ], default: ->() { 4 }
     assert_nil enum.value
   end
 
@@ -49,9 +49,6 @@ class EnumTest < ActiveSupport::TestCase
   end
 
   test "exists?" do
-    assert_not @enum.exists?
-
-    @enum.value = "one"
     assert @enum.exists?
   end
 end

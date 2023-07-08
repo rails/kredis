@@ -95,9 +95,10 @@ class CounterTest < ActiveSupport::TestCase
     @counter.increment
     assert_equal 12, @counter.value
 
-    sleep 0.6.seconds
+    sleep 0.5.seconds
 
-    assert_equal 10, @counter.value
+    # Defaults are only set on initialization
+    assert_equal 0, @counter.value
   end
 
   test "default via proc" do

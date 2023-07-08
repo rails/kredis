@@ -1,37 +1,30 @@
 require "active_support/core_ext/hash"
 
 class Kredis::Types::Hash < Kredis::Types::Proxying
-  ZERO_FIELDS_ADDED = 0
+  prepend Kredis::DefaultValues
 
-  proxying :hset, :hdel, :hgetall, :del, :exists?, :multi, :callnx
+  proxying :hget, :hset, :hmget, :hdel, :hgetall, :hkeys, :hvals, :del, :exists?
 
   attr_accessor :typed
 
   def [](key)
-    string_to_type(entries[key], typed)
+    string_to_type(hget(key), typed)
   end
 
   def []=(key, value)
     update key => value
   end
 
-
   def update(**entries)
-    return ZERO_FIELDS_ADDED if entries.flatten.blank?
-
-    init_default_in_multi do
-      hset entries.transform_values{ |val| type_to_string(val, typed) }
-    end
+    hset entries.transform_values{ |val| type_to_string(val, typed) } if entries.flatten.any?
   end
 
   def values_at(*keys)
-    strings_to_types(entries.values_at(*keys) || [], typed)
+    strings_to_types(hmget(keys) || [], typed)
   end
 
   def delete(*keys)
-    return ZERO_FIELDS_ADDED if keys.flatten.blank?
-
-    init_default_in_multi { hdel keys }
+    hdel keys if keys.flatten.any?
   end
 
   def remove
@@ -40,20 +33,20 @@ class Kredis::Types::Hash < Kredis::Types::Proxying
   alias clear remove
 
   def entries
-    (hgetall.presence || default || {}).transform_values { |val| string_to_type(val, typed) }.with_indifferent_access
+    (hgetall || {}).transform_values { |val| string_to_type(val, typed) }.with_indifferent_access
   end
   alias to_h entries
 
   def keys
-    entries.keys || []
+    hkeys || []
   end
 
   def values
-    strings_to_types(entries.values || [], typed)
+    strings_to_types(hvals || [], typed)
   end
 
   private
-    def set_default(entries)
-      callnx(:hset, entries.transform_values{ |val| type_to_string(val, typed) })
+    def set_default
+      update **default
     end
 end

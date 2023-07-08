@@ -2,8 +2,8 @@ module Kredis::Attributes
   extend ActiveSupport::Concern
 
   class_methods do
-    def kredis_proxy(name, key: nil, default: nil, config: :shared, after_change: nil)
-      kredis_connection_with __method__, name, key, default: default, config: config, after_change: after_change
+    def kredis_proxy(name, key: nil, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, config: config, after_change: after_change
     end
 
     def kredis_string(name, key: nil, default: nil, config: :shared, after_change: nil, expires_in: nil)

@@ -1,4 +1,6 @@
 class Kredis::Types::Flag < Kredis::Types::Proxying
+  prepend Kredis::DefaultValues
+
   proxying :set, :exists?, :del
 
   attr_accessor :expires_in
@@ -14,4 +16,9 @@ class Kredis::Types::Flag < Kredis::Types::Proxying
   def remove
     del
   end
+
+  private
+    def set_default
+      mark if default
+    end
 end

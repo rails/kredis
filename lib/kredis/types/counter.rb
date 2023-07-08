@@ -1,18 +1,26 @@
 class Kredis::Types::Counter < Kredis::Types::Proxying
+  prepend Kredis::DefaultValues
+
   proxying :multi, :set, :incrby, :decrby, :get, :del, :exists?
 
   attr_accessor :expires_in
 
   def increment(by: 1)
-    init_default_in_multi { incrby by }
+    multi do
+      set 0, ex: expires_in, nx: true
+      incrby by
+    end[-1]
   end
 
   def decrement(by: 1)
-    init_default_in_multi { decrby by }
+    multi do
+      set 0, ex: expires_in, nx: true
+      decrby by
+    end[-1]
   end
 
   def value
-    (get || default).to_i
+    get.to_i
   end
 
   def reset
@@ -20,11 +28,7 @@ class Kredis::Types::Counter < Kredis::Types::Proxying
   end
 
   private
-    def set_default(value)
-      set value.to_i, ex: expires_in, nx: true
-    end
-
-    def default
-      super.to_i
+    def set_default
+      increment by: default
     end
 end

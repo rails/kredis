@@ -99,7 +99,7 @@ class ScalarTest < ActiveSupport::TestCase
 
     assert_equal "8", integer.value.to_s
     integer.clear
-    
+
     json = Kredis.json "myscalar", default: { one: 1, string: "hello" }
     assert_equal({ "one" => 1, "string" => "hello" }, json.value)
   end
