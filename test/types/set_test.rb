@@ -85,6 +85,8 @@ class SetTest < ActiveSupport::TestCase
 
     @set.remove(2.7)
     assert_equal [ 1.5 ], @set.members
+
+    assert_equal 1.5, @set.take
   end
 
   test "failing open" do
@@ -101,6 +103,15 @@ class SetTest < ActiveSupport::TestCase
     @set.add(%w[ 1 2 3 ])
     assert @set.exists?
   end
+
+  test "srandmember" do
+    @set = Kredis.set "mylist", typed: :float
+    @set.add 1.5, 2.7
+
+    assert @set.sample.in?([ 1.5, 2.7 ])
+    assert_equal [ 1.5, 2.7 ], @set.sample(2).sort
+  end
+
 
   test "default" do
     @set = Kredis.set "mylist", default: %w[ 1 2 3 ]

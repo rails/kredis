@@ -54,6 +54,10 @@ module Kredis::Attributes
       kredis_connection_with __method__, name, key, default: default, typed: typed, config: config, after_change: after_change
     end
 
+    def kredis_ordered_set(name, limit: nil, default: nil, key: nil, typed: :string, config: :shared, after_change: nil)
+      kredis_connection_with __method__, name, key, default: default, limit: limit, typed: typed, config: config, after_change: after_change
+    end
+
     def kredis_slot(name, key: nil, config: :shared, after_change: nil)
       kredis_connection_with __method__, name, key, config: config, after_change: after_change
     end

@@ -13,6 +13,7 @@ class Person
   kredis_list :names_with_default_via_lambda, default: ->(p) { ["Random", p.name] }
   kredis_unique_list :skills, limit: 2
   kredis_unique_list :skills_with_default_via_lambda, default: ->(p) { ["Random", "Random", p.name] }
+  kredis_ordered_set :reading_list, limit: 2
   kredis_flag :special
   kredis_flag :temporary_special, expires_in: 1.second
   kredis_string :address
@@ -146,6 +147,11 @@ class AttributesTest < ActiveSupport::TestCase
   test "unique list with default proc value" do
     assert_equal %w[ Random Jason ], @person.skills_with_default_via_lambda.elements
     assert_equal %w[ Random Jason ], Kredis.redis.lrange("people:8:skills_with_default_via_lambda", 0, -1)
+  end
+
+  test "ordered set" do
+    @person.reading_list.prepend(%w[ rework shapeup remote ])
+    assert_equal %w[ remote shapeup ], @person.reading_list.elements
   end
 
   test "flag" do

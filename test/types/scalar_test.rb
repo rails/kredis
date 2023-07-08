@@ -53,13 +53,16 @@ class ScalarTest < ActiveSupport::TestCase
   test "datetime casting Dates" do
     datetime = Kredis.datetime "myscalar"
     datetime.value = Date.current
-    assert_equal Date.current.to_datetime, datetime.value
+    assert_equal Date.current.to_time, datetime.value
   end
 
   test "json" do
     json = Kredis.json "myscalar"
     json.value = { "one" => 1, "string" => "hello" }
     assert_equal({ "one" => 1, "string" => "hello" }, json.value)
+
+    json.value = {"json_class"=>"String", "raw"=>[97, 98, 99]}
+    assert_equal({"json_class"=>"String", "raw"=>[97, 98, 99]}, json.value)
   end
 
   test "invalid type" do

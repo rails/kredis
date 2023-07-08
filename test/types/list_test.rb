@@ -55,10 +55,20 @@ class ListTest < ActiveSupport::TestCase
     assert_equal [], @list.elements
   end
 
+  test "last" do
+    @list.append(%w[ 1 2 3 ])
+    assert_equal "3", @list.last
+  end
+
+  test "last(n)" do
+    @list.append(%w[ 1 2 3 ])
+    assert_equal %w[ 2 3 ], @list.last(2)
+  end
+
   test "typed as datetime" do
     @list = Kredis.list "mylist", typed: :datetime
 
-    @list.append [ 1.day.from_now.midnight, 2.days.from_now.midnight ]
+    @list.append [ 1.day.from_now.midnight.in_time_zone("Pacific Time (US & Canada)"), 2.days.from_now.midnight.in_time_zone("UTC") ]
     assert_equal [ 1.day.from_now.midnight, 2.days.from_now.midnight ], @list.elements
 
     @list.remove(2.days.from_now.midnight)
@@ -71,6 +81,13 @@ class ListTest < ActiveSupport::TestCase
     @list.append(%w[ 1 2 3 ])
     assert @list.exists?
   end
+
+  test "ltrim" do
+    @list.append(%w[ 1 2 3 4 ])
+    @list.ltrim(-3, -2)
+    assert_equal %w[ 2 3 ], @list.elements
+  end
+
 
   test "default" do
     @list = Kredis.list "mylist", default: %w[ 1 2 3 ]
