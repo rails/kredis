@@ -1,4 +1,5 @@
 require "test_helper"
+require "active_support/core_ext/integer"
 
 class FlagTest < ActiveSupport::TestCase
   setup { @flag = Kredis.flag "myflag" }
