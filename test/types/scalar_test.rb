@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "test_helper"
 require "active_support/core_ext/integer"
 
@@ -32,9 +34,9 @@ class ScalarTest < ActiveSupport::TestCase
     assert_equal true, boolean.value
     boolean.value = false
     assert_equal false, boolean.value
-    boolean.value = 't'
+    boolean.value = "t"
     assert_equal true, boolean.value
-    boolean.value = 'false'
+    boolean.value = "false"
     assert_equal false, boolean.value
   end
 
@@ -61,8 +63,8 @@ class ScalarTest < ActiveSupport::TestCase
     json.value = { "one" => 1, "string" => "hello" }
     assert_equal({ "one" => 1, "string" => "hello" }, json.value)
 
-    json.value = {"json_class"=>"String", "raw"=>[97, 98, 99]}
-    assert_equal({"json_class"=>"String", "raw"=>[97, 98, 99]}, json.value)
+    json.value = { "json_class" => "String", "raw" => [97, 98, 99] }
+    assert_equal({ "json_class" => "String", "raw" => [97, 98, 99] }, json.value)
   end
 
   test "invalid type" do
@@ -144,7 +146,7 @@ class ScalarTest < ActiveSupport::TestCase
 
   test "all scalar types can be configured with expires_in" do
     duration = 1.second
-    scalar = Kredis.scalar("ephemeral", expires_in: duration)
+    Kredis.scalar("ephemeral", expires_in: duration)
 
     scalar = Kredis.string("ephemeral", expires_in: duration)
     assert_equal duration, scalar.expires_in

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Kredis::Types::Proxy::Failsafe
   def initialize(*)
     super

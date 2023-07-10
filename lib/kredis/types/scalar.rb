@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Kredis::Types::Scalar < Kredis::Types::Proxying
   proxying :set, :get, :exists?, :del, :expire, :expireat
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Kredis::Types::Cycle < Kredis::Types::Counter
   attr_accessor :values
 

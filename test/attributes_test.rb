@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "test_helper"
 require "active_support/core_ext/integer"
 
@@ -249,7 +251,7 @@ class AttributesTest < ActiveSupport::TestCase
     assert @person.onboarded.value
 
     @person.onboarded.value = false
-    refute @person.onboarded.value
+    assert_not @person.onboarded.value
   end
 
   test "missing id to constrain key" do

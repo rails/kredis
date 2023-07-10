@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Kredis::Types
   autoload :CallbacksProxy, "kredis/types/callbacks_proxy"
 
