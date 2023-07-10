@@ -5,9 +5,13 @@ require "bundler/inline"
 
 gemfile do
   source "https://rubygems.org"
+
+  gem "debug", ">= 1.0.0"
+
   gem "kredis", path: "../"
 end
 
+require "debug"
 
 Kredis.configurator = Class.new { def config_for(name) { db: "2" } end }.new
 ActiveSupport::LogSubscriber.logger = ActiveSupport::Logger.new(STDOUT)
