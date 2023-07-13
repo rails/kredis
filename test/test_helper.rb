@@ -1,6 +1,7 @@
 require "bundler/setup"
 require "active_support/test_case"
 require "active_support/testing/autorun"
+require "rails/test_unit/line_filtering"
 require "minitest/mock"
 require "debug"
 
@@ -11,6 +12,8 @@ Kredis.configurator = Class.new { def config_for(name) { db: "1" } end }.new
 ActiveSupport::LogSubscriber.logger = ActiveSupport::Logger.new(STDOUT) if ENV["VERBOSE"]
 
 class ActiveSupport::TestCase
+  extend Rails::LineFiltering
+
   teardown { Kredis.clear_all }
 
   class RedisUnavailableProxy
