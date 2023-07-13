@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "test_helper"
 require "active_support/core_ext/integer"
 
@@ -87,7 +89,7 @@ class HashTest < ActiveSupport::TestCase
   test "exists?" do
     assert_not @hash.exists?
 
-    @hash[:key]  = :value
+    @hash[:key] = :value
     assert @hash.exists?
   end
 end

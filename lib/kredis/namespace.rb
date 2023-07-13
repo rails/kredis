@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Kredis::Namespace
   def namespace=(namespace)
     Thread.current[:kredis_namespace] = namespace

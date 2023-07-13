@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Kredis::Types::Proxy
   require_relative "proxy/failsafe"
   include Failsafe

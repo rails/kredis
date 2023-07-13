@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Kredis::Railtie < ::Rails::Railtie
   config.kredis = ActiveSupport::OrderedOptions.new
 

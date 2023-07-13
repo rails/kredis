@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Kredis::Attributes
   extend ActiveSupport::Concern
 
@@ -106,7 +108,7 @@ module Kredis::Attributes
     end
 
     def kredis_key_for_attribute(name)
-      "#{self.class.name.tableize.gsub("/", ":")}:#{extract_kredis_id}:#{name}"
+      "#{self.class.name.tableize.tr("/", ":")}:#{extract_kredis_id}:#{name}"
     end
 
     def extract_kredis_id

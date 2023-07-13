@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Kredis::Types::Counter < Kredis::Types::Proxying
   proxying :multi, :set, :incrby, :decrby, :get, :del, :exists?
 

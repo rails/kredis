@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Kredis::Types::CallbacksProxy
   attr_reader :type
   delegate :to_s, to: :type

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Kredis::Types::Flag < Kredis::Types::Proxying
   proxying :set, :exists?, :del
 

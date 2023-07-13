@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Kredis::Types::List < Kredis::Types::Proxying
   proxying :lrange, :lrem, :lpush, :ltrim, :rpush, :exists?, :del
 

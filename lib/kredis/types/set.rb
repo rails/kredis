@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Kredis::Types::Set < Kredis::Types::Proxying
   proxying :smembers, :sadd, :srem, :multi, :del, :sismember, :scard, :spop, :exists?, :srandmember
 

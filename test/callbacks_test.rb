@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "test_helper"
 
 class CallbacksTest < ActiveSupport::TestCase
@@ -30,7 +32,7 @@ class CallbacksTest < ActiveSupport::TestCase
     attention = Kredis.slot "attention", after_change: ->(slot) { @callback_check = slot.available? }
     attention.reserve
 
-    refute @callback_check
+    assert_not @callback_check
   end
 
   test "enum with after_change proc callback" do
