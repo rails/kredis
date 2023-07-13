@@ -49,6 +49,6 @@ class Kredis::Types::Hash < Kredis::Types::Proxying
 
   private
     def set_default
-      update **default
+      update(**default)
     end
 end

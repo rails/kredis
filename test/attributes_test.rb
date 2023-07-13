@@ -27,13 +27,13 @@ class Person
   kredis_datetime :last_seen_at
   kredis_datetime :last_seen_at_with_default_via_lambda, default: ->(p) { p.last_login }
   kredis_float :height
-  kredis_float :height_with_default_via_lambda, default: ->(p) { JSON.parse(p.anthropometry)['height'] }
+  kredis_float :height_with_default_via_lambda, default: ->(p) { JSON.parse(p.anthropometry)["height"] }
   kredis_enum :morning, values: %w[ bright blue black ], default: "bright"
-  kredis_enum :eye_color_with_default_via_lambda, values: %w[ hazel blue brown ], default: ->(p) { { ha: 'hazel', bl: 'blue', br: 'brown' }[p.eye_color.to_sym] }
+  kredis_enum :eye_color_with_default_via_lambda, values: %w[ hazel blue brown ], default: ->(p) { { ha: "hazel", bl: "blue", br: "brown" }[p.eye_color.to_sym] }
   kredis_slot :attention
   kredis_slots :meetings, available: 3
   kredis_set :vacations
-  kredis_set :vacations_with_default_via_lambda, default: ->(p) { JSON.parse(p.vacation_destinations).map{ |location| location['city'] } }
+  kredis_set :vacations_with_default_via_lambda, default: ->(p) { JSON.parse(p.vacation_destinations).map { |location| location["city"] } }
   kredis_json :settings
   kredis_json :settings_with_default_via_lambda, default: ->(p) { JSON.parse(p.anthropometry).merge(eye_color: p.eye_color) }
   kredis_counter :amount
@@ -66,7 +66,7 @@ class Person
   end
 
   def eye_color
-    'ha'
+    "ha"
   end
 
   def scores
@@ -83,8 +83,8 @@ class Person
 
   def vacation_destinations
     [
-      { city: 'Paris', region: 'Île-de-France', country: 'FR' },
-      { city: 'Paris', region: 'Texas', country: 'US' }
+      { city: "Paris", region: "Île-de-France", country: "FR" },
+      { city: "Paris", region: "Texas", country: "US" }
     ].to_json
   end
 
@@ -321,7 +321,7 @@ class AttributesTest < ActiveSupport::TestCase
   end
 
   test "json with default proc value" do
-    expect = {"height"=>73.2, "weight"=>182.4, "eye_color"=>"ha"}
+    expect = { "height" => 73.2, "weight" => 182.4, "eye_color" => "ha" }
     assert_equal expect, @person.settings_with_default_via_lambda.value
     assert_equal expect.to_json, Kredis.redis.get("people:8:settings_with_default_via_lambda")
   end
