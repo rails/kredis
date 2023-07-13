@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Kredis::Types::Slots < Kredis::Types::Proxying
   class NotAvailable < StandardError; end
 

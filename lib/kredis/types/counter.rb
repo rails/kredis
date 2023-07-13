@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Kredis::Types::Counter < Kredis::Types::Proxying
   prepend Kredis::DefaultValues
 

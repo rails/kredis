@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 yaml_path = Rails.root.join("config/redis/shared.yml")
 unless yaml_path.exist?
   say "Adding `config/redis/shared.yml`"

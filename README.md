@@ -21,11 +21,11 @@ integer.value = 5  # => SET myinteger "5"
 5 == integer.value # => GET myinteger
 
 decimal = Kredis.decimal "mydecimal" # accuracy!
-decimal.value = "%.47f" % (1.0/10) # => SET mydecimal "0.10000000000000000555111512312578270211815834045"
+decimal.value = "%.47f" % (1.0 / 10) # => SET mydecimal "0.10000000000000000555111512312578270211815834045"
 BigDecimal("0.10000000000000000555111512312578270211815834045e0") == decimal.value # => GET mydecimal
 
 float = Kredis.float "myfloat" # speed!
-float.value = 1.0/10 # => SET myfloat "0.1"
+float.value = 1.0 / 10 # => SET myfloat "0.1"
 0.1 == float.value # => GET myfloat
 
 boolean = Kredis.boolean "myboolean"
@@ -228,14 +228,14 @@ If you need to connect to Redis with SSL, the recommended approach is to set you
 
 ```ruby
 Kredis::Connections.connections[:shared] = Redis.new(
-  url: ENV['REDIS_URL'],
+  url: ENV["REDIS_URL"],
   ssl_params: {
     cert_store: OpenSSL::X509::Store.new.tap { |store|
-      store.add_file(Rails.root.join('config', 'ca_cert.pem').to_s)
+      store.add_file(Rails.root.join("config", "ca_cert.pem").to_s)
     },
 
     cert: OpenSSL::X509::Certificate.new(File.read(
-      Rails.root.join('config', 'client.crt')
+      Rails.root.join("config", "client.crt")
     )),
 
     key: OpenSSL::PKey::RSA.new(
@@ -258,6 +258,29 @@ config.kredis.connector = ->(config) { SomeRedisProxy.new(config) }
 ```
 
 By default Kredis will use `Redis.new(config)`.
+
+## Development
+
+A development console is available by running `bin/console`.
+
+From there, you can experiment with Kredis. e.g.
+
+```rb
+>> str = Kredis.string "mystring"
+  Kredis  (0.1ms)  Connected to shared
+=>
+#<Kredis::Types::Scalar:0x0000000134c7d938
+...
+>> str.value = "hello, world"
+  Kredis Proxy (2.4ms)  SET mystring ["hello, world"]
+=> "hello, world"
+>> str.value
+```
+
+Run tests with `bin/test`.
+
+[`debug`](https://github.com/ruby/debug) can be used in the development console and in the test suite by inserting a
+breakpoint, e.g. `debugger`.
 
 ## License
 

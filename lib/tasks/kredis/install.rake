@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :kredis do
   desc "Install kredis"
   task :install do

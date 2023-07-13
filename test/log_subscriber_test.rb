@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "test_helper"
 require "active_support/log_subscriber/test_helper"
 

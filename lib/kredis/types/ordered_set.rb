@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Kredis::Types::OrderedSet < Kredis::Types::Proxying
   prepend Kredis::DefaultValues
 
@@ -44,7 +46,7 @@ class Kredis::Types::OrderedSet < Kredis::Types::Proxying
           base_score + incremental_score
         end
 
-        [ score , element ]
+        [ score, element ]
       end
 
       multi do

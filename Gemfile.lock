@@ -68,16 +68,24 @@ GEM
       minitest (>= 5.1)
       tzinfo (~> 2.0)
       zeitwerk (~> 2.3)
+    ast (2.4.2)
     builder (3.2.4)
-    byebug (11.1.3)
     concurrent-ruby (1.1.8)
     connection_pool (2.4.1)
     crass (1.0.6)
+    debug (1.8.0)
+      irb (>= 1.5.0)
+      reline (>= 0.3.1)
     erubi (1.10.0)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
+    io-console (0.6.0)
+    irb (1.7.1)
+      reline (>= 0.3.0)
+    json (2.6.3)
+    language_server-protocol (3.17.0.3)
     loofah (2.9.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -96,6 +104,10 @@ GEM
       racc (~> 1.4)
     nokogiri (1.15.2-x86_64-darwin)
       racc (~> 1.4)
+    parallel (1.23.0)
+    parser (3.2.2.3)
+      ast (~> 2.4.1)
+      racc
     racc (1.7.1)
     rack (2.2.3)
     rack-test (1.1.0)
@@ -126,11 +138,43 @@ GEM
       method_source
       rake (>= 0.8.7)
       thor (~> 1.0)
+    rainbow (3.1.1)
     rake (13.0.3)
     redis (5.0.6)
       redis-client (>= 0.9.0)
     redis-client (0.14.1)
       connection_pool
+    regexp_parser (2.8.1)
+    reline (0.3.6)
+      io-console (~> 0.5)
+    rexml (3.2.5)
+    rubocop (1.54.1)
+      json (~> 2.3)
+      language_server-protocol (>= 3.17.0)
+      parallel (~> 1.10)
+      parser (>= 3.2.2.3)
+      rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8, < 3.0)
+      rexml (>= 3.2.5, < 4.0)
+      rubocop-ast (>= 1.28.0, < 2.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 2.4.0, < 3.0)
+    rubocop-ast (1.29.0)
+      parser (>= 3.2.1.0)
+    rubocop-md (1.2.0)
+      rubocop (>= 1.0)
+    rubocop-minitest (0.31.0)
+      rubocop (>= 1.39, < 2.0)
+    rubocop-packaging (0.5.2)
+      rubocop (>= 1.33, < 2.0)
+    rubocop-performance (1.18.0)
+      rubocop (>= 1.7.0, < 2.0)
+      rubocop-ast (>= 0.4.0)
+    rubocop-rails (2.20.2)
+      activesupport (>= 4.2.0)
+      rack (>= 1.1)
+      rubocop (>= 1.33.0, < 2.0)
+    ruby-progressbar (1.13.0)
     sprockets (4.0.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
@@ -141,6 +185,7 @@ GEM
     thor (1.1.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
+    unicode-display_width (2.4.2)
     websocket-driver (0.7.3)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -152,10 +197,16 @@ PLATFORMS
   x86_64-darwin
 
 DEPENDENCIES
-  byebug
+  debug (>= 1.0.0)
   kredis!
   rails (>= 6.0.0)
   rake
+  rubocop
+  rubocop-md
+  rubocop-minitest
+  rubocop-packaging
+  rubocop-performance
+  rubocop-rails
 
 BUNDLED WITH
    2.3.12

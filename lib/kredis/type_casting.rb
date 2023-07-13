@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 require "json"
 require "active_model/type"
-require "kredis/type/json"
+require "kredis/type/boolean"
 require "kredis/type/datetime"
+require "kredis/type/json"
 
 module Kredis::TypeCasting
   class InvalidType < StandardError; end
@@ -11,7 +14,7 @@ module Kredis::TypeCasting
     integer: ActiveModel::Type::Integer.new,
     decimal: ActiveModel::Type::Decimal.new,
     float: ActiveModel::Type::Float.new,
-    boolean: ActiveModel::Type::Boolean.new,
+    boolean: Kredis::Type::Boolean.new,
     datetime: Kredis::Type::DateTime.new,
     json: Kredis::Type::Json.new
   }

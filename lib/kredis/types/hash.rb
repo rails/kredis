@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "active_support/core_ext/hash"
 
 class Kredis::Types::Hash < Kredis::Types::Proxying
@@ -16,7 +18,7 @@ class Kredis::Types::Hash < Kredis::Types::Proxying
   end
 
   def update(**entries)
-    hset entries.transform_values{ |val| type_to_string(val, typed) } if entries.flatten.any?
+    hset entries.transform_values { |val| type_to_string(val, typed) } if entries.flatten.any?
   end
 
   def values_at(*keys)

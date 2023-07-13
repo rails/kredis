@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "redis"
 
 module Kredis::Connections
@@ -6,11 +8,9 @@ module Kredis::Connections
   mattr_accessor :connector, default: ->(config) { Redis.new(config) }
 
   def configured_for(name)
-    connections[name] ||= begin
-      Kredis.instrument :meta, message: "Connected to #{name}" do
+    connections[name] ||= Kredis.instrument :meta, message: "Connected to #{name}" do
         connector.call configurator.config_for("redis/#{name}")
       end
-    end
   end
 
   def clear_all
