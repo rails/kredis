@@ -43,6 +43,6 @@ class Kredis::Types::Scalar < Kredis::Types::Proxying
 
   private
     def set_default
-      set type_to_string(value, typed), ex: expires_in, nx: true
+      self.value = default
     end
 end
