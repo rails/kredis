@@ -3,7 +3,7 @@
 class Kredis::Types::List < Kredis::Types::Proxying
   prepend Kredis::DefaultValues
 
-  proxying :lrange, :lrem, :lpush, :ltrim, :rpush, :exists?, :del, :watch
+  proxying :lrange, :lrem, :lpush, :ltrim, :rpush, :exists?, :del
 
   attr_accessor :typed
 
