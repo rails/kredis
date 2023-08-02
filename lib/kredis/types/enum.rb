@@ -5,6 +5,8 @@ require "active_support/core_ext/object/inclusion"
 class Kredis::Types::Enum < Kredis::Types::Proxying
   prepend Kredis::DefaultValues
 
+  InvalidDefault = Class.new(StandardError)
+
   proxying :set, :get, :del, :exists?, :multi
 
   attr_accessor :values
@@ -40,6 +42,10 @@ class Kredis::Types::Enum < Kredis::Types::Proxying
     end
 
     def set_default
-      set default
+      if default.in?(values) || default.nil?
+        set default
+      else
+        raise InvalidDefault, "Default value #{default.inspect} for #{key} is not a valid option (Valid values: #{values.join(", ")})"
+      end
     end
 end

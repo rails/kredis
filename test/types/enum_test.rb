@@ -14,11 +14,15 @@ class EnumTest < ActiveSupport::TestCase
     assert_equal "two", @enum.value
   end
 
-  test "does not set default for invalid option" do
-    enum = Kredis.enum "myenum3", values: [ 1, 2, 3 ], default: ->() { nil }
+  test "default can be nil" do
+    enum = Kredis.enum "myenum3", values: [ 1, 2, 3 ], default: nil
     assert_nil enum.value
-    enum = Kredis.enum "myenum4", values: [ 1, 2, 3 ], default: ->() { 4 }
-    assert_equal "4", enum.value
+  end
+
+  test "default value has to be valid if not nil" do
+    assert_raises Kredis::Types::Enum::InvalidDefault do
+      Kredis.enum "myenum4", values: [ 1, 2, 3 ], default: 4
+    end
   end
 
   test "predicates" do
