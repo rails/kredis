@@ -18,7 +18,7 @@ class EnumTest < ActiveSupport::TestCase
     enum = Kredis.enum "myenum3", values: [ 1, 2, 3 ], default: ->() { nil }
     assert_nil enum.value
     enum = Kredis.enum "myenum4", values: [ 1, 2, 3 ], default: ->() { 4 }
-    assert_nil enum.value
+    assert_equal "4", enum.value
   end
 
   test "predicates" do

@@ -40,6 +40,6 @@ class Kredis::Types::Enum < Kredis::Types::Proxying
     end
 
     def set_default
-      self.value = default
+      set default
     end
 end
