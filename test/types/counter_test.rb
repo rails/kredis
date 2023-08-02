@@ -109,4 +109,14 @@ class CounterTest < ActiveSupport::TestCase
     @counter.decrement
     assert_equal 9, @counter.value
   end
+
+  test "concurrent initialization with default" do
+    5.times.map do
+      Thread.new do
+        Kredis.counter("mycounter", default: 5).increment
+      end
+    end.each(&:join)
+
+    assert_equal 10, Kredis.counter("mycounter").value
+  end
 end

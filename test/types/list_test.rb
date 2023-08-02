@@ -121,4 +121,14 @@ class ListTest < ActiveSupport::TestCase
     @list.remove(3)
     assert_equal %w[ 4 ], @list.elements
   end
+
+  test "concurrent initialization with default" do
+    5.times.map do |i|
+      Thread.new do
+        Kredis.list("mylist", default: [ 10, 20, 30 ]).append(i)
+      end
+    end.each(&:join)
+
+    assert_equal [ 0, 1, 2, 3, 4, 10, 20, 30 ], Kredis.list("mylist", typed: :integer).to_a.sort
+  end
 end

@@ -6,6 +6,8 @@ module Kredis::DefaultValues
   prepended do
     attr_writer :default
 
+    proxying :watch, :unwatch, :exists?
+
     def default
       case @default
       when Proc   then @default.call
@@ -23,8 +25,12 @@ module Kredis::DefaultValues
   def initialize(...)
     super
 
-    if default.present? && !exists?
-      set_default
+    if default
+      watch do
+        set_default unless exists?
+
+        unwatch
+      end
     end
   end
 end

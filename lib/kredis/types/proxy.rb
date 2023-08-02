@@ -22,6 +22,16 @@ class Kredis::Types::Proxy
     end
   end
 
+  def watch(&block)
+    redis.watch(key) do
+      block.call
+    end
+  end
+
+  def unwatch
+    redis.unwatch
+  end
+
   def method_missing(method, *args, **kwargs)
     Kredis.instrument :proxy, **log_message(method, *args, **kwargs) do
       failsafe do

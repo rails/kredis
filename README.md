@@ -204,10 +204,11 @@ end
 ```
 
 There's a performance overhead to consider though. When you first read or write an attribute in a model, Kredis will
-check if the underlying Redis key exists, and if not, write the specified default value.
+check if the underlying Redis key exists, while watching for concurrent changes, and if it does not,
+write the specified default value.
 
-This means that using default values in a typical Rails app an additional Redis call will be executed for each
-Kredis attribute with a default value read or written during a request.
+This means that using default values in a typical Rails app additional Redis calls (WATCH, EXISTS, UNWATCH) will be
+executed for each Kredis attribute with a default value read or written during a request.
 
 ### Callbacks
 
