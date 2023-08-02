@@ -51,6 +51,10 @@ class EnumTest < ActiveSupport::TestCase
   end
 
   test "exists?" do
-    assert @enum.exists?
+    enum = Kredis.enum "numbers", values: %w[ one two three ], default: nil
+    assert_not enum.exists?
+
+    enum.value = "one"
+    assert enum.exists?
   end
 end
