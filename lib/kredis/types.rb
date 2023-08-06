@@ -41,40 +41,40 @@ module Kredis::Types
   end
 
 
-  def counter(key, expires_in: nil, config: :shared, after_change: nil)
-    type_from(Counter, config, key, after_change: after_change, expires_in: expires_in)
+  def counter(key, expires_in: nil, default: nil, config: :shared, after_change: nil)
+    type_from(Counter, config, key, after_change: after_change, default: default, expires_in: expires_in)
   end
 
   def cycle(key, values:, expires_in: nil, config: :shared, after_change: nil)
     type_from(Cycle, config, key, after_change: after_change, values: values, expires_in: expires_in)
   end
 
-  def flag(key, config: :shared, after_change: nil, expires_in: nil)
-    type_from(Flag, config, key, after_change: after_change, expires_in: expires_in)
+  def flag(key, default: nil, config: :shared, after_change: nil, expires_in: nil)
+    type_from(Flag, config, key, after_change: after_change, default: default, expires_in: expires_in)
   end
 
   def enum(key, values:, default:, config: :shared, after_change: nil)
     type_from(Enum, config, key, after_change: after_change, values: values, default: default)
   end
 
-  def hash(key, typed: :string, config: :shared, after_change: nil)
-    type_from(Hash, config, key, after_change: after_change, typed: typed)
+  def hash(key, typed: :string, default: nil, config: :shared, after_change: nil)
+    type_from(Hash, config, key, after_change: after_change, default: default, typed: typed)
   end
 
-  def list(key, typed: :string, config: :shared, after_change: nil)
-    type_from(List, config, key, after_change: after_change, typed: typed)
+  def list(key, default: nil, typed: :string, config: :shared, after_change: nil)
+    type_from(List, config, key, after_change: after_change, default: default, typed: typed)
   end
 
-  def unique_list(key, typed: :string, limit: nil, config: :shared, after_change: nil)
-    type_from(UniqueList, config, key, after_change: after_change, typed: typed, limit: limit)
+  def unique_list(key, default: nil, typed: :string, limit: nil, config: :shared, after_change: nil)
+    type_from(UniqueList, config, key, after_change: after_change, default: default, typed: typed, limit: limit)
   end
 
-  def set(key, typed: :string, config: :shared, after_change: nil)
-    type_from(Set, config, key, after_change: after_change, typed: typed)
+  def set(key, default: nil, typed: :string, config: :shared, after_change: nil)
+    type_from(Set, config, key, after_change: after_change, default: default, typed: typed)
   end
 
-  def ordered_set(key, typed: :string, limit: nil, config: :shared, after_change: nil)
-    type_from(OrderedSet, config, key, after_change: after_change, typed: typed, limit: limit)
+  def ordered_set(key, default: nil, typed: :string, limit: nil, config: :shared, after_change: nil)
+    type_from(OrderedSet, config, key, after_change: after_change, default: default, typed: typed, limit: limit)
   end
 
   def slot(key, config: :shared, after_change: nil)

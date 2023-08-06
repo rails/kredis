@@ -92,4 +92,36 @@ class HashTest < ActiveSupport::TestCase
     @hash[:key] = :value
     assert @hash.exists?
   end
+
+  test "default value" do
+    @hash = Kredis.hash "myhash", typed: :integer, default: { space_invaders: "100", pong: "42" }
+    assert_equal({ "space_invaders" => 100, "pong" => 42 }, @hash.to_h)
+    assert_equal(%w[ space_invaders pong ], @hash.keys)
+    assert_equal([100, 42], @hash.values)
+    assert_equal(100, @hash["space_invaders"])
+    assert_equal([100, 42], @hash.values_at("space_invaders", "pong"))
+  end
+
+  test "update with default" do
+    @hash = Kredis.hash "myhash", typed: :integer, default: { space_invaders: "100", pong: "42" }
+    @hash.update(ping: "54")
+    assert_equal(%w[ space_invaders pong ping ], @hash.keys)
+  end
+
+  test "[]= with default" do
+    @hash = Kredis.hash "myhash", typed: :integer, default: { space_invaders: "100", pong: "42" }
+    @hash[:ping] = "54"
+    assert_equal(%w[ space_invaders pong ping ], @hash.keys)
+  end
+
+  test "delete with default" do
+    @hash = Kredis.hash "myhash", typed: :integer, default: { space_invaders: "100", pong: "42" }
+    @hash.delete(:pong)
+    assert_equal(%w[ space_invaders ], @hash.keys)
+  end
+
+  test "default via proc" do
+    @hash = Kredis.hash "myhash", typed: :integer, default: ->() { { space_invaders: "100", pong: "42" } }
+    assert_equal({ "space_invaders" => 100, "pong" => 42 }, @hash.to_h)
+  end
 end

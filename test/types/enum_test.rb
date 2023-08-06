@@ -9,6 +9,22 @@ class EnumTest < ActiveSupport::TestCase
     assert_equal "one", @enum.value
   end
 
+  test "default via proc" do
+    @enum = Kredis.enum "myenum2", values: %w[ one two three ], default: ->() { "two" }
+    assert_equal "two", @enum.value
+  end
+
+  test "default can be nil" do
+    enum = Kredis.enum "myenum3", values: [ 1, 2, 3 ], default: nil
+    assert_nil enum.value
+  end
+
+  test "default value has to be valid if not nil" do
+    assert_raises Kredis::Types::Enum::InvalidDefault do
+      Kredis.enum "myenum4", values: [ 1, 2, 3 ], default: 4
+    end
+  end
+
   test "predicates" do
     assert @enum.one?
 
@@ -39,9 +55,10 @@ class EnumTest < ActiveSupport::TestCase
   end
 
   test "exists?" do
-    assert_not @enum.exists?
+    enum = Kredis.enum "numbers", values: %w[ one two three ], default: nil
+    assert_not enum.exists?
 
-    @enum.value = "one"
-    assert @enum.exists?
+    enum.value = "one"
+    assert enum.exists?
   end
 end

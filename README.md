@@ -49,10 +49,10 @@ list = Kredis.list "mylist"
 list << "hello world!"               # => RPUSH mylist "hello world!"
 [ "hello world!" ] == list.elements  # => LRANGE mylist 0, -1
 
-integer_list = Kredis.list "myintegerlist", typed: :integer
-integer_list.append([ 1, 2, 3 ])        # => RPUSH myintegerlist "1" "2" "3"
-integer_list << 4                       # => RPUSH myintegerlist "4"
-[ 1, 2, 3, 4 ] == integer_list.elements # => LRANGE myintegerlist 0 -1
+integer_list = Kredis.list "myintegerlist", typed: :integer, default: [ 1, 2, 3 ] # => EXISTS? myintegerlist, RPUSH myintegerlist "1" "2" "3"
+integer_list.append([ 4, 5, 6 ])                                                  # => RPUSH myintegerlist "4" "5" "6"
+integer_list << 7                                                                 # => RPUSH myintegerlist "7"
+[ 1, 2, 3, 4, 5, 6, 7 ] == integer_list.elements                                  # => LRANGE myintegerlist 0 -1
 
 unique_list = Kredis.unique_list "myuniquelist"
 unique_list.append(%w[ 2 3 4 ])                # => LREM myuniquelist 0, "2" + LREM myuniquelist 0, "3" + LREM myuniquelist 0, "4"  + RPUSH myuniquelist "2", "3", "4"
@@ -163,15 +163,7 @@ sleep 0.6.seconds
 false == flag.marked?           #=> EXISTS myflag
 ```
 
-And using structures on a different than the default `shared` redis instance, relying on `config/redis/secondary.yml`:
-
-```ruby
-one_string = Kredis.string "mystring"
-two_string = Kredis.string "mystring", config: :secondary
-
-one_string.value = "just on shared"
-two_string.value != one_string.value
-```
+### Models
 
 You can use all these structures in models:
 
@@ -197,6 +189,29 @@ person.morning.value = "blue"                        # => SET people:5:morning
 true == person.morning.blue?                         # => GET people:5:morning
 ```
 
+### Default values
+
+You can set a default value for all types. For example:
+
+```ruby
+list = Kredis.list "favorite_colors", default: [ "red", "green", "blue" ]
+
+# or, in a model
+class Person < ApplicationRecord
+  kredis_string :name, default: "Unknown"
+  kredis_list :favorite_colors, default: [ "red", "green", "blue" ]
+end
+```
+
+There's a performance overhead to consider though. When you first read or write an attribute in a model, Kredis will
+check if the underlying Redis key exists, while watching for concurrent changes, and if it does not,
+write the specified default value.
+
+This means that using default values in a typical Rails app additional Redis calls (WATCH, EXISTS, UNWATCH) will be
+executed for each Kredis attribute with a default value read or written during a request.
+
+### Callbacks
+
 You can also define `after_change` callbacks that trigger on mutations:
 
 ```ruby
@@ -207,6 +222,18 @@ class Person < ApplicationRecord
   def skillset_changed
   end
 end
+```
+
+### Multiple Redis servers
+
+And using structures on a different than the default `shared` redis instance, relying on `config/redis/secondary.yml`:
+
+```ruby
+one_string = Kredis.string "mystring"
+two_string = Kredis.string "mystring", config: :secondary
+
+one_string.value = "just on shared"
+two_string.value != one_string.value
 ```
 
 ## Installation

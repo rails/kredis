@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Kredis::Types::Set < Kredis::Types::Proxying
+  prepend Kredis::DefaultValues
+
   proxying :smembers, :sadd, :srem, :multi, :del, :sismember, :scard, :spop, :exists?, :srandmember
 
   attr_accessor :typed
@@ -49,4 +51,9 @@ class Kredis::Types::Set < Kredis::Types::Proxying
       strings_to_types(srandmember(count), typed)
     end
   end
+
+  private
+    def set_default
+      add default
+    end
 end

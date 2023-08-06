@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Kredis::Types::List < Kredis::Types::Proxying
+  prepend Kredis::DefaultValues
+
   proxying :lrange, :lrem, :lpush, :ltrim, :rpush, :exists?, :del
 
   attr_accessor :typed
@@ -30,4 +32,9 @@ class Kredis::Types::List < Kredis::Types::Proxying
   def last(n = nil)
     n ? lrange(-n, -1) : lrange(-1, -1).first
   end
+
+  private
+    def set_default
+      append default
+    end
 end

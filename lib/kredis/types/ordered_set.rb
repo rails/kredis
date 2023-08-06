@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Kredis::Types::OrderedSet < Kredis::Types::Proxying
+  prepend Kredis::DefaultValues
+
   proxying :multi, :zrange, :zrem, :zadd, :zremrangebyrank, :zcard, :exists?, :del
 
   attr_accessor :typed
@@ -73,5 +75,9 @@ class Kredis::Types::OrderedSet < Kredis::Types::Proxying
       else
         zremrangebyrank(0, -(limit + 1))
       end
+    end
+
+    def set_default
+      append default
     end
 end

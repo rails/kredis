@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Kredis::Types::Counter < Kredis::Types::Proxying
+  prepend Kredis::DefaultValues
+
   proxying :multi, :set, :incrby, :decrby, :get, :del, :exists?
 
   attr_accessor :expires_in
@@ -26,4 +28,9 @@ class Kredis::Types::Counter < Kredis::Types::Proxying
   def reset
     del
   end
+
+  private
+    def set_default
+      increment by: default
+    end
 end

@@ -21,7 +21,7 @@ class SetTest < ActiveSupport::TestCase
 
   test "remove" do
     @set.add(%w[ 1 2 3 4 ])
-    @set.remove(%w[ 2 3 ])
+    @set.remove([%w[ 2 3 ]])
     @set.remove("1")
     assert_equal %w[ 4 ], @set.members
   end
@@ -99,5 +99,46 @@ class SetTest < ActiveSupport::TestCase
 
     assert @set.sample.in?([ 1.5, 2.7 ])
     assert_equal [ 1.5, 2.7 ], @set.sample(2).sort
+  end
+
+
+  test "default" do
+    @set = Kredis.set "mylist", default: %w[ 1 2 3 ]
+    assert_equal %w[ 1 2 3 ], @set.members
+  end
+
+  test "default is an empty array" do
+    @set = Kredis.set "mylist", default: []
+    assert_equal [], @set.members
+  end
+
+  test "default is nil" do
+    @set = Kredis.set "mylist", default: nil
+    assert_equal [], @set.members
+  end
+
+  test "default via proc" do
+    @set = Kredis.set "mylist", default: -> () { %w[ 3 3 1 2 ] }
+    assert_equal %w[ 1 2 3 ], @set.members
+  end
+
+  test "add with default" do
+    @set = Kredis.set "mylist", typed: :integer, default: -> () { %w[ 1 2 3 ] }
+    @set.add(%w[ 5 6 7 ])
+    assert_equal [1, 2, 3, 5, 6, 7], @set.members
+  end
+
+  test "remove with default" do
+    @set = Kredis.set "mylist", default: -> () { %w[ 1 2 3 4 ] }
+    @set.remove(%w[ 2 3 ])
+    @set.remove("1")
+    assert_equal %w[ 4 ], @set.members
+  end
+
+  test "replace with default" do
+    @set = Kredis.set "mylist", typed: :integer, default: -> () { %w[ 1 2 3 ] }
+    @set.add(%w[ 5 6 7 ])
+    @set.replace(%w[ 8 9 10 ])
+    assert_equal [ 8, 9, 10 ], @set.members
   end
 end

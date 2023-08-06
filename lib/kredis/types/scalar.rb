@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 class Kredis::Types::Scalar < Kredis::Types::Proxying
+  prepend Kredis::DefaultValues
+
   proxying :set, :get, :exists?, :del, :expire, :expireat
 
-  attr_accessor :typed, :default, :expires_in
+  attr_accessor :typed, :expires_in
 
   def value=(value)
     set type_to_string(value, typed), ex: expires_in
@@ -38,4 +40,9 @@ class Kredis::Types::Scalar < Kredis::Types::Proxying
   def expire_at(datetime)
     expireat datetime.to_i
   end
+
+  private
+    def set_default
+      self.value = default
+    end
 end
