@@ -121,7 +121,7 @@ module Kredis::Attributes
     end
 
     def kredis_key_for_model(model = self)
-      [ model.class.name.tableize.tr("/", ":") ]
+      model.class.name.tableize.tr("/", ":")
     end
 
     def extract_kredis_id(model = self)
