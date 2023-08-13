@@ -28,6 +28,7 @@ class Family
 
   kredis_list :members
   kredis_list :pets, key: "pets"
+  kredis_list :members_with_nil_scope, scope: ->(person) { nil }
 
   def id
     1
@@ -36,7 +37,10 @@ end
 
 
 class ScopeTest < ActiveSupport::TestCase
-  setup { @person = Person.new }
+  setup do
+    @person = Person.new
+    @family = Family.new
+  end
 
   test "key is scoped" do
     assert_equal @person.names_with_scope.key, "identities:1:people:names_with_scope"
@@ -46,11 +50,15 @@ class ScopeTest < ActiveSupport::TestCase
     assert_equal @person.names_with_scope_and_key.key, "identities:1:custom_key_example"
   end
 
+  test "scope is nil and key is generated normally" do
+    assert_equal @family.members_with_nil_scope.key, "families:1:members_with_nil_scope"
+  end
+
   test "custom key" do
-    assert_equal Family.new.pets.key, "pets"
+    assert_equal @family.pets.key, "pets"
   end
 
   test "key without scope" do
-    assert_equal Family.new.members.key, "families:1:members"
+    assert_equal @family.members.key, "families:1:members"
   end
 end
