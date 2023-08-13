@@ -172,9 +172,11 @@ class Person < ApplicationRecord
   kredis_list :names
   kredis_list :names_with_custom_key_via_lambda, key: ->(p) { "person:#{p.id}:names_customized" }
   kredis_list :names_with_custom_key_via_method, key: :generate_names_key
-  kredis_unique_list :skills, limit: 2
+  kredis_unique_list :skills, limit: 2, scope: :user # stored at users:1:person:skills
   kredis_enum :morning, values: %w[ bright blue black ], default: "bright"
   kredis_counter :steps, expires_in: 1.hour
+
+  belongs_to :user
 
   private
     def generate_names_key
