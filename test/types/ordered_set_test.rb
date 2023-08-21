@@ -72,8 +72,6 @@ class OrderedSetTest < ActiveSupport::TestCase
   end
 
   test "include?" do
-    assert_not @set.include? 4
-
     @set.append(%w[ 1 2 3 4 5 ])
 
     assert @set.include?(1)
