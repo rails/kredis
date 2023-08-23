@@ -3,7 +3,7 @@
 class Kredis::Types::OrderedSet < Kredis::Types::Proxying
   prepend Kredis::DefaultValues
 
-  proxying :multi, :zrange, :zrem, :zadd, :zremrangebyrank, :zcard, :exists?, :del, :zrank
+  proxying :multi, :zrange, :zrem, :zadd, :zremrangebyrank, :zcard, :exists?, :del, :zscore
 
   attr_accessor :typed
   attr_reader :limit
