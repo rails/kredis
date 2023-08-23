@@ -18,7 +18,7 @@ class Kredis::Types::OrderedSet < Kredis::Types::Proxying
   end
 
   def include?(element)
-    zrank(type_to_string(element, typed)).present?
+    !!zscore(type_to_string(element, typed))
   end
 
   def prepend(elements)
