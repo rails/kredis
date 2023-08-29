@@ -6,7 +6,6 @@ Kredis is configured using env-aware YAML files, using `Rails.application.config
 
 Kredis provides namespacing support for keys such that you can safely run parallel testing against the data structures without different tests trampling each others data.
 
-
 ## Examples
 
 Kredis provides typed scalars for strings, integers, decimals, floats, booleans, datetimes, and JSON hashes:
@@ -317,4 +316,4 @@ breakpoint, e.g. `debugger`.
 
 ## License
 
-Kredis is released under the [MIT License](https://opensource.org/licenses/MIT).
+- Kredis is released under the [MIT License](https://opensource.org/licenses/MIT).
