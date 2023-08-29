@@ -6,7 +6,6 @@ Kredis is configured using env-aware YAML files, using `Rails.application.config
 
 Kredis provides namespacing support for keys such that you can safely run parallel testing against the data structures without different tests trampling each others data.
 
-
 ## Examples
 
 Kredis provides typed scalars for strings, integers, decimals, floats, booleans, datetimes, and JSON hashes:
@@ -48,6 +47,8 @@ There are data structures for counters, enums, flags, lists, unique lists, sets,
 list = Kredis.list "mylist"
 list << "hello world!"               # => RPUSH mylist "hello world!"
 [ "hello world!" ] == list.elements  # => LRANGE mylist 0, -1
+list.last                            # => LRANGE mylist [-1, -1]
+list.clear                           # => DEL mylist
 
 integer_list = Kredis.list "myintegerlist", typed: :integer, default: [ 1, 2, 3 ] # => EXISTS? myintegerlist, RPUSH myintegerlist "1" "2" "3"
 integer_list.append([ 4, 5, 6 ])                                                  # => RPUSH myintegerlist "4" "5" "6"
@@ -82,7 +83,11 @@ hash.update("key" => "value", "key2" => "value2")     # => HSET myhash "key", "v
 "value2" == hash["key2"]                              # => HMGET myhash "key2"
 %w[ key key2 ] == hash.keys                           # => HKEYS myhash
 %w[ value value2 ] == hash.values                     # => HVALS myhash
+hash.delete("key2")                                   # => HDEL myhash ["key2"]
+hash.entries                                          # => HGETALL myhash
+hash.values_at("key")                                 # => HMGET myhash ["key"]
 hash.remove                                           # => DEL myhash
+hash.clear                                            # => DEL myhash
 
 high_scores = Kredis.hash "high_scores", typed: :integer
 high_scores.update(space_invaders: 100, pong: 42)             # HSET high_scores "space_invaders", "100", "pong", "42"
@@ -311,4 +316,4 @@ breakpoint, e.g. `debugger`.
 
 ## License
 
-Kredis is released under the [MIT License](https://opensource.org/licenses/MIT).
+- Kredis is released under the [MIT License](https://opensource.org/licenses/MIT).
