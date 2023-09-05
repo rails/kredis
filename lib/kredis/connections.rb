@@ -9,8 +9,8 @@ module Kredis::Connections
 
   def configured_for(name)
     connections[name] ||= Kredis.instrument :meta, message: "Connected to #{name}" do
-        connector.call configurator.config_for("redis/#{name}")
-      end
+      connector.call configurator.config_for("redis/#{name}")
+    end
   end
 
   def clear_all
