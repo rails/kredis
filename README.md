@@ -292,7 +292,7 @@ A development console is available by running `bin/console`.
 
 From there, you can experiment with Kredis. e.g.
 
-```rb
+```erb
 >> str = Kredis.string "mystring"
   Kredis  (0.1ms)  Connected to shared
 =>
