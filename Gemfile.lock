@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    kredis (1.5.0)
+    kredis (1.6.0)
       activemodel (>= 6.0.0)
       activesupport (>= 6.0.0)
       redis (>= 4.2, < 6)
@@ -140,9 +140,9 @@ GEM
       thor (~> 1.0)
     rainbow (3.1.1)
     rake (13.0.3)
-    redis (5.0.6)
+    redis (5.0.7)
       redis-client (>= 0.9.0)
-    redis-client (0.14.1)
+    redis-client (0.17.0)
       connection_pool
     regexp_parser (2.8.1)
     reline (0.3.6)
