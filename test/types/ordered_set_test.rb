@@ -71,6 +71,13 @@ class OrderedSetTest < ActiveSupport::TestCase
     assert @set.exists?
   end
 
+  test "include?" do
+    @set.append(%w[ 1 2 3 4 5 ])
+
+    assert @set.include?(1)
+    assert_not @set.include?(6)
+  end
+
   test "appending over limit" do
     @set.append(%w[ 1 2 3 4 5 ])
     @set.append(%w[ 6 7 8 ])

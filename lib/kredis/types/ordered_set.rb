@@ -3,7 +3,7 @@
 class Kredis::Types::OrderedSet < Kredis::Types::Proxying
   prepend Kredis::DefaultValues
 
-  proxying :multi, :zrange, :zrem, :zadd, :zremrangebyrank, :zcard, :exists?, :del
+  proxying :multi, :zrange, :zrem, :zadd, :zremrangebyrank, :zcard, :exists?, :del, :zscore
 
   attr_accessor :typed
   attr_reader :limit
@@ -15,6 +15,10 @@ class Kredis::Types::OrderedSet < Kredis::Types::Proxying
 
   def remove(*elements)
     zrem(types_to_strings(elements, typed))
+  end
+
+  def include?(element)
+    !!zscore(type_to_string(element, typed))
   end
 
   def prepend(elements)
