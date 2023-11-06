@@ -22,7 +22,7 @@ class MigrationTest < ActiveSupport::TestCase
 
     Kredis::Migration.migrate from: "old_proxy", to: @proxy.key
     assert_equal "hello there", @proxy.value
-    assert old_proxy.assigned?, "just copying the data"
+    assert_predicate old_proxy, :assigned?, "just copying the data"
   end
 
   test "migrate with blank keys" do

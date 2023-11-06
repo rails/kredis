@@ -68,7 +68,7 @@ class OrderedSetTest < ActiveSupport::TestCase
     assert_not @set.exists?
 
     @set.append [ 1, 2 ]
-    assert @set.exists?
+    assert_predicate @set, :exists?
   end
 
   test "include?" do

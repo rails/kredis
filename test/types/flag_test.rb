@@ -10,7 +10,7 @@ class FlagTest < ActiveSupport::TestCase
     assert_not @flag.marked?
 
     @flag.mark
-    assert @flag.marked?
+    assert_predicate @flag, :marked?
 
     @flag.remove
     assert_not @flag.marked?
@@ -18,10 +18,10 @@ class FlagTest < ActiveSupport::TestCase
 
   test "expiring mark" do
     @flag.mark(expires_in: 1.second)
-    assert @flag.marked?
+    assert_predicate @flag, :marked?
 
     sleep 0.5.seconds
-    assert @flag.marked?
+    assert_predicate @flag, :marked?
 
     sleep 0.6.seconds
     assert_not @flag.marked?
@@ -33,10 +33,10 @@ class FlagTest < ActiveSupport::TestCase
     assert @flag.mark(expires_in: 1.second, force: true)
     assert_not @flag.mark(expires_in: 10.seconds, force: false)
 
-    assert @flag.marked?
+    assert_predicate @flag, :marked?
 
     sleep 0.5.seconds
-    assert @flag.marked?
+    assert_predicate @flag, :marked?
 
     sleep 0.6.seconds
     assert_not @flag.marked?

@@ -90,7 +90,7 @@ class HashTest < ActiveSupport::TestCase
     assert_not @hash.exists?
 
     @hash[:key] = :value
-    assert @hash.exists?
+    assert_predicate @hash, :exists?
   end
 
   test "default value" do

@@ -7,10 +7,10 @@ class SlotsTest < ActiveSupport::TestCase
 
   test "reserve until no availability" do
     assert @slots.reserve
-    assert @slots.available?
+    assert_predicate @slots, :available?
 
     assert @slots.reserve
-    assert @slots.available?
+    assert_predicate @slots, :available?
 
     assert @slots.reserve
     assert_not @slots.available?
@@ -25,7 +25,7 @@ class SlotsTest < ActiveSupport::TestCase
     assert_not @slots.available?
 
     @slots.release
-    assert @slots.available?
+    assert_predicate @slots, :available?
   end
 
   test "release when slots are reserved" do
@@ -53,7 +53,7 @@ class SlotsTest < ActiveSupport::TestCase
       false # ensure that block return value isn't returned from #reserve
     })
 
-    assert @slots.available?
+    assert_predicate @slots, :available?
   end
 
   test "failed reserve with block" do
@@ -115,6 +115,6 @@ class SlotsTest < ActiveSupport::TestCase
     assert_not @slots.exists?
 
     @slots.reserve
-    assert @slots.exists?
+    assert_predicate @slots, :exists?
   end
 end

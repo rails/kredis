@@ -90,7 +90,7 @@ class SetTest < ActiveSupport::TestCase
     assert_not @set.exists?
 
     @set.add(%w[ 1 2 3 ])
-    assert @set.exists?
+    assert_predicate @set, :exists?
   end
 
   test "srandmember" do

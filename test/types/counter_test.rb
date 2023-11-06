@@ -78,7 +78,7 @@ class CounterTest < ActiveSupport::TestCase
     assert_not @counter.exists?
 
     @counter.increment
-    assert @counter.exists?
+    assert_predicate @counter, :exists?
   end
 
   test "default value" do

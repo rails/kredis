@@ -67,7 +67,7 @@ class ListTest < ActiveSupport::TestCase
     assert_not @list.exists?
 
     @list.append(%w[ 1 2 3 ])
-    assert @list.exists?
+    assert_predicate @list, :exists?
   end
 
   test "ltrim" do

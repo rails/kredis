@@ -95,7 +95,7 @@ class ScalarTest < ActiveSupport::TestCase
     assert_not string.assigned?
 
     string.value = "Something!"
-    assert string.assigned?
+    assert_predicate string, :assigned?
   end
 
   test "clear" do

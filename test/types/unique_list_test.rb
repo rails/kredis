@@ -51,7 +51,7 @@ class UniqueListTest < ActiveSupport::TestCase
     assert_not @list.exists?
 
     @list.append [ 1, 2 ]
-    assert @list.exists?
+    assert_predicate @list, :exists?
   end
 
   test "appending over limit" do

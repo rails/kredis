@@ -26,32 +26,32 @@ class EnumTest < ActiveSupport::TestCase
   end
 
   test "predicates" do
-    assert @enum.one?
+    assert_predicate @enum, :one?
 
     @enum.value = "two"
-    assert @enum.two?
+    assert_predicate @enum, :two?
 
     assert_not @enum.three?
 
     @enum.three!
-    assert @enum.three?
+    assert_predicate @enum, :three?
 
     assert_not @enum.two?
   end
 
   test "validated value" do
-    assert @enum.one?
+    assert_predicate @enum, :one?
 
     @enum.value = "nonesense"
-    assert @enum.one?
+    assert_predicate @enum, :one?
   end
 
   test "reset" do
     @enum.value = "two"
-    assert @enum.two?
+    assert_predicate @enum, :two?
 
     @enum.reset
-    assert @enum.one?
+    assert_predicate @enum, :one?
   end
 
   test "exists?" do
@@ -59,6 +59,6 @@ class EnumTest < ActiveSupport::TestCase
     assert_not enum.exists?
 
     enum.value = "one"
-    assert enum.exists?
+    assert_predicate enum, :exists?
   end
 end

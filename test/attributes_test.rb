@@ -160,7 +160,7 @@ class AttributesTest < ActiveSupport::TestCase
     assert_not @person.special?
 
     @person.special.mark
-    assert @person.special?
+    assert_predicate @person, :special?
 
     @person.special.remove
     assert_not @person.special?
@@ -170,7 +170,7 @@ class AttributesTest < ActiveSupport::TestCase
     assert_not @person.address.assigned?
 
     @person.address.value = "Copenhagen"
-    assert @person.address.assigned?
+    assert_predicate @person.address, :assigned?
     assert_equal "Copenhagen", @person.address.to_s
 
     @person.address.clear
@@ -234,7 +234,7 @@ class AttributesTest < ActiveSupport::TestCase
     assert_not @person.attention.reserve
 
     @person.attention.release
-    assert @person.attention.available?
+    assert_predicate @person.attention, :available?
 
     used_attention = false
 
@@ -251,7 +251,7 @@ class AttributesTest < ActiveSupport::TestCase
 
   test "slots" do
     assert @person.meetings.reserve
-    assert @person.meetings.available?
+    assert_predicate @person.meetings, :available?
 
     assert @person.meetings.reserve
     assert @person.meetings.reserve
@@ -259,7 +259,7 @@ class AttributesTest < ActiveSupport::TestCase
     assert_not @person.meetings.reserve
 
     @person.meetings.release
-    assert @person.meetings.available?
+    assert_predicate @person.meetings, :available?
 
     used_meeting = false
 
@@ -276,22 +276,22 @@ class AttributesTest < ActiveSupport::TestCase
   end
 
   test "enum" do
-    assert @person.morning.bright?
+    assert_predicate @person.morning, :bright?
 
     assert @person.morning.value = "blue"
-    assert @person.morning.blue?
+    assert_predicate @person.morning, :blue?
 
     assert_not @person.morning.black?
 
     assert @person.morning.value = "nonsense"
-    assert @person.morning.blue?
+    assert_predicate @person.morning, :blue?
 
     @person.morning.reset
-    assert @person.morning.bright?
+    assert_predicate @person.morning, :bright?
   end
 
   test "enum with default proc value" do
-    assert @person.eye_color_with_default_via_lambda.hazel?
+    assert_predicate @person.eye_color_with_default_via_lambda, :hazel?
   end
 
 
