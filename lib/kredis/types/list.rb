@@ -20,7 +20,7 @@ class Kredis::Types::List < Kredis::Types::Proxying
     return if elements.flatten.empty?
 
     lpush types_to_strings(elements, typed)
-    expire_in expires_in if expires_in.present?
+    expire_in expires_in if expires_in
     elements
   end
 
@@ -28,7 +28,7 @@ class Kredis::Types::List < Kredis::Types::Proxying
     return if elements.flatten.empty?
 
     rpush types_to_strings(elements, typed)
-    expire_in expires_in if expires_in.present?
+    expire_in expires_in if expires_in
     elements
   end
   alias << append
