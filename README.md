@@ -245,7 +245,7 @@ Additional configurations can be added under `config/redis/*.yml` and referenced
 
 Kredis passes the configuration to `Redis.new` to establish the connection. See the [Redis documentation](https://github.com/redis/redis-rb) for other configuration options.
 
-If you don't have config/redis/shared.yml (or use another named configuration), Kredis will default to look in env for `REDIS_URL`, then fallback to a default URL of `redis://127.0.0.1:6379/0`.
+If you don't have `config/redis/shared.yml` (or use another named configuration), Kredis will default to look in env for `REDIS_URL`, then fallback to a default URL of `redis://127.0.0.1:6379/0`.
 
 ### Redis support
 
