@@ -13,7 +13,7 @@ module Kredis::Connections
   def configured_for(name)
     connections[name] ||= Kredis.instrument :meta, message: "Connected to #{name}" do
       if configurator.root.join("config/redis/#{name}.yml").exist?
-        redis = connector.call configurator.config_for("redis/#{name}")
+        connector.call configurator.config_for("redis/#{name}")
       else
         Redis.new url: ENV.fetch("REDIS_URL", DEFAULT_REDIS_URL), timeout: DEFAULT_REDIS_TIMEOUT
       end
