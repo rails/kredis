@@ -14,8 +14,10 @@ module Kredis::Connections
     connections[name] ||= Kredis.instrument :meta, message: "Connected to #{name}" do
       if configurator.root.join("config/redis/#{name}.yml").exist?
         connector.call configurator.config_for("redis/#{name}")
-      else
+      elsif name == :shared
         Redis.new url: ENV.fetch("REDIS_URL", DEFAULT_REDIS_URL), timeout: DEFAULT_REDIS_TIMEOUT
+      else
+        raise "No configuration found for #{name}"
       end
     end
   end
