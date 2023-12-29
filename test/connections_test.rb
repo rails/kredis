@@ -34,20 +34,20 @@ class ConnectionsTest < ActiveSupport::TestCase
 
     Kredis.configurator.stub(:config_for, fixture_config) do
       Kredis.configurator.stub(:root, Pathname.new(Dir.pwd).join("test/fixtures")) do
-        assert_match %r|redis://127.0.0.1:6379/4|, Kredis.redis.inspect
+        assert_match %r{redis://127.0.0.1:6379/4}, Kredis.redis.inspect
       end
     end
   end
 
   test "default config in env" do
     ENV["REDIS_URL"] = "redis://127.0.0.1:6379/3"
-    assert_match %r|redis://127.0.0.1:6379/3|, Kredis.redis.inspect
+    assert_match %r{redis://127.0.0.1:6379/3}, Kredis.redis.inspect
   ensure
     ENV.delete("REDIS_URL")
   end
 
   test "default config without env" do
-    assert_match %r|redis://127.0.0.1:6379/0|, Kredis.redis.inspect
+    assert_match %r{redis://127.0.0.1:6379/0}, Kredis.redis.inspect
   end
 
   test "custom config is missing" do

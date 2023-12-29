@@ -97,9 +97,9 @@ class HashTest < ActiveSupport::TestCase
     @hash = Kredis.hash "myhash", typed: :integer, default: { space_invaders: "100", pong: "42" }
     assert_equal({ "space_invaders" => 100, "pong" => 42 }, @hash.to_h)
     assert_equal(%w[ space_invaders pong ], @hash.keys)
-    assert_equal([100, 42], @hash.values)
+    assert_equal([ 100, 42 ], @hash.values)
     assert_equal(100, @hash["space_invaders"])
-    assert_equal([100, 42], @hash.values_at("space_invaders", "pong"))
+    assert_equal([ 100, 42 ], @hash.values_at("space_invaders", "pong"))
   end
 
   test "update with default" do

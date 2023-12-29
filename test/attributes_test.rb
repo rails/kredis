@@ -12,9 +12,9 @@ class Person
   kredis_list :names
   kredis_list :names_with_custom_key_via_lambda, key: ->(p) { "person:#{p.id}:names_customized" }
   kredis_list :names_with_custom_key_via_method, key: :generate_key
-  kredis_list :names_with_default_via_lambda, default: ->(p) { ["Random", p.name] }
+  kredis_list :names_with_default_via_lambda, default: ->(p) { [ "Random", p.name ] }
   kredis_unique_list :skills, limit: 2
-  kredis_unique_list :skills_with_default_via_lambda, default: ->(p) { ["Random", "Random", p.name] }
+  kredis_unique_list :skills_with_default_via_lambda, default: ->(p) { [ "Random", "Random", p.name ] }
   kredis_ordered_set :reading_list, limit: 2
   kredis_flag :special
   kredis_flag :temporary_special, expires_in: 1.second
@@ -70,7 +70,7 @@ class Person
   end
 
   def scores
-    [10, 28, 2, 7].to_json
+    [ 10, 28, 2, 7 ].to_json
   end
 
   def hourly_wage

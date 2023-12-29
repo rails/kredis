@@ -1,1 +1,2 @@
-inherit_from: https://raw.githubusercontent.com/rails/rails/main/.rubocop.yml
+# Omakase Ruby styling for Rails
+inherit_gem: { rubocop-rails-omakase: rubocop.yml }

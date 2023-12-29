@@ -23,7 +23,7 @@ class OrderedSetTest < ActiveSupport::TestCase
   test "mass append maintains ordering" do
     @set = Kredis.ordered_set "ordered-set" # no limit
 
-    thousand_elements = 1000.times.map { [*"A".."Z"].sample(10).join }
+    thousand_elements = 1000.times.map { [ *"A".."Z" ].sample(10).join }
     @set.append(thousand_elements)
     assert_equal thousand_elements, @set.elements
 
