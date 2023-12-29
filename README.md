@@ -161,6 +161,20 @@ sleep 0.5.seconds
 true == flag.marked?            #=> EXISTS myflag
 sleep 0.6.seconds
 false == flag.marked?           #=> EXISTS myflag
+
+limiter = Kredis.limiter "mylimit", limit: 3, expires_in: 5.seconds
+0 == limiter.value              # => GET "limiter"
+limiter.poke                    # => SET limiter 0 NX + INCRBY limiter 1
+limiter.poke                    # => SET limiter 0 NX + INCRBY limiter 1
+limiter.poke                    # => SET limiter 0 NX + INCRBY limiter 1
+false == limiter.exceeded?      # => GET "limiter"
+limiter.poke                    # => SET limiter 0 NX + INCRBY limiter 1
+true == limiter.exceeded?       # => GET "limiter"
+sleep 6
+limiter.poke                    # => SET limiter 0 NX + INCRBY limiter 1
+limiter.poke                    # => SET limiter 0 NX + INCRBY limiter 1
+limiter.poke                    # => SET limiter 0 NX + INCRBY limiter 1
+false == limiter.exceeded?      # => GET "limiter"
 ```
 
 ### Models
