@@ -247,7 +247,7 @@ Kredis passes the configuration to `Redis.new` to establish the connection. See 
 
 ### Redis support
 
-Kredis works with Redis server 4.0+, with the [Redis Ruby](https://github.com/redis/redis-rb) client version 4.2+.
+Kredis works with Redis server 4.0+, with the [Redis Ruby](https://github.com/redis/redis-rb) client version 4.2+. Redis Cluster is not supported.
 
 ### Setting SSL options on Redis Connections
 
