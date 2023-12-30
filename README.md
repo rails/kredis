@@ -263,7 +263,7 @@ If you don't have `config/redis/shared.yml` (or use another named configuration)
 
 ### Redis support
 
-Kredis works with Redis server 4.0+, with the [Redis Ruby](https://github.com/redis/redis-rb) client version 4.2+.
+Kredis works with Redis server 4.0+, with the [Redis Ruby](https://github.com/redis/redis-rb) client version 4.2+. Redis Cluster is not supported.
 
 ### Setting SSL options on Redis Connections
 
