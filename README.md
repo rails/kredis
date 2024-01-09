@@ -172,7 +172,6 @@ true == limiter.exceeded?       # => GET "limiter"
 sleep 6
 limiter.poke                    # => SET limiter 0 NX + INCRBY limiter 1
 limiter.poke                    # => SET limiter 0 NX + INCRBY limiter 1
-limiter.poke                    # => SET limiter 0 NX + INCRBY limiter 1
 false == limiter.exceeded?      # => GET "limiter"
 ```
 
