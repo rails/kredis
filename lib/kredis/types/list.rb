@@ -48,10 +48,10 @@ class Kredis::Types::List < Kredis::Types::Proxying
     end
 
     def with_expiration(&block)
-      block.call.tap do
-        if expires_in && ttl < 0
-          expire expires_in.to_i
-        end
+      result = block.call
+      if expires_in && ttl < 0
+        expire expires_in.to_i
       end
+      result
     end
 end
