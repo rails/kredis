@@ -79,10 +79,10 @@ class ListTest < ActiveSupport::TestCase
   test "append with expiring list" do
     @list = Kredis.list "mylist", expires_in: 1.second
     @list.append(%w[1 2])
-    
+
     sleep 0.2.seconds
     @list.append(3)
-    
+
     sleep 0.3.seconds
     assert_equal %w[ 1 2 3 ], @list.elements
 
