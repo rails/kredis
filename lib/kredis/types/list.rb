@@ -2,10 +2,11 @@
 
 class Kredis::Types::List < Kredis::Types::Proxying
   prepend Kredis::DefaultValues
+  include Kredis::Expiration
 
-  proxying :lrange, :lrem, :lpush, :ltrim, :rpush, :exists?, :del, :expire, :ttl
+  proxying :lrange, :lrem, :lpush, :ltrim, :rpush, :exists?, :del
 
-  attr_accessor :typed, :expires_in
+  attr_accessor :typed
 
   def elements
     strings_to_types(lrange(0, -1) || [], typed)
@@ -45,13 +46,5 @@ class Kredis::Types::List < Kredis::Types::Proxying
   private
     def set_default
       append default
-    end
-
-    def with_expiration(&block)
-      result = block.call
-      if expires_in && ttl < 0
-        expire expires_in.to_i
-      end
-      result
     end
 end
