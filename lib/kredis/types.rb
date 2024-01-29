@@ -69,8 +69,8 @@ module Kredis::Types
     type_from(UniqueList, config, key, after_change: after_change, default: default, typed: typed, limit: limit)
   end
 
-  def set(key, default: nil, typed: :string, config: :shared, after_change: nil)
-    type_from(Set, config, key, after_change: after_change, default: default, typed: typed)
+  def set(key, default: nil, typed: :string, config: :shared, after_change: nil, expires_in: nil)
+    type_from(Set, config, key, after_change: after_change, default: default, typed: typed, expires_in: expires_in)
   end
 
   def ordered_set(key, default: nil, typed: :string, limit: nil, config: :shared, after_change: nil)
