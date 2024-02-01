@@ -12,9 +12,9 @@ class Person
   kredis_list :names
   kredis_list :names_with_custom_key_via_lambda, key: ->(p) { "person:#{p.id}:names_customized" }
   kredis_list :names_with_custom_key_via_method, key: :generate_key
-  kredis_list :names_with_default_via_lambda, default: ->(p) { ["Random", p.name] }
+  kredis_list :names_with_default_via_lambda, default: ->(p) { [ "Random", p.name ] }
   kredis_unique_list :skills, limit: 2
-  kredis_unique_list :skills_with_default_via_lambda, default: ->(p) { ["Random", "Random", p.name] }
+  kredis_unique_list :skills_with_default_via_lambda, default: ->(p) { [ "Random", "Random", p.name ] }
   kredis_ordered_set :reading_list, limit: 2
   kredis_flag :special
   kredis_flag :temporary_special, expires_in: 1.second
@@ -44,6 +44,7 @@ class Person
   kredis_hash :high_scores_with_default_via_lambda, typed: :integer, default: ->(p) { { high_score: JSON.parse(p.scores).max } }
   kredis_boolean :onboarded
   kredis_boolean :adult_with_default_via_lambda, default: ->(p) { Date.today.year - p.birthdate.year >= 18 }
+  kredis_limiter :update_limit, limit: 3, expires_in: 1.second
 
   def self.name
     "Person"
@@ -70,7 +71,7 @@ class Person
   end
 
   def scores
-    [10, 28, 2, 7].to_json
+    [ 10, 28, 2, 7 ].to_json
   end
 
   def hourly_wage
@@ -86,6 +87,14 @@ class Person
       { city: "Paris", region: "Île-de-France", country: "FR" },
       { city: "Paris", region: "Texas", country: "US" }
     ].to_json
+  end
+
+  def update!
+    if update_limit.exceeded?
+      raise "Limiter exceeded"
+    else
+      update_limit.poke
+    end
   end
 
   private
@@ -407,5 +416,16 @@ class AttributesTest < ActiveSupport::TestCase
     assert_changes "@person.temporary_special.marked?", from: true, to: false do
       sleep 0.6.seconds
     end
+  end
+
+  test "limiter exceeded" do
+    3.times { @person.update! }
+    assert_raises { @person.update! }
+  end
+
+  test "expiring limiter" do
+    3.times { @person.update! }
+    sleep 1.1
+    assert_nothing_raised { 3.times { @person.update! } }
   end
 end

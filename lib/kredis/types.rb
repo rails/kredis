@@ -85,6 +85,10 @@ module Kredis::Types
     type_from(Slots, config, key, after_change: after_change, available: available)
   end
 
+  def limiter(key, limit:, expires_in: nil, config: :shared, after_change: nil)
+    type_from(Limiter, config, key, after_change: after_change, expires_in: expires_in, limit: limit)
+  end
+
   private
     def type_from(type_klass, config, key, after_change: nil, **options)
       type_klass.new(configured_for(config), namespaced_key(key), **options).then do |type|
@@ -107,3 +111,4 @@ require "kredis/types/unique_list"
 require "kredis/types/set"
 require "kredis/types/ordered_set"
 require "kredis/types/slots"
+require "kredis/types/limiter"

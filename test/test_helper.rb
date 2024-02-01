@@ -9,7 +9,10 @@ require "debug"
 
 require "kredis"
 
-Kredis.configurator = Class.new { def config_for(name) { db: "1" } end }.new
+Kredis.configurator = Class.new do
+  def config_for(name) { db: "1" } end
+  def root() Pathname.new(".") end
+end.new
 
 ActiveSupport::LogSubscriber.logger = ActiveSupport::Logger.new(STDOUT) if ENV["VERBOSE"]
 

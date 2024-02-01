@@ -161,6 +161,20 @@ sleep 0.5.seconds
 true == flag.marked?            #=> EXISTS myflag
 sleep 0.6.seconds
 false == flag.marked?           #=> EXISTS myflag
+
+limiter = Kredis.limiter "mylimit", limit: 3, expires_in: 5.seconds
+0 == limiter.value              # => GET "limiter"
+limiter.poke                    # => SET limiter 0 NX + INCRBY limiter 1
+limiter.poke                    # => SET limiter 0 NX + INCRBY limiter 1
+limiter.poke                    # => SET limiter 0 NX + INCRBY limiter 1
+false == limiter.exceeded?      # => GET "limiter"
+limiter.poke                    # => SET limiter 0 NX + INCRBY limiter 1
+true == limiter.exceeded?       # => GET "limiter"
+sleep 6
+limiter.poke                    # => SET limiter 0 NX + INCRBY limiter 1
+limiter.poke                    # => SET limiter 0 NX + INCRBY limiter 1
+limiter.poke                    # => SET limiter 0 NX + INCRBY limiter 1
+false == limiter.exceeded?      # => GET "limiter"
 ```
 
 ### Models
@@ -245,9 +259,11 @@ Additional configurations can be added under `config/redis/*.yml` and referenced
 
 Kredis passes the configuration to `Redis.new` to establish the connection. See the [Redis documentation](https://github.com/redis/redis-rb) for other configuration options.
 
+If you don't have `config/redis/shared.yml` (or use another named configuration), Kredis will default to look in env for `REDIS_URL`, then fallback to a default URL of `redis://127.0.0.1:6379/0`.
+
 ### Redis support
 
-Kredis works with Redis server 4.0+, with the [Redis Ruby](https://github.com/redis/redis-rb) client version 4.2+.
+Kredis works with Redis server 4.0+, with the [Redis Ruby](https://github.com/redis/redis-rb) client version 4.2+. Redis Cluster is not supported.
 
 ### Setting SSL options on Redis Connections
 

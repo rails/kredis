@@ -48,7 +48,7 @@ class CallbacksTest < ActiveSupport::TestCase
     vacations = Kredis.set "vacations", after_change: ->(set) { @callback_check = set.members }
     vacations.add "paris"
 
-    assert_equal ["paris"], @callback_check
+    assert_equal [ "paris" ], @callback_check
   end
 
   test "hash with after_change proc callback" do
