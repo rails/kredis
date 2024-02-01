@@ -12,7 +12,6 @@ class Kredis::Types::UniqueList < Kredis::Types::List
     return if elements.empty?
 
     with_expiration do
-
       multi do
         remove elements
         super(elements, suppress_expiration: true)
@@ -26,7 +25,6 @@ class Kredis::Types::UniqueList < Kredis::Types::List
     return if elements.empty?
 
     with_expiration do
-
       multi do
         remove elements
         super(elements, suppress_expiration: true)

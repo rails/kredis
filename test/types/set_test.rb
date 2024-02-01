@@ -71,10 +71,10 @@ class SetTest < ActiveSupport::TestCase
 
     @set.add 1.5, 2.7
     @set << 2.7
-    assert_equal [1.5, 2.7], @set.members
+    assert_equal [ 1.5, 2.7 ], @set.members
 
     @set.remove(2.7)
-    assert_equal [1.5], @set.members
+    assert_equal [ 1.5 ], @set.members
 
     assert_equal 1.5, @set.take
   end
@@ -98,8 +98,8 @@ class SetTest < ActiveSupport::TestCase
     @set = Kredis.set "mylist", typed: :float
     @set.add 1.5, 2.7
 
-    assert @set.sample.in?([1.5, 2.7])
-    assert_equal [1.5, 2.7], @set.sample(2).sort
+    assert @set.sample.in?([ 1.5, 2.7 ])
+    assert_equal [ 1.5, 2.7 ], @set.sample(2).sort
   end
 
   test "default" do
@@ -151,6 +151,6 @@ class SetTest < ActiveSupport::TestCase
     @set = Kredis.set "mylist", typed: :integer, default: -> () { %w[ 1 2 3 ] }
     @set.add(%w[ 5 6 7 ])
     @set.replace(%w[ 8 9 10 ])
-    assert_equal [8, 9, 10], @set.members
+    assert_equal [ 8, 9, 10 ], @set.members
   end
 end
