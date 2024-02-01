@@ -164,7 +164,7 @@ class SetTest < ActiveSupport::TestCase
 
     sleep 0.7.seconds
     @set.add(%w[ 4 5 ])
-    assert_equal [1, 2, 3, 4, 5], @set.members
+    assert_equal [ 1, 2, 3, 4, 5 ], @set.members
 
     sleep 0.5.seconds
     assert_equal [], @set.members
