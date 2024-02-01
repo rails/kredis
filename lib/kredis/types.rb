@@ -65,8 +65,8 @@ module Kredis::Types
     type_from(List, config, key, after_change: after_change, default: default, typed: typed, expires_in: expires_in)
   end
 
-  def unique_list(key, default: nil, typed: :string, limit: nil, config: :shared, after_change: nil)
-    type_from(UniqueList, config, key, after_change: after_change, default: default, typed: typed, limit: limit)
+  def unique_list(key, default: nil, typed: :string, limit: nil, config: :shared, after_change: nil, expires_in: nil)
+    type_from(UniqueList, config, key, after_change: after_change, default: default, typed: typed, limit: limit, expires_in: expires_in)
   end
 
   def set(key, default: nil, typed: :string, config: :shared, after_change: nil, expires_in: nil)
