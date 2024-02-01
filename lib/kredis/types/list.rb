@@ -17,19 +17,18 @@ class Kredis::Types::List < Kredis::Types::Proxying
     types_to_strings(elements, typed).each { |element| lrem 0, element }
   end
 
-  def prepend(*elements)
+  def prepend(*elements, suppress_expiration: false)
     return if elements.flatten.empty?
 
-    with_expiration do
+    with_expiration(suppress: suppress_expiration) do
       lpush types_to_strings(elements, typed)
     end
   end
 
-  def append(*elements)
+  def append(*elements, suppress_expiration: false)
     return if elements.flatten.empty?
 
-
-    with_expiration do
+    with_expiration(suppress: suppress_expiration) do
       rpush types_to_strings(elements, typed)
     end
   end

@@ -9,9 +9,9 @@ module Kredis::Expiration
   end
 
   private
-    def with_expiration(&block)
+    def with_expiration(suppress: false, &block)
       result = block.call
-      if expires_in && ttl < 0
+      if !suppress && expires_in && ttl < 0
         expire expires_in.to_i
       end
       result
