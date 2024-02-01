@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "test_helper"
+require "active_support/core_ext/integer"
 
 class OrderedSetTest < ActiveSupport::TestCase
   setup { @set = Kredis.ordered_set "ordered-set", limit: 5 }
@@ -29,6 +30,16 @@ class OrderedSetTest < ActiveSupport::TestCase
 
     thousand_elements.each { |element| @set.append(element) }
     assert_equal thousand_elements, @set.elements
+  end
+
+  test "append with expiry" do
+    @set = Kredis.ordered_set "ordered-set", limit: 5, expires_in: 1.second
+
+    @set.append(%w[ 1 2 3 ])
+    assert_equal %w[ 1 2 3 ], @set.elements
+
+    sleep 1.1
+    assert @set.elements.empty?
   end
 
   test "prepend" do
