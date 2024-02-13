@@ -125,9 +125,9 @@ class HashTest < ActiveSupport::TestCase
     assert_equal({ "space_invaders" => 100, "pong" => 42 }, @hash.to_h)
   end
 
-  test "does not support nil values" do
-    assert_raises do
-      @hash.update("key" => nil)
-    end
+  test "handles nil values gracefully" do
+    @hash.update("key" => nil, "key2" => "value2")
+    assert_nil @hash["key"]
+    assert_equal "value2", @hash["key2"]
   end
 end
