@@ -124,4 +124,10 @@ class HashTest < ActiveSupport::TestCase
     @hash = Kredis.hash "myhash", typed: :integer, default: ->() { { space_invaders: "100", pong: "42" } }
     assert_equal({ "space_invaders" => 100, "pong" => 42 }, @hash.to_h)
   end
+
+  test "handles nil values gracefully" do
+    @hash.update("key" => nil, "key2" => "value2")
+    assert_nil @hash["key"]
+    assert_equal "value2", @hash["key2"]
+  end
 end
