@@ -44,20 +44,20 @@ module Kredis::Attributes
       kredis_connection_with __method__, name, key, default: default, config: config, after_change: after_change, expires_in: expires_in
     end
 
-    def kredis_list(name, key: nil, default: nil, typed: :string, config: :shared, after_change: nil)
-      kredis_connection_with __method__, name, key, default: default, typed: typed, config: config, after_change: after_change
+    def kredis_list(name, key: nil, default: nil, typed: :string, config: :shared, after_change: nil, expires_in: nil)
+      kredis_connection_with __method__, name, key, default: default, typed: typed, config: config, after_change: after_change, expires_in: expires_in
     end
 
-    def kredis_unique_list(name, limit: nil, key: nil, default: nil, typed: :string, config: :shared, after_change: nil)
-      kredis_connection_with __method__, name, key, default: default, limit: limit, typed: typed, config: config, after_change: after_change
+    def kredis_unique_list(name, limit: nil, key: nil, default: nil, typed: :string, config: :shared, after_change: nil, expires_in: nil)
+      kredis_connection_with __method__, name, key, default: default, limit: limit, typed: typed, config: config, after_change: after_change, expires_in: expires_in
     end
 
-    def kredis_set(name, key: nil, default: nil, typed: :string, config: :shared, after_change: nil)
-      kredis_connection_with __method__, name, key, default: default, typed: typed, config: config, after_change: after_change
+    def kredis_set(name, key: nil, default: nil, typed: :string, config: :shared, after_change: nil, expires_in: nil)
+      kredis_connection_with __method__, name, key, default: default, typed: typed, config: config, after_change: after_change, expires_in: expires_in
     end
 
-    def kredis_ordered_set(name, limit: nil, default: nil, key: nil, typed: :string, config: :shared, after_change: nil)
-      kredis_connection_with __method__, name, key, default: default, limit: limit, typed: typed, config: config, after_change: after_change
+    def kredis_ordered_set(name, limit: nil, default: nil, key: nil, typed: :string, config: :shared, after_change: nil, expires_in: nil)
+      kredis_connection_with __method__, name, key, default: default, limit: limit, typed: typed, config: config, after_change: after_change, expires_in: expires_in
     end
 
     def kredis_slot(name, key: nil, config: :shared, after_change: nil)
