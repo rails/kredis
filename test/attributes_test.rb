@@ -13,8 +13,10 @@ class Person
   kredis_list :names_with_custom_key_via_lambda, key: ->(p) { "person:#{p.id}:names_customized" }
   kredis_list :names_with_custom_key_via_method, key: :generate_key
   kredis_list :names_with_default_via_lambda, default: ->(p) { [ "Random", p.name ] }
+  kredis_list :names_with_ttl, expires_in: 1.second
   kredis_unique_list :skills, limit: 2
   kredis_unique_list :skills_with_default_via_lambda, default: ->(p) { [ "Random", "Random", p.name ] }
+  kredis_unique_list :skills_with_ttl, expires_in: 1.second
   kredis_ordered_set :reading_list, limit: 2
   kredis_flag :special
   kredis_flag :temporary_special, expires_in: 1.second
@@ -34,6 +36,7 @@ class Person
   kredis_slots :meetings, available: 3
   kredis_set :vacations
   kredis_set :vacations_with_default_via_lambda, default: ->(p) { JSON.parse(p.vacation_destinations).map { |location| location["city"] } }
+  kredis_set :vacations_with_ttl, expires_in: 1.second
   kredis_json :settings
   kredis_json :settings_with_default_via_lambda, default: ->(p) { JSON.parse(p.anthropometry).merge(eye_color: p.eye_color) }
   kredis_counter :amount
@@ -148,6 +151,14 @@ class AttributesTest < ActiveSupport::TestCase
     assert_equal %w[ Random Jason ], Kredis.redis.lrange("people:8:names_with_default_via_lambda", 0, -1)
   end
 
+  test "list with ttl" do
+    @person.names_with_ttl.append(%w[ david kasper ])
+    assert_equal %w[ david kasper ], @person.names_with_ttl.elements
+
+    sleep 1.1
+    assert_equal [], @person.names_with_ttl.elements
+  end
+
   test "unique list" do
     @person.skills.prepend(%w[ trolling photography ])
     @person.skills.prepend("racing")
@@ -158,6 +169,14 @@ class AttributesTest < ActiveSupport::TestCase
   test "unique list with default proc value" do
     assert_equal %w[ Random Jason ], @person.skills_with_default_via_lambda.elements
     assert_equal %w[ Random Jason ], Kredis.redis.lrange("people:8:skills_with_default_via_lambda", 0, -1)
+  end
+
+  test "unique list with ttl" do
+    @person.skills_with_ttl.prepend(%w[ trolling photography ])
+    assert_equal %w[ trolling photography ].to_set, @person.skills_with_ttl.elements.to_set
+
+    sleep 1.1
+    assert_equal [], @person.skills_with_ttl.elements
   end
 
   test "ordered set" do
@@ -322,6 +341,14 @@ class AttributesTest < ActiveSupport::TestCase
   test "set with default proc value" do
     assert_equal [ "Paris" ], @person.vacations_with_default_via_lambda.members
     assert_equal [ "Paris" ], Kredis.redis.smembers("people:8:vacations_with_default_via_lambda")
+  end
+
+  test "set with ttl" do
+    @person.vacations_with_ttl.add "paris"
+    assert_equal [ "paris" ], @person.vacations_with_ttl.members
+
+    sleep 1.1
+    assert_equal [], @person.vacations_with_ttl.members
   end
 
   test "json" do
