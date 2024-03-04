@@ -18,6 +18,7 @@ class Person
   kredis_unique_list :skills_with_default_via_lambda, default: ->(p) { [ "Random", "Random", p.name ] }
   kredis_unique_list :skills_with_ttl, expires_in: 1.second
   kredis_ordered_set :reading_list, limit: 2
+  kredis_ordered_set :reading_list_with_ttl, expires_in: 1.second
   kredis_flag :special
   kredis_flag :temporary_special, expires_in: 1.second
   kredis_string :address
@@ -182,6 +183,14 @@ class AttributesTest < ActiveSupport::TestCase
   test "ordered set" do
     @person.reading_list.prepend(%w[ rework shapeup remote ])
     assert_equal %w[ remote shapeup ], @person.reading_list.elements
+  end
+
+  test "ordered set with ttl" do
+    @person.reading_list_with_ttl.prepend(%w[ rework ])
+    assert_equal %w[ rework ], @person.reading_list_with_ttl.elements
+
+    sleep 1.1
+    assert_equal [], @person.reading_list_with_ttl.elements
   end
 
   test "flag" do
