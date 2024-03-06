@@ -177,6 +177,18 @@ limiter.poke                    # => SET limiter 0 NX + INCRBY limiter 1
 false == limiter.exceeded?      # => GET "limiter"
 ```
 
+Lists, unique lists, sets, and ordered sets support expiration:
+
+```ruby
+set = Kredis.set "myset", expires_in: 1.second
+set.add "hello", "world" # => SADD myset "hello" "world"
+true == set.include?("hello") # => SISMEMBER myset "hello
+sleep 2
+[] == set.members # => SMEMBERS myset
+```
+
+To support lower versions of redis, which does not has `nx` option on `EXPIRE` command, multiple commands are used to achieve the same effect.
+
 ### Models
 
 You can use all these structures in models:
@@ -189,6 +201,7 @@ class Person < ApplicationRecord
   kredis_unique_list :skills, limit: 2
   kredis_enum :morning, values: %w[ bright blue black ], default: "bright"
   kredis_counter :steps, expires_in: 1.hour
+  kredis_set :favorite_colors, expires_in: 1.day
 
   private
     def generate_names_key

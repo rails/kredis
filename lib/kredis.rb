@@ -11,6 +11,7 @@ require "kredis/log_subscriber"
 require "kredis/namespace"
 require "kredis/type_casting"
 require "kredis/default_values"
+require "kredis/expiration"
 require "kredis/types"
 require "kredis/attributes"
 

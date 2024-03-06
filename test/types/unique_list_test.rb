@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "test_helper"
+require "active_support/core_ext/integer"
 
 class UniqueListTest < ActiveSupport::TestCase
   setup { @list = Kredis.unique_list "myuniquelist", limit: 5 }
@@ -12,6 +13,16 @@ class UniqueListTest < ActiveSupport::TestCase
 
     @list << "5"
     assert_equal %w[ 1 2 3 4 5 ], @list.elements
+  end
+
+  test "append with expiration" do
+    @list = Kredis.unique_list "xs", limit: 5, expires_in: 1.second
+
+    @list.append(%w[ 1 2 3 ])
+    assert_equal %w[ 1 2 3 ], @list.elements
+
+    sleep 1.1
+    assert @list.elements.empty?
   end
 
   test "prepend" do

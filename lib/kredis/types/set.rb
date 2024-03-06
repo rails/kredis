@@ -2,6 +2,7 @@
 
 class Kredis::Types::Set < Kredis::Types::Proxying
   prepend Kredis::DefaultValues
+  include Kredis::Expiration
 
   proxying :smembers, :sadd, :srem, :multi, :del, :sismember, :scard, :spop, :exists?, :srandmember
 
@@ -13,7 +14,11 @@ class Kredis::Types::Set < Kredis::Types::Proxying
   alias to_a members
 
   def add(*members)
-    sadd types_to_strings(members, typed) if members.flatten.any?
+    return unless members.flatten.any?
+
+    with_expiration do
+      sadd types_to_strings(members, typed)
+    end
   end
   alias << add
 
