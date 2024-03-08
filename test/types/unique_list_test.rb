@@ -93,4 +93,10 @@ class UniqueListTest < ActiveSupport::TestCase
     @list.prepend(%w[ 6 7 8 ])
     assert_equal %w[ 8 7 6 1 2 3 ], @list.elements
   end
+
+  test "include?" do
+    @list.append(%w[ 1 2 3 ])
+    assert @list.include?("1")
+    assert_not @list.include?("4")
+  end
 end

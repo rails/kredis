@@ -3,7 +3,7 @@
 class Kredis::Types::List < Kredis::Types::Proxying
   prepend Kredis::DefaultValues
 
-  proxying :lrange, :lrem, :lpush, :ltrim, :rpush, :exists?, :del
+  proxying :lrange, :lrem, :lpush, :ltrim, :rpush, :exists?, :del, :lpos
 
   attr_accessor :typed
 
@@ -31,6 +31,10 @@ class Kredis::Types::List < Kredis::Types::Proxying
 
   def last(n = nil)
     n ? lrange(-n, -1) : lrange(-1, -1).first
+  end
+
+  def include?(element)
+    !lpos(element).nil?
   end
 
   private
