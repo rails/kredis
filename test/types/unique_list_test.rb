@@ -95,7 +95,7 @@ class UniqueListTest < ActiveSupport::TestCase
   end
 
   test "include?" do
-    @list.append(%w[ 1 2 3 ])
+    @list = Kredis.unique_list "myuniquelist", default: %w[ 1 2 3 ]
     assert @list.include?("1")
     assert_not @list.include?("4")
   end
