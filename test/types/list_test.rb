@@ -76,6 +76,33 @@ class ListTest < ActiveSupport::TestCase
     assert_equal %w[ 2 3 ], @list.elements
   end
 
+  test "append with expiring list" do
+    @list = Kredis.list "mylist", expires_in: 1.second
+    @list.append(%w[1 2])
+
+    sleep 0.2.seconds
+    @list.append(3)
+
+    sleep 0.3.seconds
+    assert_equal %w[ 1 2 3 ], @list.elements
+
+    sleep 0.6.seconds
+    assert_equal [], @list.elements
+  end
+
+  test "prepend with expiring list" do
+    @list = Kredis.list "mylist", expires_in: 1.second
+    @list.prepend(%w[1 2])
+
+    sleep 0.2.seconds
+    @list.prepend(3)
+
+    sleep 0.3.seconds
+    assert_equal %w[ 3 2 1 ], @list.elements
+
+    sleep 0.6.seconds
+    assert_equal [], @list.elements
+  end
 
   test "default" do
     @list = Kredis.list "mylist", default: %w[ 1 2 3 ]
