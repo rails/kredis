@@ -13,11 +13,12 @@ require "kredis/type_casting"
 require "kredis/default_values"
 require "kredis/types"
 require "kredis/attributes"
+require "kredis/info"
 
 require "kredis/railtie" if defined?(Rails::Railtie)
 
 module Kredis
-  include Connections, Namespace, TypeCasting, Types
+  include Connections, Namespace, TypeCasting, Types, Info
   extend self
 
   autoload :Migration, "kredis/migration"
