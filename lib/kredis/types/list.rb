@@ -33,6 +33,7 @@ class Kredis::Types::List < Kredis::Types::Proxying
     n ? lrange(-n, -1) : lrange(-1, -1).first
   end
 
+  # Require Redis 6+ for LPOS
   def include?(element)
     !lpos(element).nil?
   end
