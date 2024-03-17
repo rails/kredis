@@ -131,4 +131,12 @@ class ListTest < ActiveSupport::TestCase
 
     assert_equal [ 0, 1, 2, 3, 4, 10, 20, 30 ], Kredis.list("mylist", typed: :integer).to_a.sort
   end
+
+  test "include?" do
+    list = Kredis.list "int-list", typed: :integer
+    list.append [ 1, 2, 3 ]
+
+    assert list.include?(1)
+    assert_not list.include?(4)
+  end
 end

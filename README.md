@@ -53,6 +53,7 @@ integer_list = Kredis.list "myintegerlist", typed: :integer, default: [ 1, 2, 3 
 integer_list.append([ 4, 5, 6 ])                                                  # => RPUSH myintegerlist "4" "5" "6"
 integer_list << 7                                                                 # => RPUSH myintegerlist "7"
 [ 1, 2, 3, 4, 5, 6, 7 ] == integer_list.elements                                  # => LRANGE myintegerlist 0 -1
+integer_list.include? 7                                                           # => LPOS myintegerlist 7, Requires Redis 6+
 
 unique_list = Kredis.unique_list "myuniquelist"
 unique_list.append(%w[ 2 3 4 ])                # => LREM myuniquelist 0, "2" + LREM myuniquelist 0, "3" + LREM myuniquelist 0, "4"  + RPUSH myuniquelist "2", "3", "4"
