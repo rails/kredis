@@ -76,8 +76,8 @@ module Kredis::Attributes
       kredis_connection_with __method__, name, key, limit: limit, config: config, after_change: after_change, expires_in: expires_in
     end
 
-    def kredis_hash(name, key: nil, default: nil, typed: :string, config: :shared, after_change: nil)
-      kredis_connection_with __method__, name, key, default: default, typed: typed, config: config, after_change: after_change
+    def kredis_hash(name, key: nil, default: nil, typed: :string, config: :shared, after_change: nil, expires_in: nil)
+      kredis_connection_with __method__, name, key, default: default, typed: typed, config: config, after_change: after_change, expires_in: expires_in
     end
 
     def kredis_boolean(name, key: nil, default: nil, config: :shared, after_change: nil, expires_in: nil)

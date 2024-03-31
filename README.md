@@ -181,7 +181,7 @@ limiter.poke                    # => SET limiter 0 NX + INCRBY limiter 1
 false == limiter.exceeded?      # => GET "limiter"
 ```
 
-Lists, unique lists, sets, and ordered sets support expiration:
+Lists, unique lists, sets, ordered sets, and hashes support expiration:
 
 ```ruby
 set = Kredis.set "myset", expires_in: 1.second

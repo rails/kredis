@@ -57,8 +57,8 @@ module Kredis::Types
     type_from(Enum, config, key, after_change: after_change, values: values, default: default)
   end
 
-  def hash(key, typed: :string, default: nil, config: :shared, after_change: nil)
-    type_from(Hash, config, key, after_change: after_change, default: default, typed: typed)
+  def hash(key, typed: :string, default: nil, config: :shared, after_change: nil, expires_in: nil)
+    type_from(Hash, config, key, after_change: after_change, default: default, typed: typed, expires_in: expires_in)
   end
 
   def list(key, default: nil, typed: :string, config: :shared, after_change: nil, expires_in: nil)

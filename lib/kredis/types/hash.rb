@@ -4,6 +4,7 @@ require "active_support/core_ext/hash"
 
 class Kredis::Types::Hash < Kredis::Types::Proxying
   prepend Kredis::DefaultValues
+  include Kredis::Expiration
 
   proxying :hget, :hset, :hmget, :hdel, :hgetall, :hkeys, :hvals, :del, :exists?
 
@@ -18,7 +19,9 @@ class Kredis::Types::Hash < Kredis::Types::Proxying
   end
 
   def update(**entries)
-    hset entries.transform_values { |val| type_to_string(val, typed) }.compact if entries.flatten.any?
+    with_expiration do
+      hset entries.transform_values { |val| type_to_string(val, typed) }.compact if entries.flatten.any?
+    end
   end
 
   def values_at(*keys)

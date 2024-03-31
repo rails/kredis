@@ -46,6 +46,7 @@ class Person
   kredis_string :temporary_password, expires_in: 1.second
   kredis_hash :high_scores, typed: :integer
   kredis_hash :high_scores_with_default_via_lambda, typed: :integer, default: ->(p) { { high_score: JSON.parse(p.scores).max } }
+  kredis_hash :high_scores_with_ttl, typed: :integer, expires_in: 1.second
   kredis_boolean :onboarded
   kredis_boolean :adult_with_default_via_lambda, default: ->(p) { Date.today.year - p.birthdate.year >= 18 }
   kredis_limiter :update_limit, limit: 3, expires_in: 1.second
@@ -402,6 +403,14 @@ class AttributesTest < ActiveSupport::TestCase
 
   test "hash with default proc value" do
     assert_equal({ "high_score" => 28 }, @person.high_scores_with_default_via_lambda.to_h)
+  end
+
+  test "hash with ttl" do
+    @person.high_scores_with_ttl.update(the_lost_viking: 99)
+    assert_equal({ "the_lost_viking" => 99 }, @person.high_scores_with_ttl.to_h)
+
+    sleep 1.1
+    assert_equal({}, @person.high_scores_with_ttl.to_h)
   end
 
   test "boolean" do
