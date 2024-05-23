@@ -5,7 +5,7 @@ require "active_support/core_ext/hash"
 class Kredis::Types::Hash < Kredis::Types::Proxying
   prepend Kredis::DefaultValues
 
-  proxying :hget, :hset, :hmget, :hdel, :hgetall, :hkeys, :hvals, :del, :exists?
+  proxying :hget, :hset, :hmget, :hdel, :hgetall, :hkeys, :hvals, :del, :exists?, :expire, :expireat
 
   attr_accessor :typed
 
@@ -45,6 +45,10 @@ class Kredis::Types::Hash < Kredis::Types::Proxying
 
   def values
     strings_to_types(hvals || [], typed)
+  end
+
+  def expire_at(datetime)
+    expireat datetime.to_i
   end
 
   private
