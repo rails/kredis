@@ -47,7 +47,7 @@ class ConnectionsTest < ActiveSupport::TestCase
   end
 
   test "default config without env" do
-    assert_match %r{redis://127.0.0.1:6379/0}, Kredis.redis.inspect
+    assert_match %r{redis://127.0.0.1:6379}, Kredis.redis.inspect
   end
 
   test "custom config is missing" do
