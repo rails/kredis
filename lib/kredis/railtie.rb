@@ -5,8 +5,18 @@ class Kredis::Railtie < ::Rails::Railtie
 
   initializer "kredis.testing" do
     ActiveSupport.on_load(:active_support_test_case) do
-      parallelize_setup { |worker| Kredis.namespace = "test-#{worker}" }
-      teardown { Kredis.clear_all }
+      $kredis_parallel_worker = nil
+      parallelize_setup { |worker| $kredis_parallel_worker = worker }
+
+      setup do
+        @original_namespace = Kredis.namespace
+        Kredis.namespace = [ @original_namespace, :test, $kredis_parallel_worker ].compact.join("-")
+      end
+
+      teardown do
+        Kredis.clear_all
+        Kredis.namespace = @original_namespace
+      end
     end
   end
 
