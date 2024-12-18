@@ -130,4 +130,14 @@ class HashTest < ActiveSupport::TestCase
     assert_nil @hash["key"]
     assert_equal "value2", @hash["key2"]
   end
+
+  test "support ttl" do
+    @hash = Kredis.hash "myhash", expires_in: 1.second
+    @hash[:key] = :value
+    @hash.update("key2" => "value2", "key3" => "value3")
+    assert_equal "value", @hash[:key]
+
+    sleep 1.1
+    assert_equal [], @hash.keys
+  end
 end

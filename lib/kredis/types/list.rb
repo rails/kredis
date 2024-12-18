@@ -2,6 +2,7 @@
 
 class Kredis::Types::List < Kredis::Types::Proxying
   prepend Kredis::DefaultValues
+  include Kredis::Expiration
 
   proxying :lrange, :lrem, :lpush, :ltrim, :rpush, :exists?, :del
 
@@ -16,12 +17,20 @@ class Kredis::Types::List < Kredis::Types::Proxying
     types_to_strings(elements, typed).each { |element| lrem 0, element }
   end
 
-  def prepend(*elements)
-    lpush types_to_strings(elements, typed) if elements.flatten.any?
+  def prepend(*elements, suppress_expiration: false)
+    return if elements.flatten.empty?
+
+    with_expiration(suppress: suppress_expiration) do
+      lpush types_to_strings(elements, typed)
+    end
   end
 
-  def append(*elements)
-    rpush types_to_strings(elements, typed) if elements.flatten.any?
+  def append(*elements, suppress_expiration: false)
+    return if elements.flatten.empty?
+
+    with_expiration(suppress: suppress_expiration) do
+      rpush types_to_strings(elements, typed)
+    end
   end
   alias << append
 
