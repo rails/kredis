@@ -3,12 +3,10 @@
 require "test_helper"
 
 class MigrationTest < ActiveSupport::TestCase
-  setup { @proxy = Kredis.string "new_proxy" }
-
   test "migrate_all" do
     3.times { |index| Kredis.proxy("mykey:#{index}").set "hello there #{index}" }
 
-    Kredis::Migration.migrate_all("mykey:*") { |key| key.gsub("mykey", "thykey") }
+    Kredis::Migration.migrate_all(Kredis.namespaced_key("mykey:*")) { |key| "thykey:#{key.split(":").last}" }
 
     3.times do |index|
       assert_equal "hello there #{index}", Kredis.proxy("thykey:#{index}").get
@@ -16,19 +14,25 @@ class MigrationTest < ActiveSupport::TestCase
   end
 
   test "migrate" do
+    @original_global_namespace, Kredis.global_namespace = Kredis.global_namespace, nil
+
     old_proxy = Kredis.string "old_proxy"
     old_proxy.set "hello there"
-    assert_not @proxy.assigned?
 
-    Kredis::Migration.migrate from: "old_proxy", to: @proxy.key
-    assert_equal "hello there", @proxy.value
+    new_proxy = Kredis.string "new_proxy"
+    assert_not new_proxy.assigned?
+
+    Kredis::Migration.migrate from: Kredis.namespaced_key("old_proxy"), to: "new_proxy"
+    assert_equal "hello there", new_proxy.value
     assert old_proxy.assigned?, "just copying the data"
+  ensure
+    Kredis.global_namespace = @original_global_namespace
   end
 
   test "migrate with blank keys" do
     assert_nothing_raised do
-      Kredis::Migration.migrate from: "old_key", to: nil
-      Kredis::Migration.migrate from: "old_key", to: ""
+      Kredis::Migration.migrate from: Kredis.namespaced_key("old_key"), to: nil
+      Kredis::Migration.migrate from: Kredis.namespaced_key("old_key"), to: ""
     end
   end
 
@@ -37,7 +41,7 @@ class MigrationTest < ActiveSupport::TestCase
 
     Kredis.namespace = "migrate"
 
-    Kredis::Migration.migrate from: "key", to: "key"
+    Kredis::Migration.migrate from: "#{Kredis.global_namespace}:key", to: "key"
 
     assert_equal "x", Kredis.proxy("key").get
   ensure
@@ -47,7 +51,7 @@ class MigrationTest < ActiveSupport::TestCase
   test "migrate with automatic id extraction" do
     Kredis.proxy("mykey:1").set "hey"
 
-    Kredis::Migration.migrate_all "mykey:*" do |key, id|
+    Kredis::Migration.migrate_all Kredis.namespaced_key("mykey:*") do |key, id|
       assert_equal 1, id
       key
     end
@@ -56,7 +60,7 @@ class MigrationTest < ActiveSupport::TestCase
   test "delete_all with pattern" do
     3.times { |index| Kredis.proxy("mykey:#{index}").set "hello there #{index}" }
 
-    Kredis::Migration.delete_all "mykey:*"
+    Kredis::Migration.delete_all Kredis.namespaced_key("mykey:*")
 
     3.times { |index| assert_nil Kredis.proxy("mykey:#{index}").get }
   end
@@ -64,7 +68,7 @@ class MigrationTest < ActiveSupport::TestCase
   test "delete_all with keys" do
     3.times { |index| Kredis.proxy("mykey:#{index}").set "hello there #{index}" }
 
-    Kredis::Migration.delete_all(*3.times.map { |index| "mykey:#{index}" })
+    Kredis::Migration.delete_all(*3.times.map { |index| Kredis.namespaced_key("mykey:#{index}") })
 
     3.times { |index| assert_nil Kredis.proxy("mykey:#{index}").get }
   end

@@ -120,12 +120,12 @@ class AttributesTest < ActiveSupport::TestCase
 
   test "proxy with custom string key" do
     @person.nothing.set "everything"
-    assert_equal "everything", Kredis.redis.get("something:else")
+    assert_equal "everything", Kredis.redis.get(Kredis.namespaced_key("something:else"))
   end
 
   test "proxy with custom proc key" do
     @person.something.set "everything"
-    assert_equal "everything", Kredis.redis.get("person:8:something")
+    assert_equal "everything", Kredis.redis.get(Kredis.namespaced_key("person:8:something"))
   end
 
   test "list" do
@@ -135,17 +135,17 @@ class AttributesTest < ActiveSupport::TestCase
 
   test "list with custom proc key" do
     @person.names_with_custom_key_via_lambda.append(%w[ david kasper ])
-    assert_equal %w[ david kasper ], Kredis.redis.lrange("person:8:names_customized", 0, -1)
+    assert_equal %w[ david kasper ], Kredis.redis.lrange(Kredis.namespaced_key("person:8:names_customized"), 0, -1)
   end
 
   test "list with custom method key" do
     @person.names_with_custom_key_via_method.append(%w[ david kasper ])
-    assert_equal %w[ david kasper ], Kredis.redis.lrange("some-generated-key", 0, -1)
+    assert_equal %w[ david kasper ], Kredis.redis.lrange(Kredis.namespaced_key("some-generated-key"), 0, -1)
   end
 
   test "list with default proc value" do
     assert_equal %w[ Random Jason ], @person.names_with_default_via_lambda.elements
-    assert_equal %w[ Random Jason ], Kredis.redis.lrange("people:8:names_with_default_via_lambda", 0, -1)
+    assert_equal %w[ Random Jason ], Kredis.redis.lrange(Kredis.namespaced_key("people:8:names_with_default_via_lambda"), 0, -1)
   end
 
   test "unique list" do
@@ -157,7 +157,7 @@ class AttributesTest < ActiveSupport::TestCase
 
   test "unique list with default proc value" do
     assert_equal %w[ Random Jason ], @person.skills_with_default_via_lambda.elements
-    assert_equal %w[ Random Jason ], Kredis.redis.lrange("people:8:skills_with_default_via_lambda", 0, -1)
+    assert_equal %w[ Random Jason ], Kredis.redis.lrange(Kredis.namespaced_key("people:8:skills_with_default_via_lambda"), 0, -1)
   end
 
   test "ordered set" do
@@ -222,7 +222,7 @@ class AttributesTest < ActiveSupport::TestCase
   end
 
   test "float with default proc value" do
-    assert_not_equal 73.2, Kredis.redis.get("people:8:height_with_default_via_lambda")
+    assert_not_equal 73.2, Kredis.redis.get(Kredis.namespaced_key("people:8:height_with_default_via_lambda"))
     assert_equal 73.2, @person.height_with_default_via_lambda.value
     assert_equal "73.2", @person.height_with_default_via_lambda.to_s
   end
@@ -321,7 +321,7 @@ class AttributesTest < ActiveSupport::TestCase
 
   test "set with default proc value" do
     assert_equal [ "Paris" ], @person.vacations_with_default_via_lambda.members
-    assert_equal [ "Paris" ], Kredis.redis.smembers("people:8:vacations_with_default_via_lambda")
+    assert_equal [ "Paris" ], Kredis.redis.smembers(Kredis.namespaced_key("people:8:vacations_with_default_via_lambda"))
   end
 
   test "json" do
@@ -332,7 +332,7 @@ class AttributesTest < ActiveSupport::TestCase
   test "json with default proc value" do
     expect = { "height" => 73.2, "weight" => 182.4, "eye_color" => "ha" }
     assert_equal expect, @person.settings_with_default_via_lambda.value
-    assert_equal expect.to_json, Kredis.redis.get("people:8:settings_with_default_via_lambda")
+    assert_equal expect.to_json, Kredis.redis.get(Kredis.namespaced_key("people:8:settings_with_default_via_lambda"))
   end
 
 
