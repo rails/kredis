@@ -3,9 +3,9 @@
 class Kredis::Types::List < Kredis::Types::Proxying
   prepend Kredis::DefaultValues
 
-  proxying :lrange, :lrem, :lpush, :ltrim, :rpush, :exists?, :del
+  proxying :lrange, :lrem, :lpush, :ltrim, :rpush, :exists?, :del, :expire, :ttl
 
-  attr_accessor :typed
+  attr_accessor :typed, :expires_in
 
   def elements
     strings_to_types(lrange(0, -1) || [], typed)
@@ -17,11 +17,20 @@ class Kredis::Types::List < Kredis::Types::Proxying
   end
 
   def prepend(*elements)
-    lpush types_to_strings(elements, typed) if elements.flatten.any?
+    return if elements.flatten.empty?
+
+    with_expiration do
+      lpush types_to_strings(elements, typed)
+    end
   end
 
   def append(*elements)
-    rpush types_to_strings(elements, typed) if elements.flatten.any?
+    return if elements.flatten.empty?
+
+
+    with_expiration do
+      rpush types_to_strings(elements, typed)
+    end
   end
   alias << append
 
@@ -36,5 +45,13 @@ class Kredis::Types::List < Kredis::Types::Proxying
   private
     def set_default
       append default
+    end
+
+    def with_expiration(&block)
+      result = block.call
+      if expires_in && ttl < 0
+        expire expires_in.to_i
+      end
+      result
     end
 end
