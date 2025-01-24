@@ -101,6 +101,15 @@ class SetTest < ActiveSupport::TestCase
     assert_equal [ 1.5, 2.7 ], @set.sample(2).sort
   end
 
+  test "smove" do
+    @set.add(%w[ 1 2 ])
+    another_set = Kredis.set "another_set"
+    another_set.add(%w[ 3 ])
+
+    assert @set.smove(another_set.key, "2")
+    assert_equal %w[ 1 ], @set.members
+    assert_equal %w[ 2 3 ], another_set.members
+  end
 
   test "default" do
     @set = Kredis.set "mylist", default: %w[ 1 2 3 ]
