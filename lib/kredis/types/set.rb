@@ -3,7 +3,7 @@
 class Kredis::Types::Set < Kredis::Types::Proxying
   prepend Kredis::DefaultValues
 
-  proxying :smembers, :sadd, :srem, :multi, :del, :sismember, :scard, :spop, :exists?, :srandmember
+  proxying :smembers, :sadd, :srem, :multi, :del, :sismember, :scard, :spop, :exists?, :srandmember, :smove
 
   attr_accessor :typed
 
