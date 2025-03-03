@@ -110,7 +110,7 @@ class SetTest < ActiveSupport::TestCase
     assert_equal %w[ 1 ], @set.members
     assert_equal %w[ 2 3 ], another_set.members
   end
-  
+
   test "move with set" do
     @set.add(%w[ x y ])
     another_set = Kredis.set "another_set"
@@ -120,7 +120,7 @@ class SetTest < ActiveSupport::TestCase
     assert_equal %w[ x ], @set.members
     assert_equal %w[ y z ], another_set.members
   end
-  
+
   test "move with key" do
     @set.add(%w[ a b ])
     another_set = Kredis.set "another_set"
