@@ -3,10 +3,13 @@
 class Kredis::Types::Set < Kredis::Types::Proxying
   prepend Kredis::DefaultValues
 
-  proxying :smembers, :sadd, :srem, :multi, :del, :sismember, :scard, :spop, :exists?, :srandmember
+  proxying :smembers, :sadd, :srem, :multi, :del, :sismember, :scard, :spop, :exists?, :srandmember, :smove
 
   attr_accessor :typed
-
+  def move(set, member)
+    destination = set.respond_to?(:key) ? set.key : set
+    smove(destination, member)
+  end
   def members
     strings_to_types(smembers || [], typed).sort
   end
