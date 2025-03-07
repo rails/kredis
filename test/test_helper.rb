@@ -19,7 +19,8 @@ ActiveSupport::LogSubscriber.logger = ActiveSupport::Logger.new(STDOUT) if ENV["
 class ActiveSupport::TestCase
   extend Rails::LineFiltering
 
-  teardown { Kredis.clear_all }
+  setup { Kredis.global_namespace = "kredis-test" }
+  teardown { Kredis.global_namespace = nil; Kredis.clear_all }
 
   class RedisUnavailableProxy
     def multi; yield; end

@@ -1,13 +1,30 @@
 # frozen_string_literal: true
 
 module Kredis::Namespace
-  def namespace=(namespace)
-    Thread.current[:kredis_namespace] = namespace
-  end
+  attr_accessor :global_namespace
 
   def namespace
-    Thread.current[:kredis_namespace]
+    if global_namespace
+      if value = thread_namespace
+        "#{global_namespace}:#{value}"
+      else
+        global_namespace
+      end
+    else
+      thread_namespace
+    end
   end
+
+  def thread_namespace
+    Thread.current[:kredis_thread_namespace]
+  end
+
+  def thread_namespace=(value)
+    Thread.current[:kredis_thread_namespace] = value
+  end
+
+  # Backward compatibility
+  alias_method :namespace=, :thread_namespace=
 
   def namespaced_key(key)
     namespace ? "#{namespace}:#{key}" : key
