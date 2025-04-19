@@ -7,10 +7,14 @@ class Kredis::Types::List < Kredis::Types::Proxying
 
   attr_accessor :typed
 
-  def elements(start = 0, stop = -1)
-    strings_to_types(lrange(start, stop) || [], typed)
+  def elements
+    slice(0, -1)
   end
   alias to_a elements
+
+  def slice(start = 0, stop = -1)
+    strings_to_types(lrange(start, stop) || [], typed)
+  end
 
   def remove(*elements)
     types_to_strings(elements, typed).each { |element| lrem 0, element }
@@ -30,11 +34,11 @@ class Kredis::Types::List < Kredis::Types::Proxying
   end
 
   def first(n = nil)
-    n ? elements(0, n - 1) : elements(0, 0).first
+    n ? slice(0, n - 1) : slice(0, 0).first
   end
 
   def last(n = nil)
-    n ? elements(-n, -1) : elements(-1, -1).first
+    n ? slice(-n, -1) : slice(-1, -1).first
   end
 
   def size

@@ -71,13 +71,9 @@ class ListTest < ActiveSupport::TestCase
 
   test "size" do
     @list.clear
+    assert_equal 0, @list.size
     @list.append(%w[ 1 2 3 ])
     assert_equal 3, @list.size
-  end
-
-  test "size when list removed" do
-    @list.clear
-    assert_equal 0, @list.size
   end
 
   test "exists?" do
