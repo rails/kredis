@@ -3,14 +3,18 @@
 class Kredis::Types::List < Kredis::Types::Proxying
   prepend Kredis::DefaultValues
 
-  proxying :lrange, :lrem, :lpush, :ltrim, :rpush, :exists?, :del
+  proxying :lrange, :lrem, :lpush, :ltrim, :rpush, :exists?, :del, :llen
 
   attr_accessor :typed
 
   def elements
-    strings_to_types(lrange(0, -1) || [], typed)
+    slice(0, -1)
   end
   alias to_a elements
+
+  def slice(start = 0, stop = -1)
+    strings_to_types(lrange(start, stop) || [], typed)
+  end
 
   def remove(*elements)
     types_to_strings(elements, typed).each { |element| lrem 0, element }
@@ -29,9 +33,19 @@ class Kredis::Types::List < Kredis::Types::Proxying
     del
   end
 
-  def last(n = nil)
-    n ? lrange(-n, -1) : lrange(-1, -1).first
+  def first(n = nil)
+    n ? slice(0, n - 1) : slice(0, 0).first
   end
+
+  def last(n = nil)
+    n ? slice(-n, -1) : slice(-1, -1).first
+  end
+
+  def size
+    llen
+  end
+
+  alias length size
 
   private
     def set_default
