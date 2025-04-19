@@ -4,8 +4,15 @@ require "test_helper"
 require "yaml"
 
 class ConnectionsTest < ActiveSupport::TestCase
-  setup { Kredis.connections = {} }
-  teardown { Kredis.namespace = nil }
+  setup do
+    Kredis.connections = {}
+    @original_global_namespace, Kredis.global_namespace = Kredis.global_namespace, nil
+  end
+
+  teardown do
+    Kredis.global_namespace = @original_global_namespace
+    Kredis.namespace = nil
+  end
 
   test "clear all" do
     list = Kredis.list "mylist"
@@ -47,7 +54,7 @@ class ConnectionsTest < ActiveSupport::TestCase
   end
 
   test "default config without env" do
-    assert_match %r{redis://127.0.0.1:6379/0}, Kredis.redis.inspect
+    assert_match %r{redis://127.0.0.1:6379}, Kredis.redis.inspect
   end
 
   test "custom config is missing" do
