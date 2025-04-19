@@ -48,11 +48,13 @@ There are data structures for counters, enums, flags, lists, unique lists, sets,
 list = Kredis.list "mylist"
 list << "hello world!"               # => RPUSH mylist "hello world!"
 [ "hello world!" ] == list.elements  # => LRANGE mylist 0, -1
+list.clear                           # => DEL mylist
 
 integer_list = Kredis.list "myintegerlist", typed: :integer, default: [ 1, 2, 3 ] # => EXISTS? myintegerlist, RPUSH myintegerlist "1" "2" "3"
 integer_list.append([ 4, 5, 6 ])                                                  # => RPUSH myintegerlist "4" "5" "6"
 integer_list << 7                                                                 # => RPUSH myintegerlist "7"
 [ 1, 2, 3, 4, 5, 6, 7 ] == integer_list.elements                                  # => LRANGE myintegerlist 0 -1
+integer_list.clear                                                                # => DEL myintegerlist
 
 unique_list = Kredis.unique_list "myuniquelist"
 unique_list.append(%w[ 2 3 4 ])                # => LREM myuniquelist 0, "2" + LREM myuniquelist 0, "3" + LREM myuniquelist 0, "4"  + RPUSH myuniquelist "2", "3", "4"
@@ -61,6 +63,7 @@ unique_list.append([])
 unique_list << "5"                             # => LREM myuniquelist 0, "5" + RPUSH myuniquelist "5"
 unique_list.remove(3)                          # => LREM myuniquelist 0, "3"
 [ "4", "2", "1", "5" ] == unique_list.elements # => LRANGE myuniquelist 0, -1
+unique_list.clear                              # => DEL myuniquelist
 
 ordered_set = Kredis.ordered_set "myorderedset"
 ordered_set.append(%w[ 2 3 4 ])                # => ZADD myorderedset 1646131025.4953232 2 1646131025.495326 3 1646131025.4953272 4
@@ -75,6 +78,7 @@ set.add(DateTime.tomorrow, DateTime.yesterday)           # => SADD myset "2021-0
 set << DateTime.tomorrow                                 # => SADD myset "2021-02-03 00:00:00 +0100"
 2 == set.size                                            # => SCARD myset
 [ DateTime.tomorrow, DateTime.yesterday ] == set.members # => SMEMBERS myset
+set.clear                                                # => DEL myset
 
 hash = Kredis.hash "myhash"
 hash.update("key" => "value", "key2" => "value2")     # => HSET myhash "key", "value", "key2", "value2"
@@ -102,6 +106,7 @@ counter.increment by: 2         # => SET mycounter 0 EX 5 NX + INCRBY "mycounter
 2 == counter.value              # => GET "mycounter"
 sleep 6.seconds
 0 == counter.value              # => GET "mycounter"
+counter.reset                   # => DEL mycounter
 
 cycle = Kredis.cycle "mycycle", values: %i[ one two three ]
 :one == cycle.value             # => GET mycycle
@@ -111,6 +116,7 @@ cycle.next                      # => GET mycycle + SET mycycle 2
 :three == cycle.value           # => GET mycycle
 cycle.next                      # => GET mycycle + SET mycycle 0
 :one == cycle.value             # => GET mycycle
+cycle.reset                     # => DEL mycycle
 
 enum = Kredis.enum "myenum", values: %w[ one two three ], default: "one"
 "one" == enum.value             # => GET myenum
