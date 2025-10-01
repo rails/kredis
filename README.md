@@ -13,32 +13,32 @@ Kredis provides typed scalars for strings, integers, decimals, floats, booleans,
 
 ```ruby
 string = Kredis.string "mystring"
-string.value = "hello world!"  # => SET mystring "hello world"
+string.default = "hello world!"  # => SET mystring "hello world"
 "hello world!" == string.value # => GET mystring
 
 integer = Kredis.integer "myinteger"
-integer.value = 5  # => SET myinteger "5"
+integer.default = 5  # => SET myinteger "5"
 5 == integer.value # => GET myinteger
 
 decimal = Kredis.decimal "mydecimal" # accuracy!
-decimal.value = "%.47f" % (1.0 / 10) # => SET mydecimal "0.10000000000000000555111512312578270211815834045"
+decimal.default = "%.47f" % (1.0 / 10) # => SET mydecimal "0.10000000000000000555111512312578270211815834045"
 BigDecimal("0.10000000000000000555111512312578270211815834045e0") == decimal.value # => GET mydecimal
 
 float = Kredis.float "myfloat" # speed!
-float.value = 1.0 / 10 # => SET myfloat "0.1"
+float.default = 1.0 / 10 # => SET myfloat "0.1"
 0.1 == float.value # => GET myfloat
 
 boolean = Kredis.boolean "myboolean"
-boolean.value = true # => SET myboolean "t"
+boolean.default = true # => SET myboolean "t"
 true == boolean.value # => GET myboolean
 
 datetime = Kredis.datetime "mydatetime"
 memoized_midnight = Time.zone.now.midnight
-datetime.value = memoized_midnight # SET mydatetime "2021-07-27T00:00:00.000000000Z"
+datetime.default = memoized_midnight # SET mydatetime "2021-07-27T00:00:00.000000000Z"
 memoized_midnight == datetime.value # => GET mydatetime
 
 json = Kredis.json "myjson"
-json.value = { "one" => 1, "two" => "2" }  # => SET myjson "{\"one\":1,\"two\":\"2\"}"
+json.default = { "one" => 1, "two" => "2" }  # => SET myjson "{\"one\":1,\"two\":\"2\"}"
 { "one" => 1, "two" => "2" } == json.value  # => GET myjson
 ```
 
