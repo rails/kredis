@@ -2,6 +2,7 @@
 
 require "test_helper"
 require "active_support/core_ext/object/inclusion"
+require "active_support/core_ext/integer"
 
 class SetTest < ActiveSupport::TestCase
   setup { @set = Kredis.set "myset" }
@@ -155,6 +156,18 @@ class SetTest < ActiveSupport::TestCase
     @set = Kredis.set "mylist", typed: :integer, default: -> () { %w[ 1 2 3 ] }
     @set.add(%w[ 5 6 7 ])
     assert_equal [ 1, 2, 3, 5, 6, 7 ], @set.members
+  end
+
+  test "add with expiration" do
+    @set = Kredis.set "mylist", typed: :integer, expires_in: 1.second
+    @set.add(%w[ 1 2 3 ])
+
+    sleep 0.7.seconds
+    @set.add(%w[ 4 5 ])
+    assert_equal [ 1, 2, 3, 4, 5 ], @set.members
+
+    sleep 0.5.seconds
+    assert_equal [], @set.members
   end
 
   test "remove with default" do

@@ -2,6 +2,7 @@
 
 class Kredis::Types::OrderedSet < Kredis::Types::Proxying
   prepend Kredis::DefaultValues
+  include Kredis::Expiration
 
   proxying :multi, :zrange, :zrem, :zadd, :zremrangebyrank, :zcard, :exists?, :del, :zscore
 
@@ -53,9 +54,11 @@ class Kredis::Types::OrderedSet < Kredis::Types::Proxying
         [ score, element ]
       end
 
-      multi do
-        zadd(elements_with_scores)
-        trim(from_beginning: prepending)
+      with_expiration do
+        multi do
+          zadd(elements_with_scores)
+          trim(from_beginning: prepending)
+        end
       end
     end
 

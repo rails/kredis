@@ -13,9 +13,12 @@ class Person
   kredis_list :names_with_custom_key_via_lambda, key: ->(p) { "person:#{p.id}:names_customized" }
   kredis_list :names_with_custom_key_via_method, key: :generate_key
   kredis_list :names_with_default_via_lambda, default: ->(p) { [ "Random", p.name ] }
+  kredis_list :names_with_ttl, expires_in: 1.second
   kredis_unique_list :skills, limit: 2
   kredis_unique_list :skills_with_default_via_lambda, default: ->(p) { [ "Random", "Random", p.name ] }
+  kredis_unique_list :skills_with_ttl, expires_in: 1.second
   kredis_ordered_set :reading_list, limit: 2
+  kredis_ordered_set :reading_list_with_ttl, expires_in: 1.second
   kredis_flag :special
   kredis_flag :temporary_special, expires_in: 1.second
   kredis_string :address
@@ -34,6 +37,7 @@ class Person
   kredis_slots :meetings, available: 3
   kredis_set :vacations
   kredis_set :vacations_with_default_via_lambda, default: ->(p) { JSON.parse(p.vacation_destinations).map { |location| location["city"] } }
+  kredis_set :vacations_with_ttl, expires_in: 1.second
   kredis_json :settings
   kredis_json :settings_with_default_via_lambda, default: ->(p) { JSON.parse(p.anthropometry).merge(eye_color: p.eye_color) }
   kredis_counter :amount
@@ -42,6 +46,7 @@ class Person
   kredis_string :temporary_password, expires_in: 1.second
   kredis_hash :high_scores, typed: :integer
   kredis_hash :high_scores_with_default_via_lambda, typed: :integer, default: ->(p) { { high_score: JSON.parse(p.scores).max } }
+  kredis_hash :high_scores_with_ttl, typed: :integer, expires_in: 1.second
   kredis_boolean :onboarded
   kredis_boolean :adult_with_default_via_lambda, default: ->(p) { Date.today.year - p.birthdate.year >= 18 }
   kredis_limiter :update_limit, limit: 3, expires_in: 1.second
@@ -148,6 +153,14 @@ class AttributesTest < ActiveSupport::TestCase
     assert_equal %w[ Random Jason ], Kredis.redis.lrange(Kredis.namespaced_key("people:8:names_with_default_via_lambda"), 0, -1)
   end
 
+  test "list with ttl" do
+    @person.names_with_ttl.append(%w[ david kasper ])
+    assert_equal %w[ david kasper ], @person.names_with_ttl.elements
+
+    sleep 1.1
+    assert_equal [], @person.names_with_ttl.elements
+  end
+
   test "unique list" do
     @person.skills.prepend(%w[ trolling photography ])
     @person.skills.prepend("racing")
@@ -160,9 +173,25 @@ class AttributesTest < ActiveSupport::TestCase
     assert_equal %w[ Random Jason ], Kredis.redis.lrange(Kredis.namespaced_key("people:8:skills_with_default_via_lambda"), 0, -1)
   end
 
+  test "unique list with ttl" do
+    @person.skills_with_ttl.prepend(%w[ trolling photography ])
+    assert_equal %w[ trolling photography ].to_set, @person.skills_with_ttl.elements.to_set
+
+    sleep 1.1
+    assert_equal [], @person.skills_with_ttl.elements
+  end
+
   test "ordered set" do
     @person.reading_list.prepend(%w[ rework shapeup remote ])
     assert_equal %w[ remote shapeup ], @person.reading_list.elements
+  end
+
+  test "ordered set with ttl" do
+    @person.reading_list_with_ttl.prepend(%w[ rework ])
+    assert_equal %w[ rework ], @person.reading_list_with_ttl.elements
+
+    sleep 1.1
+    assert_equal [], @person.reading_list_with_ttl.elements
   end
 
   test "flag" do
@@ -324,6 +353,14 @@ class AttributesTest < ActiveSupport::TestCase
     assert_equal [ "Paris" ], Kredis.redis.smembers(Kredis.namespaced_key("people:8:vacations_with_default_via_lambda"))
   end
 
+  test "set with ttl" do
+    @person.vacations_with_ttl.add "paris"
+    assert_equal [ "paris" ], @person.vacations_with_ttl.members
+
+    sleep 1.1
+    assert_equal [], @person.vacations_with_ttl.members
+  end
+
   test "json" do
     @person.settings.value = { "color" => "red", "count" => 2 }
     assert_equal({ "color" => "red", "count" => 2 }, @person.settings.value)
@@ -366,6 +403,14 @@ class AttributesTest < ActiveSupport::TestCase
 
   test "hash with default proc value" do
     assert_equal({ "high_score" => 28 }, @person.high_scores_with_default_via_lambda.to_h)
+  end
+
+  test "hash with ttl" do
+    @person.high_scores_with_ttl.update(the_lost_viking: 99)
+    assert_equal({ "the_lost_viking" => 99 }, @person.high_scores_with_ttl.to_h)
+
+    sleep 1.1
+    assert_equal({}, @person.high_scores_with_ttl.to_h)
   end
 
   test "boolean" do
