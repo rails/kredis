@@ -6,6 +6,12 @@ require "active_support/core_ext/integer"
 class ListTest < ActiveSupport::TestCase
   setup { @list = Kredis.list "mylist" }
 
+  test "elements" do
+    @list.clear
+    @list.append %w[ 1 2 3 ]
+    assert_equal %w[ 1 2 3 ], @list.elements
+  end
+
   test "append" do
     @list.append(%w[ 1 2 3 ])
     @list << 4
@@ -43,6 +49,16 @@ class ListTest < ActiveSupport::TestCase
     assert_equal [], @list.elements
   end
 
+  test "first" do
+    @list.prepend(%w[ 1 2 3 ])
+    assert_equal "3", @list.first
+  end
+
+  test "first(n)" do
+    @list.prepend(%w[ 1 2 3 ])
+    assert_equal %w[ 3 2 ], @list.first(2)
+  end
+
   test "last" do
     @list.append(%w[ 1 2 3 ])
     assert_equal "3", @list.last
@@ -53,14 +69,11 @@ class ListTest < ActiveSupport::TestCase
     assert_equal %w[ 2 3 ], @list.last(2)
   end
 
-  test "typed as datetime" do
-    @list = Kredis.list "mylist", typed: :datetime
-
-    @list.append [ 1.day.from_now.midnight.in_time_zone("Pacific Time (US & Canada)"), 2.days.from_now.midnight.in_time_zone("UTC") ]
-    assert_equal [ 1.day.from_now.midnight, 2.days.from_now.midnight ], @list.elements
-
-    @list.remove(2.days.from_now.midnight)
-    assert_equal [ 1.day.from_now.midnight ], @list.elements
+  test "size" do
+    @list.clear
+    assert_equal 0, @list.size
+    @list.append(%w[ 1 2 3 ])
+    assert_equal 3, @list.size
   end
 
   test "exists?" do
@@ -75,7 +88,6 @@ class ListTest < ActiveSupport::TestCase
     @list.ltrim(-3, -2)
     assert_equal %w[ 2 3 ], @list.elements
   end
-
 
   test "default" do
     @list = Kredis.list "mylist", default: %w[ 1 2 3 ]
@@ -130,5 +142,45 @@ class ListTest < ActiveSupport::TestCase
     end.each(&:join)
 
     assert_equal [ 0, 1, 2, 3, 4, 10, 20, 30 ], Kredis.list("mylist", typed: :integer).to_a.sort
+  end
+end
+
+class TypedListTest < ActiveSupport::TestCase
+  setup { @list = Kredis.list "mylist.typed", typed: :integer }
+
+  test "elements" do
+    @list.clear
+    @list.append 1, 2, 3
+    assert_equal [ 1, 2, 3 ], @list.elements
+  end
+
+  test "first" do
+    @list.prepend 1, 2, 3
+    assert_equal 3, @list.first
+  end
+
+  test "first(n)" do
+    @list.prepend 3, 2, 1
+    assert_equal [ 1, 2 ], @list.first(2)
+  end
+
+  test "last" do
+    @list.append 1, 2, 3
+    assert_equal 3, @list.last
+  end
+
+  test "last(n)" do
+    @list.append 1, 2, 3
+    assert_equal [ 2, 3 ], @list.last(2)
+  end
+
+  test "typed as datetime" do
+    @list = Kredis.list "mylist", typed: :datetime
+
+    @list.append [ 1.day.from_now.midnight.in_time_zone("Pacific Time (US & Canada)"), 2.days.from_now.midnight.in_time_zone("UTC") ]
+    assert_equal [ 1.day.from_now.midnight, 2.days.from_now.midnight ], @list.elements
+
+    @list.remove(2.days.from_now.midnight)
+    assert_equal [ 1.day.from_now.midnight ], @list.elements
   end
 end
