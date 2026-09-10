@@ -4,7 +4,7 @@ PATH
     kredis (1.8.0)
       activemodel (>= 6.0.0)
       activesupport (>= 6.0.0)
-      redis (>= 4.2, < 6)
+      redis (>= 4.2, < 7)
 
 GEM
   remote: https://rubygems.org/
@@ -195,9 +195,9 @@ GEM
     rake (13.2.1)
     rdoc (6.13.1)
       psych (>= 4.0.0)
-    redis (5.4.0)
-      redis-client (>= 0.22.0)
-    redis-client (0.24.0)
+    redis (6.0.0)
+      redis-client (= 0.30.1)
+    redis-client (0.30.1)
       connection_pool
     regexp_parser (2.10.0)
     reline (0.6.1)
