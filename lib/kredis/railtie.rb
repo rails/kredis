@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "active_model/version"
+
 class Kredis::Railtie < ::Rails::Railtie
   config.kredis = ActiveSupport::OrderedOptions.new
 
@@ -23,9 +25,16 @@ class Kredis::Railtie < ::Rails::Railtie
   end
 
   initializer "kredis.attributes" do
-    # No load hook for Active Model, just defer until after initialization.
-    config.after_initialize do
-      ActiveModel::Model.include Kredis::Attributes if defined?(ActiveModel::Model)
+    if ActiveModel.version >= Gem::Version.new("7.1")
+      # Runs as ActiveModel::Model loads, before any class includes it.
+      ActiveSupport.on_load(:active_model) do
+        include Kredis::Attributes
+      end
+    else
+      # No load hook for Active Model, just defer until after initialization.
+      config.after_initialize do
+        ActiveModel::Model.include Kredis::Attributes if defined?(ActiveModel::Model)
+      end
     end
 
     ActiveSupport.on_load(:active_record) do
